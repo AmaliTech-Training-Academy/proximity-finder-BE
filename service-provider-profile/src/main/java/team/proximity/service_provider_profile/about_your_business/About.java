@@ -20,12 +20,13 @@ import java.util.UUID;
 public class About {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private String businessId;
+    private Long businessId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate inceptionDate;
     @ElementCollection
     private Set<String> socialMediaLinks;
     private Integer numberOfEmployees;
+    private String businessIdentityCard;
     private String businessCertificate;
     private String businessSummary;
 }
