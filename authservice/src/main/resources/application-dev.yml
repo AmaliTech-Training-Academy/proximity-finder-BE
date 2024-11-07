@@ -1,0 +1,36 @@
+spring:
+  application:
+  name: "authservice"
+  app:
+    jwtSecret: "SGEIE84358FDBOUDD723HE084HTDF713EGSJDIG5HS72GSD91BSAIFSY3EESDT5TGVKLNA9363BA3E"
+  datasource:
+    url: jdbc:postgresql://192.168.56.38:5432/postgres
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: jforms2019@gmail.com
+    password:
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  server:
+    port: 8080
+
+logging:
+  level:
+    org:
+      springframework:
+        security: TRACE
+        web: TRACE
+
+frontend:
+  url: "http://localhost:4200"
