@@ -4,21 +4,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.EnumSet;
 import java.util.List;
 
 @Service
 public class AboutServiceImpl implements AboutService {
-    private final AboutRepository aboutRepository;
     private final FileStorageService fileStorageService;
+    private final AboutRepository aboutRepository;
+    private final FileValidator fileValidator;
 
-    public AboutServiceImpl(AboutRepository aboutRepository, FileStorageService fileStorageService) {
-        this.aboutRepository = aboutRepository;
+    public AboutServiceImpl(FileStorageService fileStorageService, AboutRepository aboutRepository, FileValidator fileValidator) {
         this.fileStorageService = fileStorageService;
+        this.aboutRepository = aboutRepository;
+        this.fileValidator = fileValidator;
     }
 
 
-
     public void createOneAbout(AboutRequest aboutRequest, MultipartFile businessIdentityCardFile, MultipartFile businessCertificateFile) throws IOException {
+        fileValidator.validateFile(businessIdentityCardFile);
+        fileValidator.validateFile(businessCertificateFile);
         String businessIdentityCardUrl = fileStorageService.uploadFile(businessIdentityCardFile);
         String businessCertificateUrl = fileStorageService.uploadFile(businessCertificateFile);
 
