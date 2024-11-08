@@ -2,10 +2,9 @@ package team.proximity.service_provider_profile.about_your_business;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import team.proximity.service_provider_profile.about_your_business.validations.FileValidator;
 
 import java.io.IOException;
-import java.util.EnumSet;
-import java.util.List;
 
 @Service
 public class AboutServiceImpl implements AboutService {
