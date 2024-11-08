@@ -21,13 +21,13 @@ public class AboutServiceImpl implements AboutService {
         this.aboutValidator = aboutValidator;
     }
 
-    public void createOneAbout(AboutRequest aboutRequest, MultipartFile businessIdentityCardFile, MultipartFile businessCertificateFile) throws IOException {
+    public void createOneAbout(AboutRequest aboutRequest) throws IOException {
         aboutValidator.validate(aboutRequest);
-        fileValidator.validate(businessIdentityCardFile);
-        fileValidator.validate(businessCertificateFile);
+        fileValidator.validate(aboutRequest.businessIdentityCardFile());
+        fileValidator.validate(aboutRequest.businessCertificateFile());
 
-        String businessIdentityCardUrl = fileStorageService.uploadFile(businessIdentityCardFile);
-        String businessCertificateUrl = fileStorageService.uploadFile(businessCertificateFile);
+        String businessIdentityCardUrl = fileStorageService.uploadFile(aboutRequest.businessIdentityCardFile());
+        String businessCertificateUrl = fileStorageService.uploadFile(aboutRequest.businessCertificateFile());
 
         About about = About.builder()
                 .inceptionDate(aboutRequest.inceptionDate())
