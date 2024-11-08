@@ -1,5 +1,6 @@
 package team.proximity.management.controllers;
 
+import team.proximity.management.dto.PreferenceDTO;
 import team.proximity.management.model.Preference;
 import team.proximity.management.services.PreferenceService;
 import org.springframework.http.HttpStatus;
@@ -20,13 +21,13 @@ public class PreferenceController {
     }
 
     @PostMapping
-    public ResponseEntity<Preference> createPreference(@RequestBody Preference preference) {
+    public ResponseEntity<Preference> createPreference(@RequestBody PreferenceDTO preference) {
         Preference createdPreference = preferenceService.createPreference(preference);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPreference);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Preference> updatePreference(@PathVariable UUID id, @RequestBody Preference preference) {
+    public ResponseEntity<Preference> updatePreference(@PathVariable UUID id, @RequestBody PreferenceDTO preference) {
         Preference updatedPreference = preferenceService.updatePreference(id, preference);
         return ResponseEntity.ok(updatedPreference);
     }
