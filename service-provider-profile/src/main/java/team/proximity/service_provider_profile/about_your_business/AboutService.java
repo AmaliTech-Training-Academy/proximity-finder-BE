@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface AboutService {
 
-    void createOneAbout(AboutRequest aboutRequest, MultipartFile businessIdentityCardFile, MultipartFile businessCertificateFile) throws IOException;
+    void createOneAbout(AboutRequest aboutRequest) throws IOException;
 
 }
