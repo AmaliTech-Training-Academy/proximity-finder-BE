@@ -1,5 +1,6 @@
 package team.proximity.management.controllers;
 
+import org.springframework.validation.annotation.Validated;
 import team.proximity.management.dto.ServicesDTO;
 import team.proximity.management.model.Services;
 
@@ -36,7 +37,7 @@ public class ServicesController {
     }
 
     @PostMapping
-    public ResponseEntity<Services> createService(@RequestBody ServicesDTO service) throws IOException {
+    public ResponseEntity<Services> createService(@Validated @ModelAttribute ServicesDTO service) throws IOException {
         Services createdService = servicesService.createService(service);
         return new ResponseEntity<>(createdService, HttpStatus.CREATED);
     }
