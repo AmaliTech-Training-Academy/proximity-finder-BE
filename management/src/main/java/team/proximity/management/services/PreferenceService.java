@@ -4,10 +4,12 @@ import team.proximity.management.dto.BookingDayDTO;
 import team.proximity.management.dto.PreferenceDTO;
 import team.proximity.management.exceptions.PreferenceNotFoundException;
 import team.proximity.management.model.BookingDay;
+import team.proximity.management.model.Document;
 import team.proximity.management.model.Preference;
 import org.springframework.stereotype.Service;
 import team.proximity.management.repositories.PreferenceRepository;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -17,9 +19,11 @@ import java.util.stream.Collectors;
 @Service
 public class PreferenceService {
     private final PreferenceRepository preferenceRepository;
+    private final S3Service s3Service;
 
-    public PreferenceService(PreferenceRepository preferenceRepository) {
+    public PreferenceService(PreferenceRepository preferenceRepository, S3Service s3Service) {
         this.preferenceRepository = preferenceRepository;
+        this.s3Service = s3Service;
     }
 
     public Preference createPreference(PreferenceDTO preferenceDTO) {
@@ -38,12 +42,34 @@ public class PreferenceService {
         preference.setLocation(preferenceDTO.getLocation());
         preference.setSameLocation(preferenceDTO.getSameLocation());
         preference.setSchedulingPolicy(preferenceDTO.getSchedulingPolicy());
+
+        // Map BookingDayDTOs to BookingDay entities
         List<BookingDay> bookingDays = preferenceDTO.getBookingDays().stream()
                 .map(this::mapToBookingDay)
                 .collect(Collectors.toList());
-
         preference.setBookingDays(bookingDays);
+
+        // Upload documents to S3 and set URLs
+        List<Document> documents = preferenceDTO.getDocuments().stream()
+                .map(file -> {
+                    String fileName = null;
+                    try {
+                        fileName = s3Service.uploadFile(file);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    Document document = new Document();
+                    document.setFileName(fileName);
+                    document.setUrl(s3Service.getFileUrl(fileName));
+                    document.setPreference(preference);
+                    return document;
+                })
+                .collect(Collectors.toList());
+
+        preference.setDocuments(documents);
     }
+
+
 
     private BookingDay mapToBookingDay(BookingDayDTO dto) {
         BookingDay bookingDay = new BookingDay();

@@ -21,7 +21,7 @@ public class PreferenceController {
     }
 
     @PostMapping
-    public ResponseEntity<Preference> createPreference(@RequestBody PreferenceDTO preference) {
+    public ResponseEntity<Preference> createPreference(@ModelAttribute PreferenceDTO preference) {
         Preference createdPreference = preferenceService.createPreference(preference);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPreference);
     }

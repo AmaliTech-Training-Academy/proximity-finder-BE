@@ -11,7 +11,6 @@ import java.util.UUID;
 @Entity
 @Data
 public class Preference {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;

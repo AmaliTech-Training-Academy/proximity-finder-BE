@@ -1,6 +1,7 @@
 package team.proximity.management.dto;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -15,6 +16,7 @@ public class PreferenceDTO {
     private Boolean sameLocation;
     private String schedulingPolicy;
     private List<BookingDayDTO> bookingDays;
+    private List<MultipartFile> documents;
 }
 
 
