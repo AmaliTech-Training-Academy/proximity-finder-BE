@@ -1,10 +1,10 @@
-package team.proximity.service_provider_profile.about_your_business;
+package team.proximity.service_provider_profile.about_your_business.validations;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import team.proximity.service_provider_profile.about_your_business.exception.FileTypeNotSupportedException;
 
 import java.io.IOException;
-import java.util.EnumSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
