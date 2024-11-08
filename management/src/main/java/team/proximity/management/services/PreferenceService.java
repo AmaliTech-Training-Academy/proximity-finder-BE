@@ -52,15 +52,15 @@ public class PreferenceService {
         // Upload documents to S3 and set URLs
         List<Document> documents = preferenceDTO.getDocuments().stream()
                 .map(file -> {
-                    String fileName = null;
+                    String imageUrl= null;
                     try {
-                        fileName = s3Service.uploadFile(file);
+                        imageUrl = s3Service.uploadFile(file);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
                     Document document = new Document();
-                    document.setFileName(fileName);
-                    document.setUrl(s3Service.getFileUrl(fileName));
+//                    document.setFileName(fileName);
+                    document.setUrl(imageUrl);
                     document.setPreference(preference);
                     return document;
                 })

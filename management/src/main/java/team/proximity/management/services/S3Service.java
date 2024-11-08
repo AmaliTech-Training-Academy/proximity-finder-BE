@@ -41,7 +41,7 @@ public class S3Service {
         // Delete temporary file
         fileObj.delete();
 
-        return fileName;
+        return String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, region, fileName);
     }
 
     private boolean isValidImage(MultipartFile file) throws IOException {
@@ -64,9 +64,7 @@ public class S3Service {
     }
 
 
-    public String getFileUrl(String fileName) {
-        return String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, region, fileName);
-    }
+
     public S3Object downloadFile(String fileName) {
         return s3Client.getObject(bucketName, fileName);
     }
