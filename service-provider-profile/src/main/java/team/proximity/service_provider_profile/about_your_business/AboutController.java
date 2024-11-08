@@ -26,17 +26,12 @@ public class AboutController {
     public ResponseEntity<String> createOneAbout(
             @Validated @RequestPart("aboutRequest") AboutRequest aboutRequest,
             @RequestPart("businessIdentityCardFile") MultipartFile businessIdentityCardFile,
-            @RequestPart("businessCertificateFile") MultipartFile businessCertificateFile) {
+            @RequestPart("businessCertificateFile") MultipartFile businessCertificateFile) throws IOException {
 
-        try {
-            aboutService.createOneAbout(aboutRequest, businessIdentityCardFile, businessCertificateFile);
-            return ResponseEntity.status(HttpStatus.CREATED).body("About entity created successfully.");
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while uploading files: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Invalid input: " + e.getMessage());
-        }
+        aboutService.createOneAbout(aboutRequest, businessIdentityCardFile, businessCertificateFile);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body("About entity created successfully.");
     }
+
 }
