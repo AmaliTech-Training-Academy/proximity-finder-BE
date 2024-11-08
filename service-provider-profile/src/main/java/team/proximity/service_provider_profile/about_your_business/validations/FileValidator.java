@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
-public class FileValidator {
+public class FileValidator implements Validator<MultipartFile> {
 
     private final Set<String> allowedExtensions;
 
@@ -21,8 +21,8 @@ public class FileValidator {
                 .collect(Collectors.toSet());
     }
 
-    public void validateFile(MultipartFile file) throws IOException {
-        String contentType = file.getContentType();
+    public void validate(MultipartFile input) {
+        String contentType = input.getContentType();
         if (contentType == null || !allowedExtensions.contains(contentType)) {
             throw new FileTypeNotSupportedException("Invalid file type. Allowed types: " + allowedExtensions);
         }
