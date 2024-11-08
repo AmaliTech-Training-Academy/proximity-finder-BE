@@ -1,0 +1,110 @@
+package team.proximity.service_provider_profile.about_your_business;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.multipart.MultipartFile;
+import team.proximity.service_provider_profile.about_your_business.validations.AboutValidator;
+import team.proximity.service_provider_profile.about_your_business.validations.FileValidator;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class AboutServiceImplTest {
+    @Mock
+    private FileStorageService fileStorageService;
+
+    @Mock
+    private AboutRepository aboutRepository;
+
+    @Mock
+    private FileValidator fileValidator;
+
+    @Mock
+    private AboutValidator aboutValidator;
+
+    @InjectMocks
+    private AboutServiceImpl aboutService;
+
+    @Test
+    void testCreateOneAboutSuccessfulCreation() throws IOException {
+
+        MultipartFile identityFile = mock(MultipartFile.class);
+        MultipartFile certificateFile = mock(MultipartFile.class);
+        AboutRequest request = new AboutRequest(
+                LocalDate.of(2023, 1, 1),
+                Set.of("https://example.com"),
+                10,
+                identityFile,
+                certificateFile,
+                "Business summary"
+        );
+
+        when(fileStorageService.uploadFile(identityFile)).thenReturn("identityUrl");
+        when(fileStorageService.uploadFile(certificateFile)).thenReturn("certificateUrl");
+
+
+        aboutService.createOneAbout(request);
+        verify(aboutValidator).validate(request);
+        verify(fileValidator).validate(identityFile);
+        verify(fileValidator).validate(certificateFile);
+
+    }
+
+    @Test
+    void testCreateOneAbout_ValidationFails() {
+
+        AboutRequest request = new AboutRequest(
+                LocalDate.of(2023, 1, 1),
+                Set.of("https://example.com"),
+                10,
+                mock(MultipartFile.class),
+                mock(MultipartFile.class),
+                "Business summary"
+        );
+        doThrow(new IllegalArgumentException("Invalid request")).when(aboutValidator).validate(request);
+
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            aboutService.createOneAbout(request);
+        });
+        assertEquals("Invalid request", exception.getMessage());
+
+        verifyNoInteractions(fileStorageService, aboutRepository);
+    }
+
+    @Test
+    void testCreateOneAboutFileUploadFails() throws IOException {
+
+        MultipartFile identityFile = mock(MultipartFile.class);
+        MultipartFile certificateFile = mock(MultipartFile.class);
+        AboutRequest request = new AboutRequest(
+                LocalDate.of(2023, 1, 1),
+                Set.of("https://example.com"),
+                10,
+                identityFile,
+                certificateFile,
+                "Business summary"
+        );
+
+        doThrow(new IOException("File upload failed")).when(fileStorageService).uploadFile(identityFile);
+
+
+        IOException exception = assertThrows(IOException.class, () -> {
+            aboutService.createOneAbout(request);
+        });
+        assertEquals("File upload failed", exception.getMessage());
+
+        verify(fileValidator).validate(identityFile);
+        verify(fileStorageService).uploadFile(identityFile);
+        //verifyNoMoreInteractions(aboutRepository);
+    }
+
+}
