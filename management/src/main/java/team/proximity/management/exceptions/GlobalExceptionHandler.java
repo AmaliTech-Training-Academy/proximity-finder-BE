@@ -9,10 +9,11 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
+import team.proximity.management.responses.ApiResponse;
+import team.proximity.management.responses.ApiResponseStatus;
 import team.proximity.management.responses.ErrorResponse;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -21,33 +22,50 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
+    public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        List<ErrorResponse> errors = new ArrayList<>();
         ex.getBindingResult().getFieldErrors().forEach(error -> {
-            errors.put(error.getField(), error.getDefaultMessage());
+            ErrorResponse errorResponse = new ErrorResponse(error.getField(), error.getDefaultMessage());
+            errors.add(errorResponse);
         });
         logger.error("Validation error: {}", errors);
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        ApiResponse<Map<String, String>> response = ApiResponse.<Map<String, String>>builder()
+                .status(ApiResponseStatus.ERROR)
+                .errors(errors)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(PreferenceNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handlePreferenceNotFoundException(PreferenceNotFoundException ex, WebRequest request) {
+    public ResponseEntity<ApiResponse<ErrorResponse>> handlePreferenceNotFoundException(PreferenceNotFoundException ex, WebRequest request) {
         logger.error("Preference not found: {}", ex.getMessage());
         ErrorResponse errorResponse = new ErrorResponse("Preference Not Found", ex.getMessage());
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        ApiResponse<ErrorResponse> response = ApiResponse.<ErrorResponse>builder()
+                .status(ApiResponseStatus.ERROR)
+                .errors(Collections.singletonList(errorResponse))
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(InvalidFileTypeException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidFileTypeException(InvalidFileTypeException ex, WebRequest request) {
+    public ResponseEntity<ApiResponse<ErrorResponse>> handleInvalidFileTypeException(InvalidFileTypeException ex, WebRequest request) {
         logger.error("Invalid file type: {}", ex.getMessage());
         ErrorResponse errorResponse = new ErrorResponse("Invalid File Type", ex.getMessage());
-        return new ResponseEntity<>(errorResponse, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+        ApiResponse<ErrorResponse> response = ApiResponse.<ErrorResponse>builder()
+                .status(ApiResponseStatus.ERROR)
+                .errors(Collections.singletonList(errorResponse))
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex, WebRequest request) {
+    public ResponseEntity<ApiResponse<ErrorResponse>> handleGlobalException(Exception ex, WebRequest request) {
         logger.error("Unexpected error: {}", ex.getMessage());
         ErrorResponse errorResponse = new ErrorResponse("Internal Server Error", "An unexpected error occurred");
-        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        ApiResponse<ErrorResponse> response = ApiResponse.<ErrorResponse>builder()
+                .status(ApiResponseStatus.ERROR)
+                .errors(Collections.singletonList(errorResponse))
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
