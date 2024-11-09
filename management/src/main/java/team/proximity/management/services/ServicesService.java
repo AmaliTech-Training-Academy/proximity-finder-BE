@@ -1,5 +1,6 @@
 package team.proximity.management.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import team.proximity.management.requests.ServiceRequest;
 import team.proximity.management.exceptions.ResourceNotFoundException;
@@ -7,6 +8,7 @@ import team.proximity.management.model.Services;
 
 import org.springframework.stereotype.Service;
 import team.proximity.management.repositories.ServicesRepository;
+import team.proximity.management.utils.Helpers;
 
 
 import java.io.IOException;
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class ServicesService {
 
@@ -26,18 +29,21 @@ public class ServicesService {
     }
 
     public List<Services> getAllServices() {
+        log.info("ServicesService: get all services execution started");
         return servicesRepository.findAll();
     }
 
     public Optional<Services> getServiceById(UUID id) {
+        log.info("ServicesService: get service by id execution started");
         return servicesRepository.findById(id);
     }
 
 
     @Transactional
     public Services createService(ServiceRequest serviceRequest) throws IOException {
+        log.info("Creating service: {}", Helpers.jsonAsString(serviceRequest));
         String imageUrl = s3Service.uploadFile(serviceRequest.getImage());
-
+        log.info("Image uploaded to S3: {}", imageUrl);
         Services service = Services.builder()
                 .name(serviceRequest.getName())
                 .description(serviceRequest.getDescription())

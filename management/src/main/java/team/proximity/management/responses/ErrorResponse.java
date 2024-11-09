@@ -1,8 +1,14 @@
+// ErrorResponse.java
 package team.proximity.management.responses;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ErrorResponse {
-
-    public ErrorResponse(String error, String message) {
-    }
-
+    private String error;
+    private String message;
 }
