@@ -1,13 +1,15 @@
-package team.proximity.management.dto;
+package team.proximity.management.requests;
 
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 @Data
-public class ServicesDTO {
+@AllArgsConstructor
+public class ServiceRequest {
     @NotBlank(message = "Name must be specified")
     private String name;
     @NotBlank(message = "Description must be specified")
