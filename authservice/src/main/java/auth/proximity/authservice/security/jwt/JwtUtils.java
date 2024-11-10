@@ -1,19 +1,21 @@
 package auth.proximity.authservice.security.jwt;
 
+import auth.proximity.authservice.security.service.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static auth.proximity.authservice.security.jwt.JwtConstants.*;
 
@@ -26,22 +28,32 @@ public class JwtUtils {
     @Value("${spring.app.jwtSecret}")
     private String jwtSecret;
 
-
-    public String generateAccessToken(String email, List<String> roles) {
+    public String generateAccessToken(UserDetailsImpl userDetails) {
+        List<String> role = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
         return Jwts.builder()
-                .subject(email)
+                .subject(userDetails.getEmail())
+                .claim("role", role)
+                .claim("username", userDetails.getUsername())
+                .claim("id", userDetails.getId())
+                .issuer(ISSUER)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + EXPIRE_ACCESS_TOKEN))
-                .issuer(ISSUER)
-                .claim("roles", roles)
                 .signWith(key())
                 .compact();
     }
 
-    public String generateRefreshToken(String email) {
+    public String generateRefreshToken(UserDetailsImpl userDetails) {
+        List<String> role = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
         return Jwts.builder()
                 .issuer(ISSUER)
-                .subject(email)
+                .subject(userDetails.getEmail())
+                .claim("role", role)
+                .claim("username", userDetails.getUsername())
+                .claim("id", userDetails.getId())
                 .expiration(new Date(System.currentTimeMillis() + EXPIRE_REFRESH_TOKEN))
                 .signWith(key())
                 .compact();
@@ -52,13 +64,6 @@ public class JwtUtils {
             return authorizationHeader.substring(BEARER_PREFIX.length());
         }
         return null;
-    }
-
-    public Map<String, String> getTokensMap(String jwtAccessToken, String jwtRefreshToken) {
-        Map<String, String> idTokens = new HashMap<>();
-        idTokens.put("access_token", jwtAccessToken);
-        idTokens.put("refresh_token", jwtRefreshToken);
-        return idTokens;
     }
 
     public String getUserNameFromJwtToken(String token) {
@@ -74,7 +79,6 @@ public class JwtUtils {
 
     public boolean validateJwtToken(String authToken) {
         try {
-            System.out.println("Validate");
             Jwts.parser().verifyWith((SecretKey) key()).build().parseSignedClaims(authToken);
             return true;
         } catch (MalformedJwtException e) {
