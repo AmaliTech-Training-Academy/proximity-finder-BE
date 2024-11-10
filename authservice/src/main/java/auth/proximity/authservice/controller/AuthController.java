@@ -1,19 +1,36 @@
 package auth.proximity.authservice.controller;
 
+import auth.proximity.authservice.dto.NoteDto;
+import auth.proximity.authservice.dto.ResponseDto;
+import auth.proximity.authservice.dto.UserDto;
 import auth.proximity.authservice.entity.User;
 
+import auth.proximity.authservice.dto.ErrorResponseDto;
 import auth.proximity.authservice.security.dto.LoginRequest;
 import auth.proximity.authservice.security.dto.LoginResponse;
+import auth.proximity.authservice.security.dto.RefreshTokenResponse;
 import auth.proximity.authservice.security.dto.UserInfoResponse;
 import auth.proximity.authservice.security.jwt.JwtConstants;
 import auth.proximity.authservice.security.jwt.JwtUtils;
 import auth.proximity.authservice.security.service.UserDetailsImpl;
 import auth.proximity.authservice.security.service.UserDetailsServiceImpl;
 import auth.proximity.authservice.service.IUserService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import feign.FeignException;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,9 +40,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,17 +52,26 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AuthController {
 
+    @Value("${spring.app.jwtSecret}")
+    private String jwtSecret;
+
     private final JwtUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
     private final UserDetailsServiceImpl userDetailsService;
     private final IUserService userService;
 
+    @Operation(summary = "Get Current User REST API", description = "REST API to retrieve current with jwtAccessToken")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "HTTP Status OK"),
+            @ApiResponse(responseCode = "406", description = "HTTP Status Not Acceptable", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "500", description = "HTTP Status Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    })
     @GetMapping("/user")
     public ResponseEntity<?> getUserDetails(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         User user = userService.findByEmail(userDetails.getEmail());
 
         List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
+                .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
         UserInfoResponse response = new UserInfoResponse(
@@ -61,8 +86,15 @@ public class AuthController {
         return ResponseEntity.ok().body(response);
     }
 
-    @PostMapping("/public/signin")
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
+
+    @Operation(summary = "Sign-in REST API", description = "REST API to log users in which returns both jwtAccessToken and jwtRefreshToken")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "HTTP Status OK"),
+            @ApiResponse(responseCode = "400", description = "HTTP Status Bad Request", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "500", description = "HTTP Status Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    })
+    @PostMapping("/public/sign-in")
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication;
         try {
             authentication = authenticationManager
@@ -71,36 +103,77 @@ public class AuthController {
             Map<String, Object> map = new HashMap<>();
             map.put("message", "Bad credentials");
             map.put("status", false);
-            return new ResponseEntity<Object>(map, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Object>(map, HttpStatus.UNAUTHORIZED);
         }
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
         List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
+                .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
-        String jwtAccessToken = jwtUtils.generateAccessToken(userDetails.getEmail(), roles);
-        String jwtRefreshToken = jwtUtils.generateRefreshToken(userDetails.getEmail());
-
+        String jwtAccessToken = jwtUtils.generateAccessToken(userDetails);
+        String jwtRefreshToken = jwtUtils.generateRefreshToken(userDetails);
 
         LoginResponse response = new LoginResponse(userDetails.getUsername(), userDetails.getEmail(), roles, jwtAccessToken, jwtRefreshToken);
-
 
         return ResponseEntity.ok(response);
     }
 
+
+    @Operation(summary = "Create User REST API", description = "REST API to create new user inside Proximity Finder")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "HTTP Status CREATED"),
+            @ApiResponse(responseCode = "406", description = "HTTP Status Not Acceptable", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "500", description = "HTTP Status Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    })
+    @PostMapping("/public/create")
+    public ResponseEntity<ResponseDto> createAccount(@Valid @RequestBody UserDto userDto) {
+        userService.createUser(userDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto("201", "User created successfully"));
+    }
+
+
+    @Operation(summary = "Get AccessToken REST API", description = "REST API to retrieve a new jwtAccessToken with jwtRefreshToken without signing in")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "HTTP Status OK"),
+            @ApiResponse(responseCode = "406", description = "HTTP Status Not Acceptable", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "500", description = "HTTP Status Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    })
     @GetMapping("/public/refresh-token")
-    public void generateNewAccessToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public ResponseEntity<?> generateNewAccessToken(HttpServletRequest request) {
         String jwtRefreshToken = jwtUtils.extractTokenFromHeaderIfExists(request.getHeader(JwtConstants.AUTH_HEADER));
-        if(jwtRefreshToken != null &&  jwtUtils.validateJwtToken(jwtRefreshToken)) {
-            String email = jwtUtils.getUserNameFromJwtToken(jwtRefreshToken);
-            UserDetailsImpl user = (UserDetailsImpl) userDetailsService.loadUserByUsername(email);
-            String jwtAccessToken = jwtUtils.generateAccessToken(user.getEmail(), user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
-            response.setContentType("application/json");
-            new ObjectMapper().writeValue(response.getOutputStream(), jwtUtils.getTokensMap(jwtAccessToken, jwtRefreshToken));
+        if (jwtRefreshToken != null && jwtUtils.validateJwtToken(jwtRefreshToken)) {
+            try {
+                String email = jwtUtils.getUserNameFromJwtToken(jwtRefreshToken);
+                UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername(email);
+                String jwtAccessToken = jwtUtils.generateAccessToken(userDetails);
+                RefreshTokenResponse tokenResponse = new RefreshTokenResponse(jwtRefreshToken, jwtAccessToken);
+                return ResponseEntity.ok(tokenResponse);
+            } catch (Exception e) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("message", "Error processing refresh token");
+                map.put("status", false);
+                return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         } else {
-            throw new RuntimeException("Refresh token required");
+            Map<String, Object> map = new HashMap<>();
+            map.put("message", "Invalid JWT Refresh token");
+            map.put("status", false);
+            return new ResponseEntity<Object>(map, HttpStatus.NOT_ACCEPTABLE);
         }
     }
+
+
+    @Operation(summary = "Validate Token REST API", description = "REST API to validate a token to confirm whether valid or invalid")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "HTTP Status OK"),
+            @ApiResponse(responseCode = "500", description = "HTTP Status Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    })
+    @GetMapping("/public/validate-token")
+    public ResponseEntity<String> validateToken(@RequestParam("token") String token) {
+        jwtUtils.validateJwtToken(token);
+        return ResponseEntity.ok("Token is valid");
+    }
+
 }

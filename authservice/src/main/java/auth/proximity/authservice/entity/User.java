@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -17,27 +18,22 @@ import lombok.*;
         @UniqueConstraint(columnNames = "email")
 })
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long userId;
 
-    @NotBlank
-    @Size(max = 20)
     @Column(name = "username")
     private String userName;
 
-    @NotBlank
     @Email
     @Column(name = "email")
     private String email;
 
-    @NotBlank
-    @Size(max = 10)
     @Column(name = "mobileNumber")
     private String mobileNumber;
 
-    @Size(max = 120)
     @Column(name = "password")
     @JsonIgnore
     private String password;
