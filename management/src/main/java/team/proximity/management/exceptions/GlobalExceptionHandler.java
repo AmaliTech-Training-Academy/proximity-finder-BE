@@ -60,7 +60,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<ErrorResponse>> handleGlobalException(Exception ex, WebRequest request) {
-        logger.error("Unexpected error: {}", ex.getMessage());
+        logger.error("Unexpected error: {}", ex.fillInStackTrace());
         ErrorResponse errorResponse = new ErrorResponse("Internal Server Error", "An unexpected error occurred");
         ApiResponse<ErrorResponse> response = ApiResponse.<ErrorResponse>builder()
                 .status(ApiResponseStatus.ERROR)
