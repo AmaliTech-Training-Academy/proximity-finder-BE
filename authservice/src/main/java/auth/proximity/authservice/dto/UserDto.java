@@ -17,7 +17,7 @@ import lombok.Data;
 )
 public class UserDto {
 
-    @NotEmpty(message = "User Name can not be a null or empty")
+
     @Size(min = 2, max = 120, message = "The length of the user name should be between 2 and 120")
     @Schema(
             description = "Name of the user", example = "Michael Samuel Ahmed"
