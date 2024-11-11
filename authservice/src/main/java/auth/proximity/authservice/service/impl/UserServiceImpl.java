@@ -1,5 +1,7 @@
 package auth.proximity.authservice.service.impl;
 
+import auth.proximity.authservice.dto.AdminUpdatePasswordRequest;
+import auth.proximity.authservice.dto.ProfilePictureUpdateRequest;
 import auth.proximity.authservice.dto.UserDto;
 import auth.proximity.authservice.entity.AppRole;
 import auth.proximity.authservice.entity.Role;
@@ -80,4 +82,28 @@ public class UserServiceImpl implements IUserService {
         userRepository.save(user);
     }
 
+    public  void updatePassword(String email, AdminUpdatePasswordRequest adminUpdatePasswordRequest) {
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new ResourceNotFoundException("User", "email", email)
+        );
+        if (user.getPassword() != null && !encoder.matches(adminUpdatePasswordRequest.oldPassword(), user.getPassword())) {
+            throw new ResourceNotFoundException("User", "password", adminUpdatePasswordRequest.oldPassword());
+        }
+        if(adminUpdatePasswordRequest.oldPassword().equals(adminUpdatePasswordRequest.newPassword())){
+            throw new ResourceNotFoundException("User", "password", "Old password and new password cannot be same");
+        }
+        if(adminUpdatePasswordRequest.confirmPassword() != null && !adminUpdatePasswordRequest.newPassword().equals(adminUpdatePasswordRequest.confirmPassword())){
+            throw new ResourceNotFoundException("User", "password", "New password and confirm password should be same");
+        }
+        user.setPassword(encoder.encode(adminUpdatePasswordRequest.newPassword()));
+        userRepository.save(user);
+    }
+    public void updateProfilePicture(String email, ProfilePictureUpdateRequest profilePictureUpdateRequest) {
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new ResourceNotFoundException("User", "email", email)
+        );
+
+//        user.setProfileImage(profilePictureUpdateRequest.file());
+        userRepository.save(user);
+    }
 }
