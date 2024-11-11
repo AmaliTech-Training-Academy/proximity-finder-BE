@@ -7,6 +7,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -29,7 +31,7 @@ import java.util.Map;
 
 @Component
 public class AuthenticationPreFilter extends AbstractGatewayFilterFactory<AuthenticationPreFilter.Config> {
-
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationPreFilter.class);
     @Value("${spring.app.jwtSecret}")
     private String jwtSecret;
 
@@ -64,11 +66,16 @@ public class AuthenticationPreFilter extends AbstractGatewayFilterFactory<Authen
                     String email = claims.getSubject();
                     String role = claims.get("role").toString();
                     String username = claims.get("username").toString();
+                    String authorities = claims.get("authorities") != null ? claims.get("authorities").toString() : "No authorities assigned";
+
+                    logger.info("Authenticated User: Email: {}, Role: {}, Username: {}", email, role, username);
+                    logger.info("Authorities: {}", authorities);
 
                     exchange.getRequest().mutate()
                             .header("email", email)
                             .header("role", role)
                             .header("username", username)
+                            .header("authorities", authorities)
                             .build();
                     return chain.filter(exchange);
                 } catch (Exception e) {
