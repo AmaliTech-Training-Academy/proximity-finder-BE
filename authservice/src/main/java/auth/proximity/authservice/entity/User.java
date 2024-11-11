@@ -54,6 +54,11 @@ public class User {
     @ToString.Exclude
     private Role role;
 
+    private String profileImage;
+
+    private String businessAddress;
+
+
     public User(String userName, String email, String password, String mobileNumber) {
         this.userName = userName;
         this.email = email;

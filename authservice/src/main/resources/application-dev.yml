@@ -6,13 +6,13 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost/user-service_db
     username: postgres
-    password: deeplearning89629202@#$!
+    password: AhZu@#2024
   jpa:
     hibernate:
       ddl-auto: create
     show-sql: true
 server:
-  port: 8080
+  port: 8081
 
 management:
   endpoints:

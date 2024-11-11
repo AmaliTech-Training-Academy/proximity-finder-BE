@@ -1,10 +1,8 @@
 package auth.proximity.authservice.controller;
 
-import auth.proximity.authservice.dto.ResponseDto;
-import auth.proximity.authservice.dto.UserDto;
+import auth.proximity.authservice.dto.*;
 import auth.proximity.authservice.entity.User;
 
-import auth.proximity.authservice.dto.ErrorResponseDto;
 import auth.proximity.authservice.security.dto.LoginRequest;
 import auth.proximity.authservice.security.dto.LoginResponse;
 import auth.proximity.authservice.security.dto.RefreshTokenResponse;
@@ -14,6 +12,7 @@ import auth.proximity.authservice.security.jwt.JwtUtils;
 import auth.proximity.authservice.security.service.UserDetailsImpl;
 import auth.proximity.authservice.security.service.UserDetailsServiceImpl;
 import auth.proximity.authservice.service.IUserService;
+import auth.proximity.authservice.service.ProfilePictureService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -33,6 +32,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +52,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final UserDetailsServiceImpl userDetailsService;
     private final IUserService userService;
+    private final ProfilePictureService profilePictureService;
 
     @Operation(summary = "Get Current User REST API", description = "REST API to retrieve current with jwtAccessToken")
     @ApiResponses({
@@ -166,5 +169,30 @@ public class AuthController {
         jwtUtils.validateJwtToken(token);
         return ResponseEntity.ok("Token is valid");
     }
+    @PutMapping("/public/update-password")
+    public ResponseEntity<ResponseDto> updatePassword(@RequestParam String email, @RequestBody AdminUpdatePasswordRequest adminUpdatePasswordRequest) {
+        userService.updatePassword(email,adminUpdatePasswordRequest);
+        return ResponseEntity.ok(new ResponseDto("200", "Password updated successfully"));
+    }
+    @PutMapping("/public/update-profile-picture")
+    public ResponseEntity<String> uploadProfilePicture(@RequestParam String email, @ModelAttribute ProfilePictureUpdateRequest profilePictureUpdateRequest) {
+        try {
+            String fileUrl = profilePictureService.updateProfilePicture(email, profilePictureUpdateRequest);
+            return new ResponseEntity<>(fileUrl, HttpStatus.OK);
+        } catch (IOException e) {
+            return new ResponseEntity<>("Failed to upload profile picture", HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+
+    @PostMapping("/public/update-password")
+    public ResponseEntity<ResponseDto> forgotPassword(@RequestParam String email, @RequestBody AdminUpdatePasswordRequest adminUpdatePasswordRequest) {
+        userService.updatePassword(email,adminUpdatePasswordRequest);
+        return ResponseEntity.ok(new ResponseDto("200", "Password updated successfully"));
+    }
+
+
 
 }
