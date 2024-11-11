@@ -7,19 +7,19 @@ spring:
     gateway:
       default-filters:
         - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
-      globalcors:
-        corsConfigurations:
-          '[/**]':
-            allowedOrigins: "http://localhost:4200"
-            allowedHeaders: "*"
-            allowedMethods: "*"
-      discovery:
-        locator:
-          enabled: true
-          lower-case-service-id: true
+#      globals:
+#        corsConfigurations:
+#          '[/**]':
+#            allowedOrigins: "http://localhost:4200"
+#            allowedHeaders: "*"
+#            allowedMethods: "*"
+#      discovery:
+#        locator:
+#          enabled: true
+#          lower-case-service-id: true
       routes:
         - id: auth-service
-          uri: lb://AUTHSERVICE
+          uri: http://localhost:8080
           predicates:
             - Path=/api/auth/**
           filters:
@@ -28,14 +28,14 @@ spring:
 server:
   port: 8071
 
-eureka:
-  instance:
-    prefer-ip-address: true
-  client:
-    fetch-registry: true
-    register-with-eureka: true
-    service-url:
-      defaultZone: http://localhost:8070/eureka/
+#eureka:
+#  instance:
+#    prefer-ip-address: true
+#  client:
+#    fetch-registry: true
+#    register-with-eureka: true
+#    service-url:
+#      defaultZone: http://localhost:8070/eureka/
 
 management:
   endpoints:
