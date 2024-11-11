@@ -1,19 +1,29 @@
 spring:
   application:
     name: "authservice"
+  mail:
+    host: smtp.sendgrid.net
+    port: 587
+    username: apikey
+    password: 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
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+        debug: true
+
   app:
     jwtSecret: "SGEIE84358FDBOUDD723HE084HTDF713EGSJDIG5HS72GSD91BSAIFSY3EESDT5TGVKLNA9363BA3E"
   datasource:
     url: jdbc:postgresql://localhost/user-service_db
     username: postgres
-    password: AhZu@#2024
+    password: deeplearning89629202@#$!
   jpa:
     hibernate:
       ddl-auto: create
     show-sql: true
-server:
-  port: 8081
-
 management:
   endpoints:
     web:
@@ -42,5 +52,8 @@ aws:
 #        security: TRACE
 #        web: TRACE
 
-frontend:
-  url: "http://localhost:4200"
+
+email:
+  from-address: Iijra Team <samuel.amo@amalitechtraining.org>
+  subject: Reset Your Password
+  reset-url: http://localhost:4200/resetpassword?token=
