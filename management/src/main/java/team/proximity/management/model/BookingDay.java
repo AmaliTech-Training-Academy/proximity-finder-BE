@@ -1,5 +1,6 @@
 package team.proximity.management.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +23,7 @@ public class BookingDay {
 
     @ManyToOne
     @JoinColumn(name = "preference_id")
+    @JsonIgnore
     private Preference preference;
 
     @Enumerated(EnumType.STRING)

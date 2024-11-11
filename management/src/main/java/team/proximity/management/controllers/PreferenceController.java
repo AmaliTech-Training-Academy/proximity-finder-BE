@@ -1,6 +1,9 @@
 package team.proximity.management.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import team.proximity.management.requests.PreferenceRequest;
 import team.proximity.management.model.Preference;
 import team.proximity.management.responses.ApiResponse;
@@ -26,8 +29,8 @@ public class PreferenceController {
         this.preferenceService = preferenceService;
     }
 
-    @PostMapping
-    public ResponseEntity<ApiResponse<Preference>> createPreference(@ModelAttribute PreferenceRequest preference) {
+    @PostMapping(consumes = "multipart/form-data")
+    public ResponseEntity<ApiResponse<Preference>> createPreference(@Validated @ModelAttribute PreferenceRequest preference) throws JsonProcessingException {
         log.info("Creating new preference with request: {}", preference);
         Preference createdPreference = preferenceService.createPreference(preference);
         log.debug("Created preference: {}", createdPreference);

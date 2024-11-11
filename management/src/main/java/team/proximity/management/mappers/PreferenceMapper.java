@@ -19,9 +19,9 @@ public class PreferenceMapper {
         this.s3Service = s3Service;
     }
 
-    public Preference toEntity(PreferenceRequest preferenceRequest) {
+    public Preference toEntity(PreferenceRequest preferenceRequest, List<BookingDayRequest> bookingDays) {
         // Create the Preference entity
-        Preference preference = buildPreferenceFromDTO(preferenceRequest);
+        Preference preference = buildPreferenceFromDTO(preferenceRequest, bookingDays);
 
         // Handle documents
         List<Document> documents = createDocuments(preferenceRequest, preference);
@@ -39,7 +39,7 @@ public class PreferenceMapper {
         preference.setDocuments(documents);
     }
 
-    private Preference buildPreferenceFromDTO(PreferenceRequest dto) {
+    private Preference buildPreferenceFromDTO(PreferenceRequest dto, List<BookingDayRequest> bookingDays) {
         return Preference.builder()
                 .userId(dto.getUserId())
                 .serviceId(dto.getServiceId())
@@ -47,7 +47,7 @@ public class PreferenceMapper {
                 .location(dto.getLocation())
                 .sameLocation(dto.getSameLocation())
                 .schedulingPolicy(dto.getSchedulingPolicy())
-                .bookingDays(mapBookingDays(dto.getBookingDays()))
+                .bookingDays(mapBookingDays(bookingDays))
                 .build();
     }
 
@@ -56,7 +56,7 @@ public class PreferenceMapper {
         preference.setLocation(dto.getLocation());
         preference.setSameLocation(dto.getSameLocation());
         preference.setSchedulingPolicy(dto.getSchedulingPolicy());
-        preference.setBookingDays(mapBookingDays(dto.getBookingDays()));
+//        preference.setBookingDays(mapBookingDays(dto.getBookingDays()));
     }
 
     private List<BookingDay> mapBookingDays(List<BookingDayRequest> dtos) {

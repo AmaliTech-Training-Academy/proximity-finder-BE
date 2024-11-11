@@ -20,6 +20,15 @@ public class GlobalExceptionHandler {
 
     private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    @ExceptionHandler(BookingDayHoursValidationException.class)
+    public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationException(BookingDayHoursValidationException ex) {;
+        ApiResponse<Map<String, String>> response = ApiResponse.<Map<String, String>>builder()
+                .status(ApiResponseStatus.ERROR)
+                .errors(ex.getErrors())
+                .build();
+
+        return ResponseEntity.badRequest().body(response);
+    }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationExceptions(MethodArgumentNotValidException ex) {
