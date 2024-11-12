@@ -13,18 +13,17 @@ import team.proximity.management.services.ServiceExperienceService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/service-experiences")
 public class ServiceExperienceController {
 
     private final ServiceExperienceService service;
-    private final ServiceExperienceRepository serviceExperienceRepository;
 
     @Autowired
     public ServiceExperienceController(ServiceExperienceService service, ServiceExperienceRepository serviceExperienceRepository) {
         this.service = service;
-        this.serviceExperienceRepository = serviceExperienceRepository;
     }
 
     @GetMapping
@@ -40,7 +39,7 @@ public class ServiceExperienceController {
     }
 
     @PostMapping
-    public ServiceExperience createServiceExperience(@RequestBody ServiceExperienceRequest serviceExperienceRequest) {
+    public ServiceExperience createServiceExperience( @ModelAttribute ServiceExperienceRequest serviceExperienceRequest) {
         return service.createServiceExperience(serviceExperienceRequest);
     }
 
