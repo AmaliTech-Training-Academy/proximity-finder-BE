@@ -19,18 +19,26 @@ public class ProviderService {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
+
+    @Column(nullable = false)
     private UUID userId;
-    private UUID serviceId;
+
+    @ManyToOne
+    @JoinColumn(name = "service_id", nullable = false)
+    private Services service;
+
     private String paymentPreference;
     private String location;
     private Boolean sameLocation;
 
     private String schedulingPolicy;
+
     @OneToMany(mappedBy = "preference", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BookingDay> bookingDays;
+
     @OneToMany(mappedBy = "preference", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Document> documents;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
-

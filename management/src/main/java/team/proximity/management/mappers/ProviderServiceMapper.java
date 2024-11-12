@@ -1,8 +1,11 @@
 package team.proximity.management.mappers;
 
 import org.springframework.web.multipart.MultipartFile;
+import team.proximity.management.exceptions.ResourceNotFoundException;
+import team.proximity.management.model.Services;
+import team.proximity.management.repositories.ServicesRepository;
 import team.proximity.management.requests.BookingDayRequest;
-import team.proximity.management.requests.PreferenceRequest;
+import team.proximity.management.requests.ProviderServiceRequest;
 import team.proximity.management.model.BookingDay;
 import team.proximity.management.model.Document;
 import team.proximity.management.model.ProviderService;
@@ -10,39 +13,45 @@ import team.proximity.management.services.S3Service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class PreferenceMapper {
+public class ProviderServiceMapper {
     private final S3Service s3Service;
-
-    public PreferenceMapper(S3Service s3Service) {
+    private final ServicesRepository servicesRepository;
+    public ProviderServiceMapper(S3Service s3Service, ServicesRepository servicesRepository) {
         this.s3Service = s3Service;
+        this.servicesRepository = servicesRepository;
     }
 
-    public ProviderService toEntity(PreferenceRequest preferenceRequest, List<BookingDayRequest> bookingDays) {
+    public ProviderService toEntity(ProviderServiceRequest providerServiceRequest, List<BookingDayRequest> bookingDays) {
         // Create the Preference entity
-        ProviderService preference = buildPreferenceFromDTO(preferenceRequest, bookingDays);
+        ProviderService preference = buildPreferenceFromDTO(providerServiceRequest, bookingDays);
 
         // Handle documents
-        List<Document> documents = createDocuments(preferenceRequest, preference);
+        List<Document> documents = createDocuments(providerServiceRequest, preference);
         preference.setDocuments(documents);
 
         return preference;
     }
 
-    public void updateEntity(PreferenceRequest preferenceRequest, ProviderService preference) {
+    public void updateEntity(ProviderServiceRequest providerServiceRequest, ProviderService preference) {
         // Update basic fields
-        updatePreferenceFields(preferenceRequest, preference);
+        updatePreferenceFields(providerServiceRequest, preference);
 
         // Update documents
-        List<Document> documents = createDocuments(preferenceRequest, preference);
+        List<Document> documents = createDocuments(providerServiceRequest, preference);
         preference.setDocuments(documents);
     }
 
-    private ProviderService buildPreferenceFromDTO(PreferenceRequest dto, List<BookingDayRequest> bookingDays) {
+    private ProviderService buildPreferenceFromDTO(ProviderServiceRequest dto, List<BookingDayRequest> bookingDays) {
+        Optional<Services> service = servicesRepository.findById(dto.getServiceId());
+        if (service.isEmpty()) {
+            throw new ResourceNotFoundException("ProviderService not found");
+        }
         return ProviderService.builder()
                 .userId(dto.getUserId())
-                .serviceId(dto.getServiceId())
+                .service(service.get())
                 .paymentPreference(dto.getPaymentPreference())
                 .location(dto.getLocation())
                 .sameLocation(dto.getSameLocation())
@@ -51,7 +60,7 @@ public class PreferenceMapper {
                 .build();
     }
 
-    private void updatePreferenceFields(PreferenceRequest dto, ProviderService preference) {
+    private void updatePreferenceFields(ProviderServiceRequest dto, ProviderService preference) {
         preference.setPaymentPreference(dto.getPaymentPreference());
         preference.setLocation(dto.getLocation());
         preference.setSameLocation(dto.getSameLocation());
@@ -65,7 +74,7 @@ public class PreferenceMapper {
                 .collect(Collectors.toList());
     }
 
-    private List<Document> createDocuments(PreferenceRequest dto, ProviderService preference) {
+    private List<Document> createDocuments(ProviderServiceRequest dto, ProviderService preference) {
         return dto.getDocuments().stream()
                 .map(file -> createDocument(file, preference))
                 .collect(Collectors.toList());
