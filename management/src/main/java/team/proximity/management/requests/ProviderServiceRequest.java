@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
-public class PreferenceRequest {
+public class ProviderServiceRequest {
     @NotNull(message = "User must be specified")
     private UUID userId;
     @NotNull(message = "Service must be specified")

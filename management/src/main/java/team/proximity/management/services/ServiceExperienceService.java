@@ -1,29 +1,37 @@
 package team.proximity.management.services;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
+import team.proximity.management.exceptions.ResourceNotFoundException;
+import team.proximity.management.model.ProviderService;
 import team.proximity.management.model.ServiceExperience;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import team.proximity.management.repositories.ProviderServiceRepository;
 import team.proximity.management.repositories.ServiceExperienceRepository;
 import team.proximity.management.requests.ServiceExperienceRequest;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class ServiceExperienceService {
 
     private final ServiceExperienceRepository repository;
     private final S3Service s3Service;
+    private final ProviderServiceRepository providerServiceRepository;
 
     @Autowired
-    public ServiceExperienceService(ServiceExperienceRepository repository, S3Service s3Service) {
+    public ServiceExperienceService(ServiceExperienceRepository repository, S3Service s3Service, ProviderServiceRepository providerServiceRepository) {
         this.repository = repository;
         this.s3Service = s3Service;
+        this.providerServiceRepository = providerServiceRepository;
     }
 
     public List<ServiceExperience> getAllServiceExperiences() {
@@ -50,8 +58,14 @@ public class ServiceExperienceService {
     }
 
     // Method to create a new ServiceExperience
-    public ServiceExperience createServiceExperience(ServiceExperienceRequest request) {
+    public ServiceExperience createServiceExperience( ServiceExperienceRequest request) {
+        log.info("Creating service experience: {}", request);
+        Optional<ProviderService> providerServiceOpt = providerServiceRepository.findById(request.getProviderServiceId());
+        if (providerServiceOpt.isEmpty()) {
+            throw new ResourceNotFoundException("ProviderService not found");
+        }
         ServiceExperience serviceExperience = new ServiceExperience();
+        serviceExperience.setProviderService(providerServiceOpt.get());
         return getServiceExperience(request, serviceExperience);
     }
 
@@ -60,7 +74,9 @@ public class ServiceExperienceService {
         serviceExperience.setDescription(request.getDescription());
 
         if (request.getImages() != null && !request.getImages().isEmpty()) {
+            log.debug("Uploading images: {}", request.getImages());
             List<String> imageUrls = uploadImages(request.getImages());
+            log.debug("Setting project title: {}", request.getProjectTitle());
             serviceExperience.setImages(imageUrls);
         }
 
