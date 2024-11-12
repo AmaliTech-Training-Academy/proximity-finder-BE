@@ -45,8 +45,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(PreferenceNotFoundException.class)
-    public ResponseEntity<ApiResponse<ErrorResponse>> handlePreferenceNotFoundException(PreferenceNotFoundException ex, WebRequest request) {
+    @ExceptionHandler(ProviderServiceNotFoundException.class)
+    public ResponseEntity<ApiResponse<ErrorResponse>> handlePreferenceNotFoundException(ProviderServiceNotFoundException ex, WebRequest request) {
         logger.error("Preference not found: {}", ex.getMessage());
         ErrorResponse errorResponse = new ErrorResponse("Preference Not Found", ex.getMessage());
         ApiResponse<ErrorResponse> response = ApiResponse.<ErrorResponse>builder()

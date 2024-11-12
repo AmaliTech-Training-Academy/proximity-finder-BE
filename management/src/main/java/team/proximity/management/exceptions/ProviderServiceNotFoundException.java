@@ -2,8 +2,8 @@ package team.proximity.management.exceptions;
 
 import java.util.UUID;
 
-public class PreferenceNotFoundException extends RuntimeException {
-    public PreferenceNotFoundException(UUID id) {
+public class ProviderServiceNotFoundException extends RuntimeException {
+    public ProviderServiceNotFoundException(UUID id) {
         super("Preference with ID " + id + " not found.");
     }
 }
