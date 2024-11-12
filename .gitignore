@@ -1,11 +1,9 @@
 HELP.md
 target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-
-
-
+**/.mvn/wrapper/maven-wrapper.jar
+**/src/main/**/target/
+**/src/test/**/target/
+authservice/src/main/resources/application-dev.yml
 ### STS ###
 .apt_generated
 .classpath
@@ -14,13 +12,11 @@ target/
 .settings
 .springBeans
 .sts4-cache
-
 ### IntelliJ IDEA ###
-.idea
+.idea/
 *.iws
 *.iml
 *.ipr
-
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
@@ -30,9 +26,5 @@ target/
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
-
 ### VS Code ###
-.vscode/
-kfjokhfoho
-
-/authservice/src/main/resources/application-dev.yml
+*/.vscode/
