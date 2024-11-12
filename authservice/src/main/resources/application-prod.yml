@@ -1,6 +1,20 @@
 spring:
   application:
     name: "authservice"
+
+  mail:
+    host: smtp.sendgrid.net
+    port: 587
+    username: apikey
+    password: ${SENDGRID_PASWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+        debug: true
+
   app:
     jwtSecret: ${JWT_SECRET}
   datasource:
@@ -19,20 +33,14 @@ management:
       exposure:
         include: "*"
 
-eureka:
-  instance:
-    prefer-ip-address: true
-  client:
-    fetch-registry: true
-    register-with-eureka: true
-    service-url:
-      defaultZone: http://localhost:8070/eureka/
+aws:
+  accessKeyId: ${ACCESS_KEY}
+  secretAccessKey: ${SECRET_KEY}
+  s3:
+    bucketName: ${BUCKET_NAME}
+    region: ${REGION}
 
-logging:
-  level:
-    org:
-      springframework:
-        security: TRACE
-        web: TRACE
-frontend:
-  url: ${FRONTEND_URL}
+email:
+  from-address: Proximity Team <samuel.amo@amalitechtraining.org>
+  subject: Reset Your Password
+  reset-url: ${FRONT_END_RESET_URL}

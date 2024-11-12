@@ -36,23 +36,6 @@ aws:
     bucketName: gtp-group-three-lms
     region: us-east-2
 
-#eureka:
-#  instance:
-#    prefer-ip-address: true
-#  client:
-#    fetch-registry: true
-#    register-with-eureka: true
-#    service-url:
-#      defaultZone: http://localhost:8070/eureka/
-
-#logging:
-#  level:
-#    org:
-#      springframework:
-#        security: TRACE
-#        web: TRACE
-
-
 email:
   from-address: Proximity Team <samuel.amo@amalitechtraining.org>
   subject: Reset Your Password
