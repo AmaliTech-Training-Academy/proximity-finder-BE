@@ -6,7 +6,7 @@ import auth.proximity.authservice.entity.User;
 import auth.proximity.authservice.security.dto.LoginRequest;
 import auth.proximity.authservice.security.dto.LoginResponse;
 import auth.proximity.authservice.security.dto.RefreshTokenResponse;
-import auth.proximity.authservice.security.dto.UserInfoResponse;
+import auth.proximity.authservice.security.dto.InfoResponse;
 import auth.proximity.authservice.security.jwt.JwtConstants;
 import auth.proximity.authservice.security.jwt.JwtUtils;
 import auth.proximity.authservice.security.service.UserDetailsImpl;
@@ -32,7 +32,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -68,7 +67,7 @@ public class AuthController {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
-        UserInfoResponse response = new UserInfoResponse(
+        InfoResponse response = new InfoResponse(
                 user.getUserId(),
                 user.getUserName(),
                 user.getEmail(),
@@ -191,6 +190,12 @@ public class AuthController {
     public ResponseEntity<ResponseDto> forgotPassword(@RequestParam String email, @RequestBody AdminUpdatePasswordRequest adminUpdatePasswordRequest) {
         userService.updatePassword(email,adminUpdatePasswordRequest);
         return ResponseEntity.ok(new ResponseDto("200", "Password updated successfully"));
+    }
+
+    @GetMapping("/info")
+    public ResponseEntity<UserInfoResponse> getUserInfo(@RequestParam String email) {
+        UserInfoResponse userInfoResponse = userService.getUserInfo(email);
+        return ResponseEntity.ok(userInfoResponse);
     }
 
 

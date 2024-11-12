@@ -3,6 +3,7 @@ package auth.proximity.authservice.service.impl;
 import auth.proximity.authservice.dto.AdminUpdatePasswordRequest;
 import auth.proximity.authservice.dto.ProfilePictureUpdateRequest;
 import auth.proximity.authservice.dto.UserDto;
+import auth.proximity.authservice.dto.UserInfoResponse;
 import auth.proximity.authservice.entity.AppRole;
 import auth.proximity.authservice.entity.Role;
 import auth.proximity.authservice.entity.User;
@@ -27,10 +28,21 @@ public class UserServiceImpl implements IUserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
 
-    /**
-     * @param email - - Input User email address
-     * @return User's Details based on a given email address
-     */
+    public UserInfoResponse getUserInfo(String email) {
+        User foundUser = userRepository.findByEmail(email).orElseThrow(()->
+                new ResourceNotFoundException("User", "email", email));
+        return new UserInfoResponse(
+                foundUser.getUserId(),
+                foundUser.getUserName(),
+                foundUser.getEmail(),
+                foundUser.getMobileNumber(),
+                foundUser.getBusinessOwnerName(),
+                foundUser.getProfileImage(),
+                foundUser.getBusinessAddress()
+        );
+    }
+
+
     @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(
@@ -38,9 +50,6 @@ public class UserServiceImpl implements IUserService {
         );
     }
 
-    /**
-     * @param userDto - UserDto Object
-     */
     @Override
     public void createUser(UserDto userDto) {
 
@@ -100,8 +109,7 @@ public class UserServiceImpl implements IUserService {
     }
     public void updateProfilePicture(String email, ProfilePictureUpdateRequest profilePictureUpdateRequest) {
         User user = userRepository.findByEmail(email).orElseThrow(
-                () -> new ResourceNotFoundException("User", "email", email)
-        );
+                () -> new ResourceNotFoundException("User", "email", email));
 
 //        user.setProfileImage(profilePictureUpdateRequest.file());
         userRepository.save(user);
