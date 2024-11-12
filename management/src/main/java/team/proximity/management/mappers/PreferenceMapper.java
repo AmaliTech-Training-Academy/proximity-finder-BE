@@ -5,7 +5,7 @@ import team.proximity.management.requests.BookingDayRequest;
 import team.proximity.management.requests.PreferenceRequest;
 import team.proximity.management.model.BookingDay;
 import team.proximity.management.model.Document;
-import team.proximity.management.model.Preference;
+import team.proximity.management.model.ProviderService;
 import team.proximity.management.services.S3Service;
 
 import java.io.IOException;
@@ -19,9 +19,9 @@ public class PreferenceMapper {
         this.s3Service = s3Service;
     }
 
-    public Preference toEntity(PreferenceRequest preferenceRequest, List<BookingDayRequest> bookingDays) {
+    public ProviderService toEntity(PreferenceRequest preferenceRequest, List<BookingDayRequest> bookingDays) {
         // Create the Preference entity
-        Preference preference = buildPreferenceFromDTO(preferenceRequest, bookingDays);
+        ProviderService preference = buildPreferenceFromDTO(preferenceRequest, bookingDays);
 
         // Handle documents
         List<Document> documents = createDocuments(preferenceRequest, preference);
@@ -30,7 +30,7 @@ public class PreferenceMapper {
         return preference;
     }
 
-    public void updateEntity(PreferenceRequest preferenceRequest, Preference preference) {
+    public void updateEntity(PreferenceRequest preferenceRequest, ProviderService preference) {
         // Update basic fields
         updatePreferenceFields(preferenceRequest, preference);
 
@@ -39,8 +39,8 @@ public class PreferenceMapper {
         preference.setDocuments(documents);
     }
 
-    private Preference buildPreferenceFromDTO(PreferenceRequest dto, List<BookingDayRequest> bookingDays) {
-        return Preference.builder()
+    private ProviderService buildPreferenceFromDTO(PreferenceRequest dto, List<BookingDayRequest> bookingDays) {
+        return ProviderService.builder()
                 .userId(dto.getUserId())
                 .serviceId(dto.getServiceId())
                 .paymentPreference(dto.getPaymentPreference())
@@ -51,7 +51,7 @@ public class PreferenceMapper {
                 .build();
     }
 
-    private void updatePreferenceFields(PreferenceRequest dto, Preference preference) {
+    private void updatePreferenceFields(PreferenceRequest dto, ProviderService preference) {
         preference.setPaymentPreference(dto.getPaymentPreference());
         preference.setLocation(dto.getLocation());
         preference.setSameLocation(dto.getSameLocation());
@@ -65,13 +65,13 @@ public class PreferenceMapper {
                 .collect(Collectors.toList());
     }
 
-    private List<Document> createDocuments(PreferenceRequest dto, Preference preference) {
+    private List<Document> createDocuments(PreferenceRequest dto, ProviderService preference) {
         return dto.getDocuments().stream()
                 .map(file -> createDocument(file, preference))
                 .collect(Collectors.toList());
     }
 
-    private Document createDocument(MultipartFile file, Preference preference) {
+    private Document createDocument(MultipartFile file, ProviderService preference) {
         String imageUrl = uploadFileToS3(file);
         return Document.builder()
                 .url(imageUrl)

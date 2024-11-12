@@ -23,7 +23,7 @@ public class Document {
     @ManyToOne
     @JoinColumn(name = "preference_id", nullable = false)
     @JsonIgnore
-    private Preference preference;
+    private ProviderService preference;
 
     private String fileName;
     private String url;

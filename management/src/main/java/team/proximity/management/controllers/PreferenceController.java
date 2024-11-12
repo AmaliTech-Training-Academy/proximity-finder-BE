@@ -1,15 +1,14 @@
 package team.proximity.management.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import team.proximity.management.requests.PreferenceRequest;
-import team.proximity.management.model.Preference;
+import team.proximity.management.model.ProviderService;
 import team.proximity.management.responses.ApiResponse;
 import team.proximity.management.responses.ApiResponseStatus;
 import team.proximity.management.responses.ErrorResponse;
-import team.proximity.management.services.PreferenceService;
+import team.proximity.management.services.ProviderServiceService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,18 +22,18 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/preferences")
 public class PreferenceController {
-    private final PreferenceService preferenceService;
+    private final ProviderServiceService providerServiceService;
 
-    public PreferenceController(PreferenceService preferenceService) {
-        this.preferenceService = preferenceService;
+    public PreferenceController(ProviderServiceService providerServiceService) {
+        this.providerServiceService = providerServiceService;
     }
 
     @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<ApiResponse<Preference>> createPreference(@Validated @ModelAttribute PreferenceRequest preference) throws JsonProcessingException {
+    public ResponseEntity<ApiResponse<ProviderService>> createPreference(@Validated @ModelAttribute PreferenceRequest preference) throws JsonProcessingException {
         log.info("Creating new preference with request: {}", preference);
-        Preference createdPreference = preferenceService.createPreference(preference);
+        ProviderService createdPreference = providerServiceService.createPreference(preference);
         log.debug("Created preference: {}", createdPreference);
-        ApiResponse<Preference> response = ApiResponse.<Preference>builder()
+        ApiResponse<ProviderService> response = ApiResponse.<ProviderService>builder()
                 .status(ApiResponseStatus.SUCCESS)
                 .result(createdPreference)
                 .build();
@@ -42,19 +41,19 @@ public class PreferenceController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Preference>> updatePreference(@PathVariable UUID id, @RequestBody PreferenceRequest preference) {
+    public ResponseEntity<ApiResponse<ProviderService>> updatePreference(@PathVariable UUID id, @RequestBody PreferenceRequest preference) {
         log.info("Updating preference with id: {} and request: {}", id, preference);
         try {
-            Preference updatedPreference = preferenceService.updatePreference(id, preference);
+            ProviderService updatedPreference = providerServiceService.updatePreference(id, preference);
             log.debug("Updated preference: {}", updatedPreference);
-            ApiResponse<Preference> response = ApiResponse.<Preference>builder()
+            ApiResponse<ProviderService> response = ApiResponse.<ProviderService>builder()
                     .status(ApiResponseStatus.SUCCESS)
                     .result(updatedPreference)
                     .build();
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (RuntimeException e) {
             log.warn("Preference not found with id: {}", id);
-            ApiResponse<Preference> response = ApiResponse.<Preference>builder()
+            ApiResponse<ProviderService> response = ApiResponse.<ProviderService>builder()
                     .status(ApiResponseStatus.ERROR)
                     .errors(Collections.singletonList(new ErrorResponse("Not Found", "Preference not found with id " + id)))
                     .build();
@@ -63,19 +62,19 @@ public class PreferenceController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Preference>> getPreferenceById(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<ProviderService>> getPreferenceById(@PathVariable UUID id) {
         log.info("Fetching preference with id: {}", id);
-        Optional<Preference> optionalPreference = preferenceService.getPreferenceById(id);
+        Optional<ProviderService> optionalPreference = providerServiceService.getPreferenceById(id);
         if (optionalPreference.isPresent()) {
             log.debug("Fetched preference: {}", optionalPreference.get());
-            ApiResponse<Preference> response = ApiResponse.<Preference>builder()
+            ApiResponse<ProviderService> response = ApiResponse.<ProviderService>builder()
                     .status(ApiResponseStatus.SUCCESS)
                     .result(optionalPreference.get())
                     .build();
             return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
             log.warn("Preference not found with id: {}", id);
-            ApiResponse<Preference> response = ApiResponse.<Preference>builder()
+            ApiResponse<ProviderService> response = ApiResponse.<ProviderService>builder()
                     .status(ApiResponseStatus.ERROR)
                     .errors(Collections.singletonList(new ErrorResponse("Not Found", "Preference not found with id " + id)))
                     .build();
@@ -84,11 +83,11 @@ public class PreferenceController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Preference>>> getAllPreferences() {
+    public ResponseEntity<ApiResponse<List<ProviderService>>> getAllPreferences() {
         log.info("Fetching all preferences");
-        List<Preference> preferences = preferenceService.getAllPreferences();
+        List<ProviderService> preferences = providerServiceService.getAllPreferences();
         log.debug("Fetched preferences: {}", preferences);
-        ApiResponse<List<Preference>> response = ApiResponse.<List<Preference>>builder()
+        ApiResponse<List<ProviderService>> response = ApiResponse.<List<ProviderService>>builder()
                 .status(ApiResponseStatus.SUCCESS)
                 .result(preferences)
                 .build();
@@ -98,9 +97,9 @@ public class PreferenceController {
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deletePreference(@PathVariable UUID id) {
         log.info("Deleting preference with id: {}", id);
-        Optional<Preference> optionalPreference = preferenceService.getPreferenceById(id);
+        Optional<ProviderService> optionalPreference = providerServiceService.getPreferenceById(id);
         if (optionalPreference.isPresent()) {
-            preferenceService.deletePreference(id);
+            providerServiceService.deletePreference(id);
             log.debug("Deleted preference with id: {}", id);
             ApiResponse<Void> response = ApiResponse.<Void>builder()
                     .status(ApiResponseStatus.SUCCESS)

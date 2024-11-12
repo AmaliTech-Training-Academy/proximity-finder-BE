@@ -24,7 +24,7 @@ public class BookingDay {
     @ManyToOne
     @JoinColumn(name = "preference_id")
     @JsonIgnore
-    private Preference preference;
+    private ProviderService preference;
 
     @Enumerated(EnumType.STRING)
     private DayOfWeek dayOfWeek;
