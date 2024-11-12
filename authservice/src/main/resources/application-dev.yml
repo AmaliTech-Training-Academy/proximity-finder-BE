@@ -54,6 +54,6 @@ aws:
 
 
 email:
-  from-address: Iijra Team <samuel.amo@amalitechtraining.org>
+  from-address: Proximity Team <samuel.amo@amalitechtraining.org>
   subject: Reset Your Password
-  reset-url: http://localhost:4200/resetpassword?token=
+  reset-url: http://localhost:4200/reset-password?token=
