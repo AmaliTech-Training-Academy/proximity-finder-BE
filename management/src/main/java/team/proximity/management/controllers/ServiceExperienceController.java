@@ -7,19 +7,24 @@ import team.proximity.management.model.ServiceExperience;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import team.proximity.management.repositories.ServiceExperienceRepository;
+import team.proximity.management.requests.ServiceExperienceRequest;
 import team.proximity.management.services.ServiceExperienceService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/service-experiences")
 public class ServiceExperienceController {
 
     private final ServiceExperienceService service;
+    private final ServiceExperienceRepository serviceExperienceRepository;
 
     @Autowired
-    public ServiceExperienceController(ServiceExperienceService service) {
+    public ServiceExperienceController(ServiceExperienceService service, ServiceExperienceRepository serviceExperienceRepository) {
         this.service = service;
+        this.serviceExperienceRepository = serviceExperienceRepository;
     }
 
     @GetMapping
@@ -35,16 +40,16 @@ public class ServiceExperienceController {
     }
 
     @PostMapping
-    public ServiceExperience createServiceExperience(@RequestBody ServiceExperience serviceExperience) {
-        return service.createServiceExperience(serviceExperience);
+    public ServiceExperience createServiceExperience(@RequestBody ServiceExperienceRequest serviceExperienceRequest) {
+        return service.createServiceExperience(serviceExperienceRequest);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ServiceExperience> updateServiceExperience(
+    public ResponseEntity<Optional<ServiceExperience>> updateServiceExperience(
             @PathVariable Long id,
-            @RequestBody ServiceExperience serviceExperience) {
+            @RequestBody ServiceExperienceRequest serviceExperienceRequest) {
         return service.getServiceExperienceById(id)
-                .map(existing -> ResponseEntity.ok(service.updateServiceExperience(id, serviceExperience)))
+                .map(existing -> ResponseEntity.ok(service.updateServiceExperience(id, serviceExperienceRequest)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
