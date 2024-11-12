@@ -11,7 +11,7 @@ import team.proximity.management.exceptions.PreferenceNotFoundException;
 import team.proximity.management.mappers.PreferenceMapper;
 import team.proximity.management.model.ProviderService;
 import org.springframework.stereotype.Service;
-import team.proximity.management.repositories.PreferenceRepository;
+import team.proximity.management.repositories.ProviderServiceRepository;
 import team.proximity.management.validators.BookingDayHoursValidator;
 
 import java.time.LocalDateTime;
@@ -24,12 +24,12 @@ import java.util.UUID;
 public class ProviderServiceService {
 
     private final ObjectMapper objectMapper;
-    private final PreferenceRepository preferenceRepository;
+    private final ProviderServiceRepository providerServiceRepository;
     private final PreferenceMapper preferenceMapper;
     private final BookingDayHoursValidator bookingDayHoursValidator;
 
-    public ProviderServiceService(PreferenceRepository preferenceRepository, S3Service s3Service, BookingDayHoursValidator bookingDayHoursValidator, ObjectMapper objectMapper) {
-        this.preferenceRepository = preferenceRepository;
+    public ProviderServiceService(ProviderServiceRepository providerServiceRepository, S3Service s3Service, BookingDayHoursValidator bookingDayHoursValidator, ObjectMapper objectMapper) {
+        this.providerServiceRepository = providerServiceRepository;
         this.preferenceMapper = new PreferenceMapper(s3Service);
         this.bookingDayHoursValidator = bookingDayHoursValidator;
         this.objectMapper = objectMapper;
@@ -49,30 +49,30 @@ public class ProviderServiceService {
         log.info("Creating new preference with request: {}", preferenceRequest);
         preference.setCreatedAt(LocalDateTime.now());
         preference.setUpdatedAt(LocalDateTime.now());
-        return preferenceRepository.save(preference);
+        return providerServiceRepository.save(preference);
     }
 
     public ProviderService updatePreference(UUID id, PreferenceRequest updatedPreferenceRequest) {
-        ProviderService preference = preferenceRepository.findById(id)
+        ProviderService preference = providerServiceRepository.findById(id)
                 .orElseThrow(() -> new PreferenceNotFoundException(id));
         preferenceMapper.updateEntity(updatedPreferenceRequest, preference);
         preference.setUpdatedAt(LocalDateTime.now());
-        return preferenceRepository.save(preference);
+        return providerServiceRepository.save(preference);
     }
 
     public Optional<ProviderService> getPreferenceById(UUID id) {
-        return preferenceRepository.findById(id)
+        return providerServiceRepository.findById(id)
                 .or(() -> { throw new PreferenceNotFoundException(id); });
     }
 
     public List<ProviderService> getAllPreferences() {
-        return preferenceRepository.findAll();
+        return providerServiceRepository.findAll();
     }
 
     public void deletePreference(UUID id) {
-        if (!preferenceRepository.existsById(id)) {
+        if (!providerServiceRepository.existsById(id)) {
             throw new PreferenceNotFoundException(id);
         }
-        preferenceRepository.deleteById(id);
+        providerServiceRepository.deleteById(id);
     }
 }

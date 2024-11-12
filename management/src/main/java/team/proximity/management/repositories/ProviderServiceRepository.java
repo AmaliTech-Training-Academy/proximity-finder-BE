@@ -5,5 +5,5 @@ import team.proximity.management.model.ProviderService;
 
 import java.util.UUID;
 
-public interface PreferenceRepository extends JpaRepository<ProviderService, UUID> {
+public interface ProviderServiceRepository extends JpaRepository<ProviderService, UUID> {
 }
