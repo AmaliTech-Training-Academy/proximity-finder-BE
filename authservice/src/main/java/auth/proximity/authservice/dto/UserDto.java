@@ -55,7 +55,7 @@ public class UserDto {
     )
     private String businessOwnerName;
 
-    @NotEmpty(message = "Role can not be a null or empty")
+    @NotEmpty(message = "Role can not be  null or empty")
     @Column(name = "password")
     @Schema(
             description = "Role of the user", example = "seeker"
