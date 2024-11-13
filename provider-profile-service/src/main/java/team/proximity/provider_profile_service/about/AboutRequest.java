@@ -1,4 +1,4 @@
-package team.proximity.provider_profile_service.about_your_business;
+package team.proximity.provider_profile_service.about;
 
 import org.springframework.web.multipart.MultipartFile;
 

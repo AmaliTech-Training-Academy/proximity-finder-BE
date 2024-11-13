@@ -1,4 +1,4 @@
-package team.proximity.provider_profile_service.about_your_business;
+package team.proximity.provider_profile_service.about;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
