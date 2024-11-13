@@ -1,20 +1,19 @@
-package team.proximity.payment_service.exceptions;
+package team.proximity.provider_profile_service.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class PaymentGlobalExceptionHandler {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(PaymentGlobalExceptionHandler.class);
 
     @ExceptionHandler(PaymentPreferenceAlreadyExistException.class)
     public ResponseEntity<ApiErrorResponse> handlePaymentPreferenceAlreadyExistException(PaymentPreferenceAlreadyExistException exception, HttpServletRequest request) {
