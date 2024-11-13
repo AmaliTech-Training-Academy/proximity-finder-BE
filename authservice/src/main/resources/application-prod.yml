@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: "authservice"
+
+  mail:
+    host: smtp.sendgrid.net
+    port: 587
+    username: apikey
+    password: ${SENDGRID_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+        debug: true
+
+  app:
+    jwtSecret: ${JWT_SECRET}
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+server:
+  port: ${SERVER_PORT}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+aws:
+  accessKeyId: ${ACCESS_KEY}
+  secretAccessKey: ${SECRET_KEY}
+  s3:
+    bucketName: ${BUCKET_NAME}
+    region: ${REGION}
+
+email:
+  from-address: Proximity Team <samuel.amo@amalitechtraining.org>
+  subject: Reset Your Password
+  reset-url: ${FRONT_END_RESET_URL}
