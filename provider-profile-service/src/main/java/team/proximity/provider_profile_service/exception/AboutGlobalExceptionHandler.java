@@ -13,9 +13,9 @@ import java.time.LocalDateTime;
 
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class AboutGlobalExceptionHandler {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(AboutGlobalExceptionHandler.class);
 
 
     @ExceptionHandler(AboutAlreadyExistsException.class)
