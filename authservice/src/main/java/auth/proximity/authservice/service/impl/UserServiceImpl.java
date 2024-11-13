@@ -1,9 +1,6 @@
 package auth.proximity.authservice.service.impl;
 
-import auth.proximity.authservice.dto.AdminUpdatePasswordRequest;
-import auth.proximity.authservice.dto.ProfilePictureUpdateRequest;
-import auth.proximity.authservice.dto.UserDto;
-import auth.proximity.authservice.dto.UserInfoResponse;
+import auth.proximity.authservice.dto.*;
 import auth.proximity.authservice.entity.AppRole;
 import auth.proximity.authservice.entity.Role;
 import auth.proximity.authservice.entity.User;
@@ -41,6 +38,27 @@ public class UserServiceImpl implements IUserService {
                 foundUser.getBusinessAddress()
         );
     }
+
+    public void updateUserInfoByEmail(String email, UserUpdateRequest userUpdateRequest) {
+        User foundUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "email", email));
+
+        if (userUpdateRequest.userName() != null) {
+            foundUser.setUserName(userUpdateRequest.userName());
+        }
+
+        if (userUpdateRequest.phoneNumber() != null) {
+            foundUser.setMobileNumber(userUpdateRequest.phoneNumber());
+        }
+        if (userUpdateRequest.businessOwnerName() != null) {
+            foundUser.setBusinessOwnerName(userUpdateRequest.businessOwnerName());
+        }
+        if (userUpdateRequest.businessAddress() != null) {
+            foundUser.setBusinessAddress(userUpdateRequest.businessAddress());
+        }
+        userRepository.save(foundUser);
+    }
+
 
 
     @Override

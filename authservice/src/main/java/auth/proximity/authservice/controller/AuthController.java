@@ -198,6 +198,11 @@ public class AuthController {
         return ResponseEntity.ok(userInfoResponse);
     }
 
+    @PutMapping("/update/info")
+    ResponseEntity<ResponseDto> updateUserInfo( @RequestParam String email, @RequestBody UserUpdateRequest userUpdateRequest) {
+        userService.updateUserInfoByEmail(email,userUpdateRequest);
+        return ResponseEntity.ok(new ResponseDto("200", "User updated successfully"));
+    }
 
 
 }
