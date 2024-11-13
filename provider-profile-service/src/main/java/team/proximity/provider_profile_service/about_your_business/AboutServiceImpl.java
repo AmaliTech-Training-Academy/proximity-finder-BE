@@ -1,4 +1,4 @@
-package team.proximity.service_provider_profile.about_your_business.about;
+package team.proximity.provider_profile_service.about_your_business;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

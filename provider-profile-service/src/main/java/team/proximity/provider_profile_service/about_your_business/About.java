@@ -1,9 +1,8 @@
-package team.proximity.service_provider_profile.about_your_business.about;
+package team.proximity.provider_profile_service.about_your_business;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import lombok.*;
 
 import java.time.LocalDate;
 import java.util.Set;
