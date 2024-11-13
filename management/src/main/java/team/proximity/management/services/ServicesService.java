@@ -2,17 +2,18 @@ package team.proximity.management.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import team.proximity.management.requests.ServiceRequest;
 import team.proximity.management.exceptions.ResourceNotFoundException;
 import team.proximity.management.model.Services;
-
-import org.springframework.stereotype.Service;
 import team.proximity.management.repositories.ServicesRepository;
+import team.proximity.management.requests.ServiceRequest;
+import team.proximity.management.responses.ApiResponseStatus;
+import team.proximity.management.responses.ErrorResponse;
 import team.proximity.management.utils.Helpers;
 
-
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -20,14 +21,14 @@ import java.util.UUID;
 @Slf4j
 @Service
 public class ServicesService {
-
     private final ServicesRepository servicesRepository;
     private final S3Service s3Service;
+
     public ServicesService(ServicesRepository servicesRepository, S3Service s3Service) {
         this.servicesRepository = servicesRepository;
         this.s3Service = s3Service;
-
     }
+
     @Cacheable(value = "services")
     public List<Services> getAllServices() {
         log.info("ServicesService: get all services execution started");
@@ -79,5 +80,4 @@ public class ServicesService {
     public void deleteService(UUID id) {
         servicesRepository.deleteById(id);
     }
-
 }

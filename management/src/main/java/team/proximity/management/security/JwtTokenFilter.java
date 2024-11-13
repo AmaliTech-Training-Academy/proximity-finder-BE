@@ -30,7 +30,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtTokenFilter.class);
 
-    @Value("${spring.app.jwtSecret}")
+    @Value("${spring.app.jwt-secret}")
     private String jwtSecret;
 
     @Override

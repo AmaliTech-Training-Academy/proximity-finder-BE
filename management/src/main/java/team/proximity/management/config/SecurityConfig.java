@@ -29,8 +29,8 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
-                        .requestMatchers( HttpMethod.GET,"/api/services").hasAnyAuthority()
-//                        .requestMatchers( "/api/services").hasAuthority("ROLE_ADMIN")
+//                        .requestMatchers( HttpMethod.GET,"/api/services").hasAnyAuthority()
+                        .requestMatchers( "/api/services").hasAuthority("ROLE_ADMIN")
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
