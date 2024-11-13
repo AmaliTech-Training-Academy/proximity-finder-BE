@@ -3,7 +3,7 @@ package team.proximity.payment_service.payment_preference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import team.proximity.payment_service.common.ApiResponse;
+import team.proximity.payment_service.common.ApiSuccessResponse;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,10 +18,10 @@ public class PaymentPreferenceController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse> createPaymentPreference(@RequestBody PaymentPreferenceRequest paymentPreferenceRequest) {
+    public ResponseEntity<ApiSuccessResponse> createPaymentPreference(@RequestBody PaymentPreferenceRequest paymentPreferenceRequest) {
             paymentPreferenceService.createOnePaymentPreference(paymentPreferenceRequest);
            return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ApiResponse("Payment Preference added successfully", true));
+                .body(new ApiSuccessResponse("Payment Preference added successfully", true));
     }
 
     @GetMapping("/{name}")
