@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 @Transactional
 class AboutRepositoryTest {
