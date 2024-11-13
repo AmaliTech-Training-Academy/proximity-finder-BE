@@ -47,7 +47,7 @@ public class ProviderServiceMapper {
     private ProviderService buildPreferenceFromDTO(ProviderServiceRequest dto, List<BookingDayRequest> bookingDays) {
         Optional<Services> service = servicesRepository.findById(dto.getServiceId());
         if (service.isEmpty()) {
-            throw new ResourceNotFoundException("ProviderService not found");
+            throw new ResourceNotFoundException("Service not found");
         }
         return ProviderService.builder()
                 .userId(dto.getUserId())

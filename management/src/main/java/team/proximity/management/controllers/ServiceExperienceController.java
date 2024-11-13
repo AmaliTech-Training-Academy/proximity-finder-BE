@@ -13,49 +13,48 @@ import team.proximity.management.services.ServiceExperienceService;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/service-experiences")
 public class ServiceExperienceController {
 
-    private final ServiceExperienceService service;
+    private final ServiceExperienceService experienceService;
 
     @Autowired
-    public ServiceExperienceController(ServiceExperienceService service, ServiceExperienceRepository serviceExperienceRepository) {
-        this.service = service;
+    public ServiceExperienceController(ServiceExperienceService experienceService, ServiceExperienceRepository serviceExperienceRepository) {
+        this.experienceService = experienceService;
     }
 
     @GetMapping
     public List<ServiceExperience> getAllServiceExperiences() {
-        return service.getAllServiceExperiences();
+        return experienceService.getAllServiceExperiences();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ServiceExperience> getServiceExperienceById(@PathVariable Long id) {
-        return service.getServiceExperienceById(id)
+        return experienceService.getServiceExperienceById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public ServiceExperience createServiceExperience( @ModelAttribute ServiceExperienceRequest serviceExperienceRequest) {
-        return service.createServiceExperience(serviceExperienceRequest);
+        return experienceService.createServiceExperience(serviceExperienceRequest);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Optional<ServiceExperience>> updateServiceExperience(
             @PathVariable Long id,
             @RequestBody ServiceExperienceRequest serviceExperienceRequest) {
-        return service.getServiceExperienceById(id)
-                .map(existing -> ResponseEntity.ok(service.updateServiceExperience(id, serviceExperienceRequest)))
+        return experienceService.getServiceExperienceById(id)
+                .map(existing -> ResponseEntity.ok(experienceService.updateServiceExperience(id, serviceExperienceRequest)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteServiceExperience(@PathVariable Long id) {
-        if (service.getServiceExperienceById(id).isPresent()) {
-            service.deleteServiceExperience(id);
+        if (experienceService.getServiceExperienceById(id).isPresent()) {
+            experienceService.deleteServiceExperience(id);
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
