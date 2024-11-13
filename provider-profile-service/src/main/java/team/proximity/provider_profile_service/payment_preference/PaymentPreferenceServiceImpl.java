@@ -1,9 +1,8 @@
 package team.proximity.provider_profile_service.payment_preference;
 
 import org.springframework.stereotype.Service;
-import team.proximity.payment_service.exceptions.PaymentPreferenceAlreadyExistException;
-import team.proximity.payment_service.payment_preference.PaymentPreferenceRepository;
-import team.proximity.payment_service.payment_preference.PaymentPreferenceRequest;
+import team.proximity.provider_profile_service.exception.payment_method.PaymentPreferenceAlreadyExistException;
+
 
 import java.util.List;
 import java.util.Optional;

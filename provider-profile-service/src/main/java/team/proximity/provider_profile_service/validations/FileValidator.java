@@ -2,7 +2,7 @@ package team.proximity.provider_profile_service.validations;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import team.proximity.service_provider_profile.about_your_business.exception.FileTypeNotSupportedException;
+import team.proximity.provider_profile_service.exception.payment_method.FileTypeNotSupportedException;
 
 import java.util.Set;
 import java.util.stream.Collectors;

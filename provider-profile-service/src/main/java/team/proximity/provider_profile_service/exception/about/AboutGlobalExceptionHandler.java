@@ -1,4 +1,4 @@
-package team.proximity.provider_profile_service.exception;
+package team.proximity.provider_profile_service.exception.about;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import team.proximity.provider_profile_service.common.ApiErrorResponse;
+import team.proximity.provider_profile_service.exception.payment_method.FileTypeNotSupportedException;
 
 import java.io.IOException;
 import java.time.LocalDateTime;

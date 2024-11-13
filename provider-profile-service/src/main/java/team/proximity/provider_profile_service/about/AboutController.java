@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import team.proximity.provider_profile_service.common.ApiSuccessResponse;
 
 import java.io.IOException;
 
@@ -21,12 +22,12 @@ public class AboutController {
     }
 
     @PostMapping(consumes = {"multipart/form-data"})
-    public ResponseEntity<String> createOneAbout(@ModelAttribute AboutRequest aboutRequest) throws IOException  {
+    public ResponseEntity<ApiSuccessResponse> createOneAbout(@ModelAttribute AboutRequest aboutRequest) throws IOException  {
         aboutService.createOneAbout(aboutRequest);
 
-        return ResponseEntity
+        return  ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body("About entity created successfully.");
+                .body(new ApiSuccessResponse("About created successfully", true));
     }
 
 }

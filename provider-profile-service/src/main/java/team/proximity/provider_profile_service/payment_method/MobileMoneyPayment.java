@@ -2,40 +2,20 @@ package team.proximity.provider_profile_service.payment_method;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
-import team.proximity.payment_service.payment_method.PaymentMethod;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @DiscriminatorValue("MOBILE_MONEY")
 public class MobileMoneyPayment extends PaymentMethod {
 
-
     private String serviceProvider;
-
-
     private String mobileNumber;
 
-
-    public MobileMoneyPayment(String serviceProvider, String mobileNumber) {
-        this.serviceProvider = serviceProvider;
-        this.mobileNumber = mobileNumber;
-    }
-
-    public MobileMoneyPayment() {
-    }
-
-    public String getServiceProvider() {
-        return this.serviceProvider;
-    }
-
-    public String getMobileNumber() {
-        return this.mobileNumber;
-    }
-
-    public void setServiceProvider(String serviceProvider) {
-        this.serviceProvider = serviceProvider;
-    }
-
-    public void setMobileNumber(String mobileNumber) {
-        this.mobileNumber = mobileNumber;
-    }
 }

@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import team.proximity.payment_service.common.ApiSuccessResponse;
-import team.proximity.payment_service.payment_method.PaymentMethodRequest;
+import team.proximity.provider_profile_service.common.ApiSuccessResponse;
+
 
 @RestController
 @RequestMapping("/api/v1/payment-method")

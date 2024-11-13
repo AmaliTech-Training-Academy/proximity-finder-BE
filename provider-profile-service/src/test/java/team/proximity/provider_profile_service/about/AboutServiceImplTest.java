@@ -1,4 +1,3 @@
-/*
 package team.proximity.provider_profile_service.about;
 
 import org.junit.jupiter.api.Test;
@@ -107,7 +106,6 @@ class AboutServiceImplTest {
 
         verify(fileValidator).validate(identityFile);
         verify(fileStorageService).uploadFile(identityFile);
-        //verifyNoMoreInteractions(aboutRepository);
+
     }
 }
-*/

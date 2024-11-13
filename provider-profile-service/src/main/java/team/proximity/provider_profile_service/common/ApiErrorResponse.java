@@ -1,4 +1,4 @@
-package team.proximity.provider_profile_service.exception;
+package team.proximity.provider_profile_service.common;
 
 import java.time.LocalDateTime;
 

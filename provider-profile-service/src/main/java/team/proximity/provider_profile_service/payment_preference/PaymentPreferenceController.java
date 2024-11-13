@@ -3,10 +3,8 @@ package team.proximity.provider_profile_service.payment_preference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import team.proximity.payment_service.common.ApiSuccessResponse;
-import team.proximity.payment_service.payment_preference.PaymentPreferenceRequest;
-import team.proximity.payment_service.payment_preference.PaymentPreferenceResponse;
-import team.proximity.payment_service.payment_preference.PaymentPreferenceService;
+import team.proximity.provider_profile_service.common.ApiSuccessResponse;
+
 
 import java.util.List;
 import java.util.Optional;

@@ -2,7 +2,15 @@ package team.proximity.provider_profile_service.payment_method;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @DiscriminatorValue("BANK")
 public class BankPayment extends PaymentMethod {
@@ -12,28 +20,4 @@ public class BankPayment extends PaymentMethod {
 
     private String accountNumber;
 
-
-    public BankPayment(String bankName, String accountNumber) {
-        this.bankName = bankName;
-        this.accountNumber = accountNumber;
-    }
-
-    public BankPayment() {
-    }
-
-    public String getBankName() {
-        return this.bankName;
-    }
-
-    public String getAccountNumber() {
-        return this.accountNumber;
-    }
-
-    public void setBankName(String bankName) {
-        this.bankName = bankName;
-    }
-
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
-    }
 }

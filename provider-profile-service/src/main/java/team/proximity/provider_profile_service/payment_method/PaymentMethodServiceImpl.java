@@ -2,14 +2,11 @@ package team.proximity.provider_profile_service.payment_method;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import team.proximity.payment_service.exceptions.PaymentMethodAlreadyExistException;
-import team.proximity.payment_service.exceptions.PaymentPreferenceDoesNotExist;
-import team.proximity.payment_service.payment_method.PaymentMethod;
-import team.proximity.payment_service.payment_method.PaymentMethodFactory;
-import team.proximity.payment_service.payment_method.PaymentMethodRequest;
-import team.proximity.payment_service.payment_method.PaymentMethodService;
-import team.proximity.payment_service.payment_preference.PaymentPreference;
-import team.proximity.payment_service.payment_preference.PaymentPreferenceRepository;
+import team.proximity.provider_profile_service.exception.payment_method.PaymentMethodAlreadyExistException;
+import team.proximity.provider_profile_service.exception.payment_method.PaymentPreferenceDoesNotExist;
+import team.proximity.provider_profile_service.payment_preference.PaymentPreference;
+import team.proximity.provider_profile_service.payment_preference.PaymentPreferenceRepository;
+
 
 @Service
 @Transactional

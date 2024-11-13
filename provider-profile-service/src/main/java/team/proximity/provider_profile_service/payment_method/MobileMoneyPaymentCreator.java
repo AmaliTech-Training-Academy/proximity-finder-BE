@@ -1,9 +1,7 @@
 package team.proximity.provider_profile_service.payment_method;
 
 import org.springframework.stereotype.Component;
-import team.proximity.payment_service.payment_method.PaymentMethod;
-import team.proximity.payment_service.payment_method.PaymentMethodCreator;
-import team.proximity.payment_service.payment_method.PaymentMethodRequest;
+
 
 @Component
 public class MobileMoneyPaymentCreator implements PaymentMethodCreator {
