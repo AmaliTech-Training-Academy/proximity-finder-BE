@@ -3,9 +3,10 @@ package team.proximity.provider_profile_service.about;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import team.proximity.service_provider_profile.about_your_business.storage.FileStorageService;
-import team.proximity.service_provider_profile.about_your_business.validations.AboutValidator;
-import team.proximity.service_provider_profile.about_your_business.validations.FileValidator;
+import team.proximity.provider_profile_service.storage.FileStorageService;
+import team.proximity.provider_profile_service.validations.AboutValidator;
+import team.proximity.provider_profile_service.validations.FileValidator;
+
 
 import java.io.IOException;
 
