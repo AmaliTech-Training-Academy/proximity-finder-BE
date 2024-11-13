@@ -1,4 +1,6 @@
 spring:
+  app:
+    jwtSecret: ${JWT_SECRET}
   application:
     name: service-provider-profile
   datasource:

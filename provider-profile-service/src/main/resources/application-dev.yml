@@ -5,8 +5,6 @@ spring:
     jwtSecret: SGEIE84358FDBOUDD723HE084HTDF713EGSJDIG5HS72GSD91BSAIFSY3EESDT5TGVKLNA9363BA3E
 
   application:
-
-
     name: service-provider-profile
   datasource:
     url: jdbc:postgresql://localhost:5432/provider-service_db
