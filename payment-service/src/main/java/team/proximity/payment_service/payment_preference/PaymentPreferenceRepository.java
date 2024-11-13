@@ -1,4 +1,4 @@
-package team.proximity.payment_service.paymentpreference;
+package team.proximity.payment_service.payment_preference;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

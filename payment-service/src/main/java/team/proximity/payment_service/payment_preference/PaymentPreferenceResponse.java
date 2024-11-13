@@ -1,4 +1,4 @@
-package team.proximity.payment_service.paymentpreference;
+package team.proximity.payment_service.payment_preference;
 
 public record PaymentPreferenceResponse(
         Long id,

@@ -1,4 +1,4 @@
-package team.proximity.payment_service.paymentpreference;
+package team.proximity.payment_service.payment_preference;
 
 import java.util.List;
 import java.util.Optional;

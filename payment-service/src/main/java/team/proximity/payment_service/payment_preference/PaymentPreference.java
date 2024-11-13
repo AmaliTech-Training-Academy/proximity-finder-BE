@@ -1,4 +1,4 @@
-package team.proximity.payment_service.paymentpreference;
+package team.proximity.payment_service.payment_preference;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

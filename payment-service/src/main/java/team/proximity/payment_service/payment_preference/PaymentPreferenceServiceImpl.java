@@ -1,12 +1,10 @@
-package team.proximity.payment_service.paymentpreference;
+package team.proximity.payment_service.payment_preference;
 
-import jakarta.persistence.EntityExistsException;
 import org.springframework.stereotype.Service;
 import team.proximity.payment_service.exceptions.PaymentPreferenceAlreadyExistException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class PaymentPreferenceServiceImpl implements PaymentPreferenceService {
