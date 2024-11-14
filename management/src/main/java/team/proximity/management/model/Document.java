@@ -1,5 +1,6 @@
 package team.proximity.management.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +22,8 @@ public class Document {
 
     @ManyToOne
     @JoinColumn(name = "preference_id", nullable = false)
-    private Preference preference;
+    @JsonIgnore
+    private ProviderService preference;
 
     private String fileName;
     private String url;

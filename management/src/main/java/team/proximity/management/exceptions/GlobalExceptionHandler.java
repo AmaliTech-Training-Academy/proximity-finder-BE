@@ -20,6 +20,15 @@ public class GlobalExceptionHandler {
 
     private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    @ExceptionHandler(BookingDayHoursValidationException.class)
+    public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationException(BookingDayHoursValidationException ex) {;
+        ApiResponse<Map<String, String>> response = ApiResponse.<Map<String, String>>builder()
+                .status(ApiResponseStatus.ERROR)
+                .errors(ex.getErrors())
+                .build();
+
+        return ResponseEntity.badRequest().body(response);
+    }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationExceptions(MethodArgumentNotValidException ex) {
@@ -36,8 +45,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(PreferenceNotFoundException.class)
-    public ResponseEntity<ApiResponse<ErrorResponse>> handlePreferenceNotFoundException(PreferenceNotFoundException ex, WebRequest request) {
+    @ExceptionHandler(ProviderServiceNotFoundException.class)
+    public ResponseEntity<ApiResponse<ErrorResponse>> handlePreferenceNotFoundException(ProviderServiceNotFoundException ex, WebRequest request) {
         logger.error("Preference not found: {}", ex.getMessage());
         ErrorResponse errorResponse = new ErrorResponse("Preference Not Found", ex.getMessage());
         ApiResponse<ErrorResponse> response = ApiResponse.<ErrorResponse>builder()
@@ -60,7 +69,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<ErrorResponse>> handleGlobalException(Exception ex, WebRequest request) {
-        logger.error("Unexpected error: {}", ex.getMessage());
+        logger.error("Unexpected error: {}", ex.fillInStackTrace());
         ErrorResponse errorResponse = new ErrorResponse("Internal Server Error", "An unexpected error occurred");
         ApiResponse<ErrorResponse> response = ApiResponse.<ErrorResponse>builder()
                 .status(ApiResponseStatus.ERROR)

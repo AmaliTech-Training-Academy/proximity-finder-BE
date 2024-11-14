@@ -1,5 +1,6 @@
 package team.proximity.management.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +23,8 @@ public class BookingDay {
 
     @ManyToOne
     @JoinColumn(name = "preference_id")
-    private Preference preference;
+    @JsonIgnore
+    private ProviderService preference;
 
     @Enumerated(EnumType.STRING)
     private DayOfWeek dayOfWeek;
