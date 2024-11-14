@@ -2,11 +2,11 @@ package team.proximity.provider_profile_service.payment_method;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import team.proximity.provider_profile_service.common.ApiSuccessResponse;
+
+import java.util.Arrays;
+import java.util.List;
 
 
 @RestController
@@ -26,4 +26,9 @@ public class PaymentMethodController {
                 .status(HttpStatus.CREATED)
                 .body(new ApiSuccessResponse("Payment Method added successfully", true));
     }
+    @GetMapping("/payment/mobile-money-providers")
+    public List<MobileMoneyServiceProvider> getMobileMoneyProviders() {
+        return Arrays.asList(MobileMoneyServiceProvider.values());
+    }
+
 }
