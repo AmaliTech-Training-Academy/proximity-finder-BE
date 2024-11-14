@@ -21,11 +21,21 @@ public class PaymentMethodController {
 
     @PostMapping
     ResponseEntity<ApiSuccessResponse> createPaymentMethod(@RequestBody PaymentMethodRequest request) {
-        paymentMethodService.createOnePaymentMethod(request);
+        paymentMethodService.createNewPaymentMethod(request);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new ApiSuccessResponse("Payment Method added successfully", true));
     }
+
+    @PostMapping("/new-payment-method")
+    ResponseEntity<ApiSuccessResponse> createAnotherPaymentMethod(@RequestBody PaymentMethodRequest request) {
+        paymentMethodService.createAnotherPaymentMethod(request);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new ApiSuccessResponse("Payment Method added successfully", true));
+    }
+
+
     @GetMapping("/payment/mobile-money-providers")
     public List<MobileMoneyServiceProvider> getMobileMoneyProviders() {
         return Arrays.asList(MobileMoneyServiceProvider.values());
