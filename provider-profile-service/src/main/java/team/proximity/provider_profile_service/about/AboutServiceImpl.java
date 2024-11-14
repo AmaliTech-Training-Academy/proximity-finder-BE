@@ -27,7 +27,6 @@ public class AboutServiceImpl implements AboutService {
     public void createOneAbout(AboutRequest aboutRequest) throws IOException {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("Authentication: " + authentication.getName());
         aboutValidator.validate(aboutRequest);
         fileValidator.validate(aboutRequest.businessIdentityCardFile());
         fileValidator.validate(aboutRequest.businessCertificateFile());
