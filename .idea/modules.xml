@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/proximity-finder-BE.iml" filepath="$PROJECT_DIR$/.idea/proximity-finder-BE.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/service-provider-profile.main.iml" filepath="$PROJECT_DIR$/.idea/modules/service-provider-profile.main.iml" />
     </modules>
   </component>
 </project>
