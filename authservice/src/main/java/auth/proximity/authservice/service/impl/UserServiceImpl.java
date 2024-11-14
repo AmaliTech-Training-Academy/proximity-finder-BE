@@ -1,7 +1,6 @@
 package auth.proximity.authservice.service.impl;
 
 import auth.proximity.authservice.dto.AdminUpdatePasswordRequest;
-import auth.proximity.authservice.dto.ProfilePictureUpdateRequest;
 import auth.proximity.authservice.dto.UserDto;
 import auth.proximity.authservice.entity.AppRole;
 import auth.proximity.authservice.entity.Role;
@@ -10,6 +9,7 @@ import auth.proximity.authservice.exception.ResourceNotFoundException;
 import auth.proximity.authservice.exception.UserAlreadyExistsException;
 import auth.proximity.authservice.repository.RoleRepository;
 import auth.proximity.authservice.repository.UserRepository;
+import auth.proximity.authservice.security.service.UserDetailsImpl;
 import auth.proximity.authservice.service.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -98,12 +98,13 @@ public class UserServiceImpl implements IUserService {
         user.setPassword(encoder.encode(adminUpdatePasswordRequest.newPassword()));
         userRepository.save(user);
     }
-    public void updateProfilePicture(String email, ProfilePictureUpdateRequest profilePictureUpdateRequest) {
-        User user = userRepository.findByEmail(email).orElseThrow(
-                () -> new ResourceNotFoundException("User", "email", email)
-        );
-
-//        user.setProfileImage(profilePictureUpdateRequest.file());
-        userRepository.save(user);
+    public void registerUserIfNotExists(UserDetailsImpl userDetails) {
+        if (userRepository.findByEmail(userDetails.getEmail()).isEmpty()) {
+            User user = new User();
+            user.setUserName(userDetails.getUsername());
+            user.setEmail(userDetails.getEmail());
+            userRepository.save(user);
+        }
     }
+
 }

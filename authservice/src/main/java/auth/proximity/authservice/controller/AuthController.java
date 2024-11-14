@@ -32,7 +32,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -193,6 +192,9 @@ public class AuthController {
         return ResponseEntity.ok(new ResponseDto("200", "Password updated successfully"));
     }
 
-
+    @GetMapping("/custom-login")
+    public String customLoginPage() {
+        return "login"; // return the name of your custom login page template
+    }
 
 }

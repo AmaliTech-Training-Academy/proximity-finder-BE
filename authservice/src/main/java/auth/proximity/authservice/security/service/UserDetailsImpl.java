@@ -31,6 +31,12 @@ public class UserDetailsImpl implements UserDetails {
 
     private Collection<? extends GrantedAuthority> authorities;
 
+
+    public UserDetailsImpl(String username, String email, Collection<? extends GrantedAuthority> authorities) {
+        this.username = username;
+        this.email = email;
+        this.authorities = authorities;
+    }
     public static UserDetailsImpl build(User user) {
         GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().getRoleName().name());
         return new UserDetailsImpl(
@@ -72,4 +78,5 @@ public class UserDetailsImpl implements UserDetails {
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
     }
+
 }
