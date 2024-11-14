@@ -32,12 +32,16 @@ public class SecurityConfig {
     private final JwtUtils jwtUtils;
     private final UserRepository userRepository;
     private final UserDetailsServiceImpl userDetailsService;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+    private final PasswordEncoder passwordEncoder;
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         configureCSRF(http);
         configureHttpRequests(http);
         configureAuthorizationFilter(http);
+        configureOAuth2Login(http);
         return http.build();
     }
 
@@ -46,9 +50,7 @@ public class SecurityConfig {
     }
 
     private void configureHttpRequests(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests((requests)
-                ->  requests
-                .requestMatchers("/api/auth/public/**").permitAll()
+        http.authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/api/v1/password/**").permitAll()
                 .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers("/v3/**").permitAll()
@@ -56,9 +58,22 @@ public class SecurityConfig {
     }
 
     private void configureAuthorizationFilter(HttpSecurity http) throws Exception {
-        http.addFilterBefore(new JWTAuthorizationFilter(jwtUtils, userDetailsService), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JWTAuthorizationFilter(jwtUtils, userDetailsService),
+                UsernamePasswordAuthenticationFilter.class);
     }
 
+    private void configureOAuth2Login(HttpSecurity http) throws Exception {
+       http.oauth2Login(oauth2 -> oauth2
+                .authorizationEndpoint(authorization -> authorization
+                        .baseUri("/oauth2/authorize")  // Initiate authorization request
+                )
+                .redirectionEndpoint(redirection -> redirection
+                        .baseUri("/oauth2/callback/*") // Handle Google's callback
+                )
+                .successHandler(oAuth2AuthenticationSuccessHandler)  // Custom success handler to send JWT
+                .failureHandler(oAuth2AuthenticationFailureHandler)  // Custom failure handler if needed
+        );
+    }
     @Bean
     public UserDetailsService userDetailsService(){
         return new UserDetailsServiceImpl(userRepository);
@@ -68,7 +83,7 @@ public class SecurityConfig {
     public AuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider authenticationProvider=new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsService());
-        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        authenticationProvider.setPasswordEncoder(passwordEncoder);
         return authenticationProvider;
     }
 
@@ -77,8 +92,5 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+
 }
