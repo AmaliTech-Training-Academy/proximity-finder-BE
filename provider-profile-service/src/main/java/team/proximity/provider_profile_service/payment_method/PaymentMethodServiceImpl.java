@@ -1,5 +1,7 @@
 package team.proximity.provider_profile_service.payment_method;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.proximity.provider_profile_service.exception.payment_method.PaymentMethodAlreadyExistException;
@@ -24,6 +26,7 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
     }
 
     public void createOnePaymentMethod(PaymentMethodRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         PaymentPreference paymentPreference = paymentPreferenceRepository.findByName(request.paymentPreference())
                 .orElseThrow(() -> new PaymentPreferenceDoesNotExist("Payment Preference not found with name: " + request.paymentPreference()));
 
@@ -32,6 +35,7 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
         }
         PaymentMethod paymentMethod = paymentMethodFactory.createPaymentMethod(request);
         paymentMethod.setPaymentPreference(paymentPreference);
+        paymentMethod.setCreatedBy(authentication.getName());
 
         paymentMethodRepository.save(paymentMethod);
     }

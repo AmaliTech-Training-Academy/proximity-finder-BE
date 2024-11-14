@@ -16,8 +16,6 @@ import lombok.Setter;
 public class BankPayment extends PaymentMethod {
 
     private String bankName;
-
-
     private String accountNumber;
 
 }

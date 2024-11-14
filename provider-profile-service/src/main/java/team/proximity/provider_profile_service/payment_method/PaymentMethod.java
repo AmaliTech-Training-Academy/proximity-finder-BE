@@ -24,10 +24,10 @@ public class PaymentMethod {
     @JoinColumn(name = "payment_preference_id", nullable = false)
     private PaymentPreference paymentPreference;
 
-
     private String accountName;
 
     private String accountAlias;
+    private String createdBy;
 }
 
 
