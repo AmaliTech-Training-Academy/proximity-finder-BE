@@ -120,7 +120,6 @@ public class ProviderServiceController {
 
         ProviderService providerService;
         if (providerServiceRequest.getId() != null) {
-            // Update existing record
             log.info("Updating existing providerService with id: {}", providerServiceRequest.getId());
             providerService = providerServiceService.updateProviderService(providerServiceRequest.getId(), providerServiceRequest);
         } else {
