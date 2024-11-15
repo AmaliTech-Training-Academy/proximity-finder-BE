@@ -18,11 +18,11 @@ public class PaymentPreferenceServiceImpl implements PaymentPreferenceService {
     }
 
     public void createOnePaymentPreference(PaymentPreferenceRequest paymentPreferenceRequest) {
-        if (paymentPreferenceRepository.findByName(paymentPreferenceRequest.name()).isPresent()) {
-            throw new PaymentPreferenceAlreadyExistException("Payment preference with name " + paymentPreferenceRequest.name() + " already exist");
+        if (paymentPreferenceRepository.findByName(paymentPreferenceRequest.paymentPreference()).isPresent()) {
+            throw new PaymentPreferenceAlreadyExistException("Payment preference with name " + paymentPreferenceRequest.paymentPreference() + " already exist");
         }
         PaymentPreference paymentPreference = new PaymentPreference();
-        paymentPreference.setName(paymentPreferenceRequest.name());
+        paymentPreference.setName(paymentPreferenceRequest.paymentPreference());
         paymentPreferenceRepository.save(paymentPreference);
 
     }
