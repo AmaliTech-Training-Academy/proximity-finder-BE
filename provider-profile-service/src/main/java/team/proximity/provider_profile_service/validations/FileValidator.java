@@ -21,6 +21,10 @@ public class FileValidator implements Validator<MultipartFile> {
     }
 
     public void validate(MultipartFile input) {
+        if (input == null || input.isEmpty()) {
+            throw new IllegalArgumentException("File is required");
+        }
+
         String contentType = input.getContentType();
         if (contentType == null || !allowedExtensions.contains(contentType)) {
             throw new FileTypeNotSupportedException("Invalid file type. Allowed types: " + allowedExtensions);
