@@ -39,21 +39,17 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         if (principal instanceof DefaultOAuth2User oauth2User) {
             Map<String, Object> attributes = oauth2User.getAttributes();
 
-            // Create a default authority - typically new users from OAuth2 get a basic role
             Set<GrantedAuthority> authorities = new HashSet<>();
-            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+            authorities.add(new SimpleGrantedAuthority("ROLE_SEEKER"));
 
-            // Create UserDetailsImpl with authorities
             UserDetailsImpl userDetails = new UserDetailsImpl(
                     (String) attributes.get("name"),
                     (String) attributes.get("email"),
                     authorities  // Pass the authorities
             );
-//            userServiceImpl.registerUserIfNotExists(userDetails);
             String token = jwtUtils.generateAccessToken(userDetails);
             log.info("Generated token {}", token);
 
-            // Redirect to frontend with the token
             response.sendRedirect(frontendUrl +"?token=" + token);
         } else {
             throw new ServletException("OAuth2 Authentication failed: unexpected principal type.");

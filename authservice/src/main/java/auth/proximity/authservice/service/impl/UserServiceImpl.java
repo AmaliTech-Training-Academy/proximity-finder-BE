@@ -1,9 +1,6 @@
 package auth.proximity.authservice.service.impl;
 
-import auth.proximity.authservice.dto.AdminUpdatePasswordRequest;
-import auth.proximity.authservice.dto.ProfilePictureUpdateRequest;
-import auth.proximity.authservice.dto.UserDto;
-import auth.proximity.authservice.dto.UserInfoResponse;
+import auth.proximity.authservice.dto.*;
 import auth.proximity.authservice.entity.AppRole;
 import auth.proximity.authservice.entity.Role;
 import auth.proximity.authservice.entity.User;
@@ -59,19 +56,20 @@ public class UserServiceImpl implements IUserService {
             throw new UserAlreadyExistsException("User already registered with given email: " + userDto.getEmail());
         }
 
-        String roleStr = userDto.getRole();
+        RequestRole roleStr = userDto.getRole();
         Role role = null;
 
         if (roleStr != null) {
-            role = switch (roleStr) {
+            switch (roleStr.toString()) {
                 case "admin" -> roleRepository.findByRoleName(AppRole.ROLE_ADMIN)
-                        .orElseThrow(() -> new ResourceNotFoundException("User", "role", roleStr));
+                        .orElseThrow(() -> new ResourceNotFoundException("User", "role", roleStr.toString()));
                 case "seeker" -> roleRepository.findByRoleName(AppRole.ROLE_SEEKER)
-                        .orElseThrow(() -> new ResourceNotFoundException("User", "role", roleStr));
+                        .orElseThrow(() -> new ResourceNotFoundException("User", "role", roleStr.toString()));
                 case "provider" -> roleRepository.findByRoleName(AppRole.ROLE_PROVIDER)
-                        .orElseThrow(() -> new ResourceNotFoundException("User", "role", roleStr));
-                default -> role;
-            };
+                        .orElseThrow(() -> new ResourceNotFoundException("User", "role", roleStr.toString()));
+                default -> {
+                }
+            }
         } else {
             throw new ResourceNotFoundException("Role", "role", null);
         }
