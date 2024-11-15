@@ -29,6 +29,16 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.badRequest().body(response);
     }
+    @ExceptionHandler(FileUploadException.class)
+    public ResponseEntity<ApiResponse<ErrorResponse>> handleFileUploadException(FileUploadException ex) {
+        logger.error("File upload error: {}", ex.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse("File Upload Error", ex.getMessage());
+        ApiResponse<ErrorResponse> response = ApiResponse.<ErrorResponse>builder()
+                .status(ApiResponseStatus.ERROR)
+                .errors(Collections.singletonList(errorResponse))
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationExceptions(MethodArgumentNotValidException ex) {
