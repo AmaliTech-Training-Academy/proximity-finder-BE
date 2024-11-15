@@ -32,4 +32,4 @@ build/
 ### VS Code ###
 .vscode/
 
-payment-service/src/main/resources/application-dev.yml
+provider-profile-service/src/main/resources/application-dev.yml
