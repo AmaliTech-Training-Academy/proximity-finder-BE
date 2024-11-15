@@ -13,22 +13,41 @@ spring:
           starttls:
             enable: true
         debug: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: "162582367708-7qt8rg58pa3l20p7868e9gf1r48m9vei.apps.googleusercontent.com"
+            client-secret: "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"
+            scope: profile, email
+            redirect-uri: "https://6205-154-161-11-205.ngrok-free.app/oauth2/callback/google"
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+
 
   app:
     jwtSecret: "SGEIE84358FDBOUDD723HE084HTDF713EGSJDIG5HS72GSD91BSAIFSY3EESDT5TGVKLNA9363BA3E"
+    baseurl: "https://6205-154-161-11-205.ngrok-free.app"
+    oauth2FrontendUrl: "http://localhost:4200"
   datasource:
     url: jdbc:postgresql://localhost/user-service_db
     username: postgres
-    password: deeplearning89629202@#$!
+    password: AhZu@#2024
   jpa:
     hibernate:
       ddl-auto: create
     show-sql: true
+
 management:
   endpoints:
     web:
       exposure:
         include: "*"
+
 aws:
   accessKeyId: AKIAYS2NQEZAT47GJVPQ
   secretAccessKey: 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
@@ -36,24 +55,28 @@ aws:
     bucketName: gtp-group-three-lms
     region: us-east-2
 
-#eureka:
-#  instance:
-#    prefer-ip-address: true
-#  client:
-#    fetch-registry: true
-#    register-with-eureka: true
-#    service-url:
-#      defaultZone: http://localhost:8070/eureka/
+# Uncomment these settings if Eureka is in use
+# eureka:
+#   instance:
+#     prefer-ip-address: true
+#   client:
+#     fetch-registry: true
+#     register-with-eureka: true
+#     service-url:
+#       defaultZone: http://localhost:8070/eureka/
 
-#logging:
-#  level:
-#    org:
-#      springframework:
-#        security: TRACE
-#        web: TRACE
-
+# Uncomment for detailed logging in specific packages
+# logging:
+#   level:
+#     org:
+#       springframework:
+#         security: TRACE
+#         web: TRACE
 
 email:
-  from-address: Proximity Team <samuel.amo@amalitechtraining.org>
+  from-address: "Proximity Team <samuel.amo@amalitechtraining.org>"
   subject: Reset Your Password
   reset-url: http://localhost:4200/reset-password?token=
+
+server:
+  port: 8082

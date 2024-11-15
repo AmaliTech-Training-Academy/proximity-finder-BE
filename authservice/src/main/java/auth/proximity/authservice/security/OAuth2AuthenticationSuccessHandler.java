@@ -49,7 +49,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                     (String) attributes.get("email"),
                     authorities  // Pass the authorities
             );
-            userServiceImpl.registerUserIfNotExists(userDetails);
+//            userServiceImpl.registerUserIfNotExists(userDetails);
             String token = jwtUtils.generateAccessToken(userDetails);
             log.info("Generated token {}", token);
 

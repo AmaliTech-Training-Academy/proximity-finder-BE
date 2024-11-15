@@ -6,7 +6,7 @@ import auth.proximity.authservice.entity.User;
 import auth.proximity.authservice.security.dto.LoginRequest;
 import auth.proximity.authservice.security.dto.LoginResponse;
 import auth.proximity.authservice.security.dto.RefreshTokenResponse;
-import auth.proximity.authservice.security.dto.UserInfoResponse;
+import auth.proximity.authservice.security.dto.InfoResponse;
 import auth.proximity.authservice.security.jwt.JwtConstants;
 import auth.proximity.authservice.security.jwt.JwtUtils;
 import auth.proximity.authservice.security.service.UserDetailsImpl;
@@ -67,7 +67,7 @@ public class AuthController {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
-        UserInfoResponse response = new UserInfoResponse(
+        InfoResponse response = new InfoResponse(
                 user.getUserId(),
                 user.getUserName(),
                 user.getEmail(),
@@ -192,9 +192,12 @@ public class AuthController {
         return ResponseEntity.ok(new ResponseDto("200", "Password updated successfully"));
     }
 
-    @GetMapping("/custom-login")
-    public String customLoginPage() {
-        return "login"; // return the name of your custom login page template
+    @GetMapping("/info")
+    public ResponseEntity<UserInfoResponse> getUserInfo(@RequestParam String email) {
+        UserInfoResponse userInfoResponse = userService.getUserInfo(email);
+        return ResponseEntity.ok(userInfoResponse);
     }
+
+
 
 }

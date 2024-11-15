@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserInfoResponse {
+public class InfoResponse {
 
     private Long id;
     private String username;

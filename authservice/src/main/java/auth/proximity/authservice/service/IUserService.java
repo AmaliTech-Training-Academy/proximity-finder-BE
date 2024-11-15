@@ -3,9 +3,12 @@ package auth.proximity.authservice.service;
 import auth.proximity.authservice.dto.AdminUpdatePasswordRequest;
 import auth.proximity.authservice.dto.ProfilePictureUpdateRequest;
 import auth.proximity.authservice.dto.UserDto;
+import auth.proximity.authservice.dto.UserInfoResponse;
 import auth.proximity.authservice.entity.User;
 
 public interface IUserService {
+
+    public UserInfoResponse getUserInfo(String email);
 
     /**
      *
