@@ -62,6 +62,18 @@ public class PaymentGlobalExceptionHandler {
         LOGGER.error(exception.getMessage(), exception);
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
+    @ExceptionHandler(PaymentMethodCreationException.class)
+    public ResponseEntity<ApiErrorResponse> handlePaymentMethodCreationException(PaymentMethodCreationException exception, HttpServletRequest request) {
+        ApiErrorResponse errorResponse = new ApiErrorResponse(
+                request.getRequestURI(),
+                exception.getMessage(),
+                HttpStatus.BAD_REQUEST.value(),
+                LocalDateTime.now()
+        );
+
+        LOGGER.error(exception.getMessage(), exception);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleGlobalException(Exception exception, HttpServletRequest request) {
