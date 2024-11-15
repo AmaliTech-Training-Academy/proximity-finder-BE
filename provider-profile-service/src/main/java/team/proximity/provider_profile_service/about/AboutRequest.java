@@ -1,12 +1,14 @@
 package team.proximity.provider_profile_service.about;
 
 import jakarta.validation.constraints.*;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.Set;
 
 
+@Validated
 public record AboutRequest(
         @NotNull(message = "Inception date is required")
         @PastOrPresent(message = "Inception date must be in the past or present")
@@ -18,11 +20,8 @@ public record AboutRequest(
         @Min(value = 1, message = "Number of employees must be at least 1")
         Integer numberOfEmployees,
 
-        @NotNull(message = "Business identity card file is required")
-        MultipartFile businessIdentityCardFile,
-
-        @NotNull(message = "Business certificate file is required")
-        MultipartFile businessCertificateFile,
+        MultipartFile businessIdentityCard,
+        MultipartFile businessCertificate,
 
         @NotNull(message = "Business summary is required")
         @NotBlank(message = "Business summary cannot be blank")
