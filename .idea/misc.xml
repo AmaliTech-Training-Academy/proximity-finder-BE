@@ -8,7 +8,8 @@
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
-         feature/get-current-user
+        <option value="$PROJECT_DIR$/eurekaserver/pom.xml" />
+        <option value="$PROJECT_DIR$/authservice/pom.xml" />
         <option value="$PROJECT_DIR$/management/pom.xml" />
       </list>
     </option>

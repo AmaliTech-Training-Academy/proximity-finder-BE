@@ -28,17 +28,17 @@ public class ProviderServiceController {
         this.providerServiceService = providerServiceService;
     }
 
-    @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<ApiResponse<ProviderService>> createProviderService(@Validated @ModelAttribute ProviderServiceRequest providerServiceRequest) throws JsonProcessingException {
-        log.info("Creating new providerService with request: {}", providerServiceRequest);
-        ProviderService createdProviderService = providerServiceService.createProviderService(providerServiceRequest);
-        log.debug("Created providerService: {}", createdProviderService);
-        ApiResponse<ProviderService> response = ApiResponse.<ProviderService>builder()
-                .status(ApiResponseStatus.SUCCESS)
-                .result(createdProviderService)
-                .build();
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
+//    @PostMapping(consumes = "multipart/form-data")
+//    public ResponseEntity<ApiResponse<ProviderService>> createProviderService(@Validated @ModelAttribute ProviderServiceRequest providerServiceRequest) throws JsonProcessingException {
+//        log.info("Creating new providerService with request: {}", providerServiceRequest);
+//        ProviderService createdProviderService = providerServiceService.createProviderService(providerServiceRequest);
+//        log.debug("Created providerService: {}", createdProviderService);
+//        ApiResponse<ProviderService> response = ApiResponse.<ProviderService>builder()
+//                .status(ApiResponseStatus.SUCCESS)
+//                .result(createdProviderService)
+//                .build();
+//        return new ResponseEntity<>(response, HttpStatus.CREATED);
+//    }
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<ProviderService>> updateProviderService(@PathVariable UUID id, @RequestBody ProviderServiceRequest providerService) {
@@ -113,5 +113,27 @@ public class ProviderServiceController {
                     .build();
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
+    }
+    @PostMapping(consumes = "multipart/form-data")
+    public ResponseEntity<ApiResponse<ProviderService>> createOrUpdateProviderService(@Validated @ModelAttribute ProviderServiceRequest providerServiceRequest) throws JsonProcessingException {
+        log.info("Processing providerService request: {}", providerServiceRequest);
+
+        ProviderService providerService;
+        if (providerServiceRequest.getId() != null) {
+            // Update existing record
+            log.info("Updating existing providerService with id: {}", providerServiceRequest.getId());
+            providerService = providerServiceService.updateProviderService(providerServiceRequest.getId(), providerServiceRequest);
+        } else {
+            // Create new record
+            log.info("Creating new providerService");
+            providerService = providerServiceService.createProviderService(providerServiceRequest);
+        }
+
+        log.debug("Processed providerService: {}", providerService);
+        ApiResponse<ProviderService> response = ApiResponse.<ProviderService>builder()
+                .status(ApiResponseStatus.SUCCESS)
+                .result(providerService)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 }

@@ -9,13 +9,12 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-@Data
 @Entity
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Document {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -28,6 +27,4 @@ public class Document {
     private String fileName;
     private String url;
     private LocalDateTime uploadedAt;
-
-    // Getters and Setters
 }

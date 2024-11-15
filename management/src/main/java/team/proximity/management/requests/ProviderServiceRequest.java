@@ -11,6 +11,7 @@ import java.util.UUID;
 
 @Data
 public class ProviderServiceRequest {
+    private UUID id;
     @NotNull(message = "User must be specified")
     private UUID userId;
     @NotNull(message = "Service must be specified")

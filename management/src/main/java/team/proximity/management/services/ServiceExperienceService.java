@@ -3,6 +3,7 @@ package team.proximity.management.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
+import team.proximity.management.exceptions.FileUploadException;
 import team.proximity.management.exceptions.ResourceNotFoundException;
 import team.proximity.management.model.ProviderService;
 import team.proximity.management.model.ServiceExperience;
@@ -46,18 +47,16 @@ public class ServiceExperienceService {
         try {
             return s3Service.uploadFile(file);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to upload file to S3", e);
+            throw new FileUploadException("Failed to upload file to S3", e);
         }
     }
 
-    // Helper method to convert List<MultipartFile> to List<String> URLs
     private List<String> uploadImages(List<MultipartFile> files) {
         return files.stream()
                 .map(this::uploadFileToS3)
                 .collect(Collectors.toList());
     }
 
-    // Method to create a new ServiceExperience
     public ServiceExperience createServiceExperience( ServiceExperienceRequest request) {
         log.info("Creating service experience: {}", request);
         Optional<ProviderService> providerServiceOpt = providerServiceRepository.findById(request.getProviderServiceId());
@@ -83,7 +82,6 @@ public class ServiceExperienceService {
         return repository.save(serviceExperience);
     }
 
-    // Method to update an existing ServiceExperience
     public Optional<ServiceExperience> updateServiceExperience(Long id, ServiceExperienceRequest request) {
         return repository.findById(id).map(existing -> {
             return getServiceExperience(request, existing);
