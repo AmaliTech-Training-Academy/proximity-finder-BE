@@ -9,4 +9,7 @@ import java.util.Optional;
 @Repository
 public interface AboutRepository extends JpaRepository<About, Long> {
     Optional<About> findByInceptionDate(LocalDate inceptionDate);
+
+
+    Optional<About> findByCreatedBy(String createdBy);
 }
