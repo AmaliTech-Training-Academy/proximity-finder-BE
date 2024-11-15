@@ -185,13 +185,6 @@ public class AuthController {
         }
     }
 
-
-    @PostMapping("/public/update-password")
-    public ResponseEntity<ResponseDto> forgotPassword(@RequestParam String email, @RequestBody AdminUpdatePasswordRequest adminUpdatePasswordRequest) {
-        userService.updatePassword(email,adminUpdatePasswordRequest);
-        return ResponseEntity.ok(new ResponseDto("200", "Password updated successfully"));
-    }
-
     @GetMapping("/info")
     public ResponseEntity<UserInfoResponse> getUserInfo(@RequestParam String email) {
         UserInfoResponse userInfoResponse = userService.getUserInfo(email);

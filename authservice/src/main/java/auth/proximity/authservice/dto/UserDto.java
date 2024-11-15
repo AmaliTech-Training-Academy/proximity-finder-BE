@@ -32,7 +32,7 @@ public class UserDto {
     private String email;
 
 
-    @Pattern(regexp="(^$|[0-9]{10})", message = "Mobile Number must be 10 digits")
+    @Pattern(regexp="(^\\+?[1-9]\\d{1,3}[-\\s]?(\\(?\\d{1,4}\\)?[-\\s]?)?\\d{6,10}$)", message = "Mobile Number must be 10 digits")
     @Schema(
             description = "Mobile Number of the user", example = "0209187470"
     )
@@ -60,6 +60,6 @@ public class UserDto {
     @Schema(
             description = "Role of the user", example = "seeker"
     )
-    private String role;
+    private RequestRole role;
 
 }
