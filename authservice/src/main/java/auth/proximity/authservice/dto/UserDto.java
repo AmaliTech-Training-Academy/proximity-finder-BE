@@ -2,10 +2,7 @@ package auth.proximity.authservice.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -54,8 +51,7 @@ public class UserDto {
     )
     private String businessOwnerName;
 
-    @NotEmpty(message = "Role can not be  null or empty")
-    @Column(name = "password")
+    @NotNull(message = "Role can not be  null or empty")
     @Schema(
             description = "Role of the user", example = "seeker"
     )

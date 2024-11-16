@@ -52,6 +52,7 @@ public class SecurityConfig {
     private void configureHttpRequests(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((requests)
                 ->  requests
+                .requestMatchers("/").permitAll()
                 .requestMatchers("/api/auth/public/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/v1/password/**").permitAll()
