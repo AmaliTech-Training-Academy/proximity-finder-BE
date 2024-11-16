@@ -33,3 +33,4 @@ build/
 .vscode/
 
 provider-profile-service/src/main/resources/application-dev.yml
+.env
