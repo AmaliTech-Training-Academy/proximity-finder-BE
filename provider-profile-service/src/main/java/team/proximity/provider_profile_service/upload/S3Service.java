@@ -1,4 +1,4 @@
-package team.proximity.provider_profile_service.storage;
+package team.proximity.provider_profile_service.upload;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -10,7 +10,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import java.io.IOException;
 
 @Service
-public class S3Service implements FileStorageService {
+public class S3Service implements FileUploadService {
 
     private final S3Client s3Client;
 

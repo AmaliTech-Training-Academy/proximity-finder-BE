@@ -3,13 +3,9 @@ package team.proximity.provider_profile_service.about;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import team.proximity.provider_profile_service.common.AuthHelper;
-import team.proximity.provider_profile_service.exception.about.AboutGlobalExceptionHandler;
-import team.proximity.provider_profile_service.storage.FileStorageService;
+import team.proximity.provider_profile_service.upload.FileUploadService;
 import team.proximity.provider_profile_service.validations.AboutValidator;
 import team.proximity.provider_profile_service.validations.FileValidator;
 
@@ -22,12 +18,12 @@ public class AboutServiceImpl implements AboutService {
 
     private final Logger LOGGER = LoggerFactory.getLogger(AboutServiceImpl.class);
 
-    private final FileStorageService fileStorageService;
+    private final FileUploadService fileStorageService;
     private final AboutRepository aboutRepository;
     private final FileValidator fileValidator;
     private final AboutValidator aboutValidator;
 
-    public AboutServiceImpl(FileStorageService fileStorageService, AboutRepository aboutRepository, FileValidator fileValidator, AboutValidator aboutValidator) {
+    public AboutServiceImpl(FileUploadService fileStorageService, AboutRepository aboutRepository, FileValidator fileValidator, AboutValidator aboutValidator) {
         this.fileStorageService = fileStorageService;
         this.aboutRepository = aboutRepository;
         this.fileValidator = fileValidator;

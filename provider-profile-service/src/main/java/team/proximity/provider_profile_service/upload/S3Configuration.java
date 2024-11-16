@@ -1,4 +1,4 @@
-package team.proximity.provider_profile_service.storage;
+package team.proximity.provider_profile_service.upload;
 
 
 import org.springframework.beans.factory.annotation.Value;

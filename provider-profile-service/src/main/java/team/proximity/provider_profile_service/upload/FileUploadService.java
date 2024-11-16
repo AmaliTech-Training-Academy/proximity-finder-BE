@@ -1,9 +1,9 @@
-package team.proximity.provider_profile_service.storage;
+package team.proximity.provider_profile_service.upload;
 
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
-public interface FileStorageService {
+public interface FileUploadService {
     String uploadFile(MultipartFile file) throws IOException;
 }

@@ -6,7 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
-import team.proximity.provider_profile_service.storage.FileStorageService;
+import team.proximity.provider_profile_service.upload.FileUploadService;
 import team.proximity.provider_profile_service.validations.AboutValidator;
 import team.proximity.provider_profile_service.validations.FileValidator;
 
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class AboutServiceImplTest {
     @Mock
-    private FileStorageService fileStorageService;
+    private FileUploadService fileStorageService;
 
     @Mock
     private AboutRepository aboutRepository;
