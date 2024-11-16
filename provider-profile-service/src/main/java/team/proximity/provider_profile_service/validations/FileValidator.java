@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import team.proximity.provider_profile_service.exception.payment_method.FileTypeNotSupportedException;
 
+import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -11,23 +12,16 @@ import java.util.stream.Stream;
 @Component
 public class FileValidator implements Validator<MultipartFile> {
 
-    private final Set<String> allowedExtensions;
 
-
-    public FileValidator() {
-        this.allowedExtensions = Stream.of(SupportedFileType.JPEG, SupportedFileType.PNG, SupportedFileType.PDF)
-                .map(SupportedFileType::getFileExtension)
-                .collect(Collectors.toSet());
-    }
-
-    public void validate(MultipartFile input) {
-        if (input == null || input.isEmpty()) {
+    public void validate(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("File is required");
         }
 
-        String contentType = input.getContentType();
-        if (contentType == null || !allowedExtensions.contains(contentType)) {
-            throw new FileTypeNotSupportedException("Invalid file type. Allowed types: " + allowedExtensions);
+        String contentType = file.getContentType();
+        if (contentType == null || SupportedFileType.fromMineType(contentType).isEmpty()) {
+            throw new FileTypeNotSupportedException("Invalid file type. Allowed types: "
+                    + Arrays.toString(SupportedFileType.values()));
         }
     }
 }
