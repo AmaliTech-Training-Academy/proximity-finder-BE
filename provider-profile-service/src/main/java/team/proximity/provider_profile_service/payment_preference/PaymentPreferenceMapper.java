@@ -8,7 +8,7 @@ public class PaymentPreferenceMapper {
     public PaymentPreferenceResponse mapToPaymentPreferenceResponse(PaymentPreference paymentPreference) {
         return new PaymentPreferenceResponse(
                 paymentPreference.getId(),
-                paymentPreference.getName()
+                paymentPreference.getPreference()
         );
     }
 }
