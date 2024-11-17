@@ -19,17 +19,12 @@ public class About {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long businessId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    @Column(nullable = false)
     private LocalDate inceptionDate;
     @ElementCollection
     private Set<String> socialMediaLinks;
     private Integer numberOfEmployees;
-    @Column(nullable = false)
     private String businessIdentityCard;
-    @Column(nullable = false)
     private String businessCertificate;
-    @Column(nullable = false)
     private String businessSummary;
-    @Column(nullable = false)
     private String createdBy;
 }
