@@ -1,7 +1,6 @@
 package team.proximity.provider_profile_service.exception.about;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -15,7 +14,6 @@ import team.proximity.provider_profile_service.exception.payment_method.FileType
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -95,6 +93,7 @@ public class AboutGlobalExceptionHandler {
                         Collectors.mapping(FieldError::getDefaultMessage, Collectors.toList())
                 ));
 
+        LOGGER.error("Validation failed for request to {}: {}", request.getRequestURI(), fieldErrors);
         ApiErrorResponse response = new ApiErrorResponse(
                 request.getRequestURI(),
                 "Validation failed: " + fieldErrors,
