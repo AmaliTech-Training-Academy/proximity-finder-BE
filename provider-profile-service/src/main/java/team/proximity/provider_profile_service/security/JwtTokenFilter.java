@@ -36,23 +36,28 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String token = extractToken(request);
-        if (token != null) {
-            try {
+        try {
+            String token = extractToken(request);
+            if (token != null) {
                 Claims claims = parseClaims(token);
                 setAuthentication(claims, request);
-            } catch (Exception e) {
-                logger.error("Invalid JWT Token: {}", e.getMessage());
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT Token");
-                return;
             }
+            filterChain.doFilter(request, response);
+        } catch (Exception e) {
+            logger.error("JWT Processing Failed: {}", e.getMessage());
+
+            SecurityContextHolder.clearContext();
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT Token");
+
         }
-        filterChain.doFilter(request, response);
     }
 
     private String extractToken(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
-        return (authHeader != null && authHeader.startsWith("Bearer ")) ? authHeader.substring(7) : null;
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            return authHeader.substring(7);
+        }
+        return null;
     }
 
     private Claims parseClaims(String token) {
@@ -67,8 +72,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         String email = claims.getSubject();
         if (email != null) {
             List<GrantedAuthority> authorities = getAuthoritiesFromClaims(claims);
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(email, null, authorities);
+            var authentication = new UsernamePasswordAuthenticationToken(email, null, authorities);
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -84,6 +88,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private Key getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
-        return Keys.hmacShaKeyFor(keyBytes);
+        return Keys.hmacShaKeyFor(keyBytes); // This is your JWT signing key
     }
 }
+
+
+
+
