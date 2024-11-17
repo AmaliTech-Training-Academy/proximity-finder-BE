@@ -18,76 +18,47 @@ public class PaymentGlobalExceptionHandler {
 
     @ExceptionHandler(PaymentPreferenceAlreadyExistException.class)
     public ResponseEntity<ApiErrorResponse> handlePaymentPreferenceAlreadyExistException(PaymentPreferenceAlreadyExistException exception, HttpServletRequest request) {
-        ApiErrorResponse errorResponse = new ApiErrorResponse(
-                request.getRequestURI(),
-                exception.getMessage(),
-                HttpStatus.CONFLICT.value(),
-                LocalDateTime.now()
-        );
-
-        LOGGER.error(exception.getMessage(), exception);
-        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+        LOGGER.error("Payment Preference already exists: {}", exception.getMessage(), exception);
+        return buildErrorResponse(exception, request, HttpStatus.CONFLICT);
     }
+
     @ExceptionHandler(PaymentPreferenceDoesNotExist.class)
     public ResponseEntity<ApiErrorResponse> handlePaymentPreferenceDoesNotExist(PaymentPreferenceDoesNotExist exception, HttpServletRequest request) {
-        ApiErrorResponse errorResponse = new ApiErrorResponse(
-                request.getRequestURI(),
-                exception.getMessage(),
-                HttpStatus.BAD_REQUEST.value(),
-                LocalDateTime.now()
-        );
-
-        LOGGER.error(exception.getMessage(), exception);
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        LOGGER.error("Payment Preference not found: {}", exception.getMessage(), exception);
+        return buildErrorResponse(exception, request, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(UnsupportedPaymentPreference.class)
     public ResponseEntity<ApiErrorResponse> handleUnsupportedPaymentPreference(UnsupportedPaymentPreference exception, HttpServletRequest request) {
-        ApiErrorResponse errorResponse = new ApiErrorResponse(
-                request.getRequestURI(),
-                exception.getMessage(),
-                HttpStatus.BAD_REQUEST.value(),
-                LocalDateTime.now()
-        );
-        LOGGER.error(exception.getMessage(), exception);
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        LOGGER.error("Unsupported Payment Preference: {}", exception.getMessage(), exception);
+        return buildErrorResponse(exception, request, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(PaymentMethodAlreadyExistException.class)
     public ResponseEntity<ApiErrorResponse> handlePaymentMethodAlreadyExistException(PaymentMethodAlreadyExistException exception, HttpServletRequest request) {
-        ApiErrorResponse errorResponse = new ApiErrorResponse(
-                request.getRequestURI(),
-                exception.getMessage(),
-                HttpStatus.CONFLICT.value(),
-                LocalDateTime.now()
-        );
-        LOGGER.error(exception.getMessage(), exception);
-        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+        LOGGER.error("Payment Method already exists: {}", exception.getMessage(), exception);
+        return buildErrorResponse(exception, request, HttpStatus.CONFLICT);
     }
+
     @ExceptionHandler(PaymentMethodCreationException.class)
     public ResponseEntity<ApiErrorResponse> handlePaymentMethodCreationException(PaymentMethodCreationException exception, HttpServletRequest request) {
-        ApiErrorResponse errorResponse = new ApiErrorResponse(
-                request.getRequestURI(),
-                exception.getMessage(),
-                HttpStatus.BAD_REQUEST.value(),
-                LocalDateTime.now()
-        );
-
-        LOGGER.error(exception.getMessage(), exception);
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        LOGGER.error("Error creating payment method: {}", exception.getMessage(), exception);
+        return buildErrorResponse(exception, request, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleGlobalException(Exception exception, HttpServletRequest request) {
+        LOGGER.error("Unexpected error occurred: {}", exception.getMessage(), exception);
+        return buildErrorResponse(exception, request, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    private ResponseEntity<ApiErrorResponse> buildErrorResponse(Exception exception, HttpServletRequest request, HttpStatus status) {
         ApiErrorResponse errorResponse = new ApiErrorResponse(
                 request.getRequestURI(),
                 exception.getMessage(),
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                status.value(),
                 LocalDateTime.now()
         );
-
-        LOGGER.error(exception.getMessage(), exception);
-        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(errorResponse, status);
     }
 }
-
-
-
