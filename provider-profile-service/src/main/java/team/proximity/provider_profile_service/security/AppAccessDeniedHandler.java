@@ -29,7 +29,7 @@ public class AppAccessDeniedHandler implements AccessDeniedHandler {
                 .statusCode(HttpStatus.FORBIDDEN.value())
                 .build();
 
-  
+
         response.setStatus(HttpStatus.FORBIDDEN.value());
         response.setContentType("application/json");
         ObjectMapper objectMapper = new ObjectMapper();
