@@ -63,6 +63,8 @@ public class AboutServiceImpl implements AboutService {
 
         LOGGER.info("Successfully created About record for user: {}", AuthHelper.getAuthenticatedUsername());
     }
+
+
 }
 
 
