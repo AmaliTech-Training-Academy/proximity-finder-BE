@@ -4,7 +4,7 @@ package team.proximity.provider_profile_service.payment_method;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record PaymentMethodRequest(
-        @Schema(description = "The payment preference type. Options: Bank Account, PayPal, Mobile Money")
+
         String paymentPreference,
 
         @Schema(description = "The name of the bank, required if payment preference is Bank Account", example = "Fidelity Bank")
@@ -21,8 +21,7 @@ public record PaymentMethodRequest(
 
         @Schema(description = "The service provider, required if payment preference is Mobile Money", example = "MTN")
         String serviceProvider,
-
-        @Schema(description = "The mobile number, required if payment preference is Mobile Money", example = "0551234567")
-        String mobileNumber
+        @Schema(description = "Phone Number, required if payment preference is Mobile Money")
+        String phoneNumber
 ) {}
 
