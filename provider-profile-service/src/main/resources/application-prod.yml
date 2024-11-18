@@ -1,17 +1,24 @@
 spring:
+  profiles:
+    active: prod
+
   app:
     jwtSecret: ${JWT_SECRET}
   application:
     name: service-provider-profile
+
   datasource:
     url: ${POSTGRES_URL}
     username: ${POSTGRES_USERNAME}
     password: ${POSTGRES_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: create
-    show-sql: true
+      ddl-auto: update
 
+  servlet:
+    multipart:
+      max-file-size: 400MB
+      max-request-size: 400MB
 
 aws:
   accessKeyId: ${S3_ACCESS_KEY_ID}
@@ -19,6 +26,25 @@ aws:
   s3:
     bucketName: ${BUCKET_NAME}
     region: us-east-2
+
 server:
   port: ${PROD_PORT}
 
+management:
+
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+eureka-server:
+  port: ${EUREKA_PORT}
+
+eureka:
+  instance:
+    hostname: ${EUREKA_HOSTNAME}
+  client:
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${eureka-server.port}/eureka/
+    register-with-eureka: true
+    fetch-registry: true
