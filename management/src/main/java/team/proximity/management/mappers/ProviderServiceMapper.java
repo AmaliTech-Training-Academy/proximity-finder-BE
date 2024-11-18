@@ -58,9 +58,13 @@ public class ProviderServiceMapper {
     }
 
     private ProviderService buildPreferenceFromDTO(ProviderServiceRequest dto, List<BookingDayRequest> bookingDays) {
-        Optional<Services> service = servicesRepository.findById(dto.getServiceId());
+        Optional<Services> service = servicesRepository.findByName(dto.getServiceName());
         if (service.isEmpty()) {
-            throw new ResourceNotFoundException("Service not found");
+            Services newService = Services.builder()
+                    .name(dto.getServiceName())
+                    .build();
+            newService = servicesRepository.save(newService);
+            service = Optional.of(newService);
         }
         return ProviderService.builder()
                 .userId(dto.getUserId())

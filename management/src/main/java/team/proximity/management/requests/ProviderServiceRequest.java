@@ -15,7 +15,7 @@ public class ProviderServiceRequest {
     @NotNull(message = "User must be specified")
     private UUID userId;
     @NotNull(message = "Service must be specified")
-    private UUID serviceId;
+    private String serviceName;
     @NotBlank(message = "Payment preference must be specified")
     private String paymentPreference;
     @NotBlank(message = "Location must be specified")

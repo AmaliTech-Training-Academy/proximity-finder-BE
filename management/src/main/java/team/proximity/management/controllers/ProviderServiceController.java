@@ -20,13 +20,14 @@ import java.util.UUID;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/providerServices")
+@RequestMapping("/api/v1/provider-services")
 public class ProviderServiceController {
     private final ProviderServiceService providerServiceService;
 
     public ProviderServiceController(ProviderServiceService providerServiceService) {
         this.providerServiceService = providerServiceService;
     }
+
 
 
     @PutMapping("/{id}")
