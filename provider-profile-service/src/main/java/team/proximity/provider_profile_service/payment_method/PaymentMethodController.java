@@ -25,6 +25,19 @@ public class PaymentMethodController {
         this.paymentMethodService = paymentMethodService;
     }
 
+    @Operation(summary = "Get a list of all payment methods for the authenticated user")
+    @SecurityRequirement(name = "BearerAuth")
+    @GetMapping
+    public List<PaymentMethodResponse> getPaymentMethodsForAuthenticatedUser() {
+        return paymentMethodService.getPaymentMethodsForAuthenticatedUser();
+    }
+
+    @Operation(summary = "Get a list of all accepted mobile money providers")
+    @GetMapping("/providers/mobile-money-providers")
+    public List<MobileMoneyServiceProvider> getMobileMoneyProviders() {
+        return Arrays.asList(MobileMoneyServiceProvider.values());
+    }
+
     @Operation(
             summary = "Add Payment Method During Registration",
             description = "Create a new payment method based on the payment preference selected",
@@ -74,13 +87,5 @@ public class PaymentMethodController {
                 .body(new ApiSuccessResponse("Payment Method added successfully", true));
     }
 
-
-
-
-    @Operation(summary = "Get a list of all accepted mobile money providers")
-    @GetMapping("/providers/mobile-money-providers")
-    public List<MobileMoneyServiceProvider> getMobileMoneyProviders() {
-        return Arrays.asList(MobileMoneyServiceProvider.values());
-    }
 
 }
