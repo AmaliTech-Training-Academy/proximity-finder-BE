@@ -19,7 +19,5 @@ public class MobileMoneyPayment extends PaymentMethod {
 
     @Enumerated(EnumType.STRING)
     private MobileMoneyServiceProvider serviceProvider;
-
-    private String mobileNumber;
-
+    private String phoneNumber;
 }

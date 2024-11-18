@@ -26,6 +26,5 @@ public class About {
     private String businessIdentityCard;
     private String businessCertificate;
     private String businessSummary;
-
     private String createdBy;
 }

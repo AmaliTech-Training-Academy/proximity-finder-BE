@@ -28,17 +28,6 @@ public class ProviderServiceController {
         this.providerServiceService = providerServiceService;
     }
 
-//    @PostMapping(consumes = "multipart/form-data")
-//    public ResponseEntity<ApiResponse<ProviderService>> createProviderService(@Validated @ModelAttribute ProviderServiceRequest providerServiceRequest) throws JsonProcessingException {
-//        log.info("Creating new providerService with request: {}", providerServiceRequest);
-//        ProviderService createdProviderService = providerServiceService.createProviderService(providerServiceRequest);
-//        log.debug("Created providerService: {}", createdProviderService);
-//        ApiResponse<ProviderService> response = ApiResponse.<ProviderService>builder()
-//                .status(ApiResponseStatus.SUCCESS)
-//                .result(createdProviderService)
-//                .build();
-//        return new ResponseEntity<>(response, HttpStatus.CREATED);
-//    }
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<ProviderService>> updateProviderService(@PathVariable UUID id, @RequestBody ProviderServiceRequest providerService) {

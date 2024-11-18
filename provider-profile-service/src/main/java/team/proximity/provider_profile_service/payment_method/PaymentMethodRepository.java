@@ -6,12 +6,15 @@ import org.springframework.data.repository.query.Param;
 import team.proximity.provider_profile_service.payment_preference.PaymentPreference;
 
 
+import java.util.List;
 import java.util.Optional;
 
 public interface PaymentMethodRepository extends JpaRepository<PaymentMethod, Long> {
-    Optional<PaymentMethod> findByAccountName(String name);
 
-    Optional<PaymentMethod> findByCreatedBy(String currentUsername);
+
+
+    List<PaymentMethod> findByCreatedBy(String username);
+
 
     @Query("SELECT p FROM PaymentMethod p WHERE p.createdBy = :createdBy AND p.paymentPreference = :paymentPreference")
     Optional<PaymentMethod> findByCreatedByAndPaymentPreference(@Param("createdBy") String createdBy,

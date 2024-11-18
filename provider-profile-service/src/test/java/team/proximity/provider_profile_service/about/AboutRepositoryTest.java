@@ -1,55 +1,55 @@
 package team.proximity.provider_profile_service.about;
 
-import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.Optional;
-import java.util.Set;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@ExtendWith(MockitoExtension.class)
 @DataJpaTest
-@Transactional
 class AboutRepositoryTest {
 
     @Autowired
     private AboutRepository aboutRepository;
 
-    private About about;
+    @Test
+    void testFindByInceptionDate() {
 
-    @BeforeEach
-    public void setUp() {
-
-        about = About.builder()
-                .inceptionDate(LocalDate.of(2020, 1, 1))
-                .socialMediaLinks(Set.of("https://facebook.com", "https://twitter.com"))
-                .numberOfEmployees(100)
-                .businessSummary("Business Summary")
-                .build();
-
-
+        LocalDate inceptionDate = LocalDate.now();
+        About about = new About();
+        about.setInceptionDate(inceptionDate);
         aboutRepository.save(about);
+
+
+        Optional<About> result = aboutRepository.findByInceptionDate(inceptionDate);
+
+
+        assertTrue(result.isPresent());
+        assertEquals(inceptionDate, result.get().getInceptionDate());
     }
 
     @Test
-    public void testFindByInceptionDateWhenExistsShouldReturnAbout() {
+    void testFindByCreatedBy() {
 
-        LocalDate inceptionDate = about.getInceptionDate();
-        Optional<About> foundAbout = aboutRepository.findByInceptionDate(inceptionDate);
+        String createdBy = "test-user";
+        About about = new About();
+        about.setCreatedBy(createdBy);
+        aboutRepository.save(about);
 
-        assertThat(foundAbout).isPresent();
-        assertThat(foundAbout.get().getInceptionDate()).isEqualTo(inceptionDate);
+        Optional<About> result = aboutRepository.findByCreatedBy(createdBy);
+
+
+        assertTrue(result.isPresent());
+        assertEquals(createdBy, result.get().getCreatedBy());
     }
 
-    @Test
-    public void testFindByInceptionDateWhenNotExistsShouldReturnEmpty() {
-
-        LocalDate nonExistentDate = LocalDate.of(2021, 1, 1);
-        Optional<About> foundAbout = aboutRepository.findByInceptionDate(nonExistentDate);
-
-        assertThat(foundAbout).isEmpty();
-    }
 }

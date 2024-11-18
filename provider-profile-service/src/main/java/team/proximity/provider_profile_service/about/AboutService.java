@@ -5,5 +5,6 @@ import java.io.IOException;
 public interface AboutService {
 
     void createOneAbout(AboutRequest aboutRequest) throws IOException;
+    AboutBusinessResponse getAboutForAuthenticatedUser();
 
 }
