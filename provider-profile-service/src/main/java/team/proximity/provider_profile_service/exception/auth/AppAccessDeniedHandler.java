@@ -1,4 +1,4 @@
-package team.proximity.provider_profile_service.security;
+package team.proximity.provider_profile_service.exception.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,13 +22,11 @@ public class AppAccessDeniedHandler implements AccessDeniedHandler {
 
         logger.error("Access denied to URI: {}", request.getRequestURI());
 
-
         ApiErrorResponse apiErrorResponse = ApiErrorResponse.builder()
                 .path(request.getRequestURI())
                 .message("Access denied. You do not have permission to access this resource.")
                 .statusCode(HttpStatus.FORBIDDEN.value())
                 .build();
-
 
         response.setStatus(HttpStatus.FORBIDDEN.value());
         response.setContentType("application/json");
