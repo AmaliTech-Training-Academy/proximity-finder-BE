@@ -1,4 +1,4 @@
-package team.proximity.provider_profile_service.security;
+package team.proximity.provider_profile_service.exception.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
