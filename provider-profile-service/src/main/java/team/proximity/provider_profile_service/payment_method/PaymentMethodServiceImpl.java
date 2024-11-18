@@ -5,10 +5,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.proximity.provider_profile_service.common.AuthHelper;
+import team.proximity.provider_profile_service.exception.about.UnauthorizedAccessException;
 import team.proximity.provider_profile_service.exception.payment_method.PaymentMethodAlreadyExistException;
 import team.proximity.provider_profile_service.exception.payment_method.PaymentPreferenceDoesNotExist;
 import team.proximity.provider_profile_service.payment_preference.PaymentPreference;
 import team.proximity.provider_profile_service.payment_preference.PaymentPreferenceRepository;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -16,15 +20,29 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
 
     private static final Logger logger = LoggerFactory.getLogger(PaymentMethodServiceImpl.class);
 
+    private final PaymentMethodMapper paymentMethodMapper;
     private final PaymentMethodFactory paymentMethodFactory;
     private final PaymentMethodRepository paymentMethodRepository;
     private final PaymentPreferenceRepository paymentPreferenceRepository;
 
-    public PaymentMethodServiceImpl(PaymentMethodFactory paymentMethodFactory, PaymentMethodRepository paymentMethodRepository, PaymentPreferenceRepository paymentPreferenceRepository) {
+    public PaymentMethodServiceImpl(PaymentMethodMapper paymentMethodMapper, PaymentMethodFactory paymentMethodFactory, PaymentMethodRepository paymentMethodRepository, PaymentPreferenceRepository paymentPreferenceRepository) {
+        this.paymentMethodMapper = paymentMethodMapper;
         this.paymentMethodFactory = paymentMethodFactory;
         this.paymentMethodRepository = paymentMethodRepository;
         this.paymentPreferenceRepository = paymentPreferenceRepository;
     }
+    public List<PaymentMethodResponse> getPaymentMethodsForAuthenticatedUser() {
+        String username = AuthHelper.getAuthenticatedUsername();
+        if (username == null) {
+            throw new UnauthorizedAccessException("User is not authenticated");
+        }
+        List<PaymentMethod> paymentMethods = paymentMethodRepository.findByCreatedBy(username);
+
+        return paymentMethods.stream()
+                .map(paymentMethodMapper::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
 
     public void createAnotherPaymentMethod(PaymentMethodRequest request) {
         logger.info("Creating another payment method for user: {}", AuthHelper.getAuthenticatedUsername());
