@@ -41,13 +41,12 @@ management:
 
 eureka-server:
   port: ${EUREKA_PORT:8761}
+  hostname: ${EUREKA_HOSTNAME:localhost}
 
 eureka:
-  instance:
-    hostname: ${EUREKA_HOSTNAME:localhost}
   client:
     service-url:
-      defaultZone: http://${eureka.instance.hostname}:${eureka-server.port}/eureka/
+      defaultZone: http://${eureka-server.hostname}:${eureka-server.port}/eureka/
     register-with-eureka: true
     fetch-registry: true
     enabled: true
