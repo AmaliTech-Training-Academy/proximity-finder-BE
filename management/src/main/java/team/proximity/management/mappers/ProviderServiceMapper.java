@@ -71,7 +71,6 @@ public class ProviderServiceMapper {
                 .service(service.get())
                 .paymentPreference(dto.getPaymentPreference())
                 .location(dto.getLocation())
-                .sameLocation(dto.getSameLocation())
                 .schedulingPolicy(dto.getSchedulingPolicy())
                 .bookingDays(mapBookingDays(bookingDays))
                 .build();
@@ -80,7 +79,6 @@ public class ProviderServiceMapper {
     private void updatePreferenceFields(ProviderServiceRequest dto, ProviderService preference) {
         preference.setPaymentPreference(dto.getPaymentPreference());
         preference.setLocation(dto.getLocation());
-        preference.setSameLocation(dto.getSameLocation());
         preference.setSchedulingPolicy(dto.getSchedulingPolicy());
 //        preference.setBookingDays(mapBookingDays(dto.getBookingDays()));
     }

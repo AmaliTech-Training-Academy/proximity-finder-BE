@@ -20,8 +20,7 @@ public class ProviderServiceRequest {
     private String paymentPreference;
     @NotBlank(message = "Location must be specified")
     private String location;
-    @NotNull(message = "Scheduling policy must be specified")
-    private Boolean sameLocation;
+
     @NotBlank(message = "Scheduling policy must be specified")
     private String schedulingPolicy;
     @NotNull(message = "Booking days must be specified")

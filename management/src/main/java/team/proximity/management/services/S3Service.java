@@ -27,9 +27,9 @@ public class S3Service {
 
     public String uploadFile(MultipartFile file) throws IOException {
         // Check if the file is an image
-        if (!isValidImage(file)) {
-            throw new InvalidFileTypeException("Invalid file type. Only image files are allowed.");
-        }
+//        if (!isValidImage(file)) {
+//            throw new InvalidFileTypeException("Invalid file type. Only image files are allowed.");
+//        }
 
         // Convert MultipartFile to File
         File fileObj = convertMultiPartFileToFile(file);

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/service-experiences")
+@RequestMapping("/api/v1/service-experiences")
 public class ServiceExperienceController {
 
     private final ServiceExperienceService experienceService;
