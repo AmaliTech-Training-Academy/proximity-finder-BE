@@ -29,7 +29,6 @@ public class AppAuthenticationEntryPoint implements AuthenticationEntryPoint {
                 .statusCode(HttpStatus.UNAUTHORIZED.value())
                 .build();
 
-
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType("application/json");
 
