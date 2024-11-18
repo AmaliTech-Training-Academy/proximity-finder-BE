@@ -16,8 +16,7 @@ public record AboutRequest(
 
 
         @Size(max = 5, message = "Maximum 5 social media links allowed")
-        Set<@Pattern(regexp = "^(https?:\\/\\/)?(www\\.)?[a-zA-Z0-9-]+(\\.[a-zA-Z]{2,})+(\\/[a-zA-Z0-9-._~:/?#\\[\\]@!$&'()*+,;=]*)?$",
-                message = "Invalid social media URL format") String> socialMediaLinks,
+        Set<String> socialMediaLinks,
 
 
         @NotNull(message = "Number of employees is required")
