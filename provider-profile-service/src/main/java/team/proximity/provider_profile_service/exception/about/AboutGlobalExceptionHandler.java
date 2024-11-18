@@ -34,6 +34,28 @@ public class AboutGlobalExceptionHandler {
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
+    @ExceptionHandler(AboutNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleAboutNotFoundException(AboutNotFoundException exception, HttpServletRequest request) {
+        LOGGER.error("About not found: {}", exception.getMessage());
+        ApiErrorResponse errorResponse = new ApiErrorResponse(
+                request.getRequestURI(),
+                exception.getMessage(),
+                HttpStatus.NOT_FOUND.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(UnauthorizedAccessException.class)
+    public ResponseEntity<ApiErrorResponse> handleUnauthorizedAccessException(UnauthorizedAccessException exception, HttpServletRequest request) {
+        LOGGER.error("Unauthorized access: {}", exception.getMessage());
+        ApiErrorResponse errorResponse = new ApiErrorResponse(
+                request.getRequestURI(),
+                exception.getMessage(),
+                HttpStatus.FORBIDDEN.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+    }
 
     @ExceptionHandler(FileTypeNotSupportedException.class)
     public ResponseEntity<ApiErrorResponse> handleFileTypeNotSupportedException(FileTypeNotSupportedException exception, HttpServletRequest request) {
