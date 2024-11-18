@@ -1,5 +1,6 @@
 package team.proximity.provider_profile_service.about;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -23,6 +24,7 @@ public class AboutController {
         this.aboutService = aboutService;
     }
 
+    @Operation(summary = "Create About Company for the authenticated user")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiSuccessResponse> createOneAbout(@Valid @ModelAttribute AboutRequest aboutRequest) throws IOException {
 
@@ -30,5 +32,11 @@ public class AboutController {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(new ApiSuccessResponse("About Company Created Successfully", true));
+    }
+    @Operation(summary = "Get About Company for the authenticated user")
+    @GetMapping("/about-company")
+    public ResponseEntity<AboutBusinessResponse> getAboutForAuthenticatedUser() {
+        AboutBusinessResponse response = aboutService.getAboutForAuthenticatedUser();
+        return ResponseEntity.ok(response);
     }
 }
