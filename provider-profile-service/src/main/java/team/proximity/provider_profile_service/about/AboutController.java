@@ -14,7 +14,6 @@ import java.io.IOException;
 @Tag(name = "About Company", description = "Operations related to about company")
 @RestController
 @RequestMapping("/api/v1/about")
-@SecurityRequirement(name = "BearerAuth")
 public class AboutController {
 
 
@@ -24,7 +23,7 @@ public class AboutController {
         this.aboutService = aboutService;
     }
 
-    @Operation(summary = "Create About Company for the authenticated user")
+    @Operation(summary = "Create About Company")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiSuccessResponse> createOneAbout(@Valid @ModelAttribute AboutRequest aboutRequest) throws IOException {
 
@@ -34,6 +33,7 @@ public class AboutController {
                     .body(new ApiSuccessResponse("About Company Created Successfully", true));
     }
     @Operation(summary = "Get About Company for the authenticated user")
+    @SecurityRequirement(name = "BearerAuth")
     @GetMapping("/about-company")
     public ResponseEntity<AboutBusinessResponse> getAboutForAuthenticatedUser() {
         AboutBusinessResponse response = aboutService.getAboutForAuthenticatedUser();
