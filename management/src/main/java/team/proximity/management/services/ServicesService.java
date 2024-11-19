@@ -29,7 +29,7 @@ public class ServicesService {
         this.s3Service = s3Service;
     }
 
-    @Cacheable(value = "services")
+
     public List<Services> getAllServices() {
         log.info("ServicesService: get all services execution started");
         return servicesRepository.findAll();
