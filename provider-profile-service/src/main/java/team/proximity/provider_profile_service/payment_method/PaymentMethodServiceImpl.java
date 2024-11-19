@@ -77,7 +77,7 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
 
         paymentMethodRepository.findByCreatedByAndPaymentPreference(request.userEmail(), paymentPreference)
                 .ifPresent(paymentMethod -> {
-                    logger.info("Deleting existing payment method for user: {}", AuthHelper.getAuthenticatedUsername());
+                    logger.info("Deleting existing payment method for user: {}", request.userEmail());
                     paymentMethodRepository.delete(paymentMethod);
                 });
 
