@@ -12,6 +12,10 @@ import java.util.Set;
 @Schema(description = "Request to create an About entity")
 public record AboutRequest(
 
+        @NotNull(message = "User email is required")
+        @Email(message = "Invalid email format")
+        String userEmail,
+
         @NotNull(message = "Inception date is required")
         @PastOrPresent(message = "Inception date must be in the past or present")
         LocalDate inceptionDate,
