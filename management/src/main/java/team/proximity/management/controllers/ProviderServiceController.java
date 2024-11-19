@@ -1,6 +1,7 @@
 package team.proximity.management.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import team.proximity.management.requests.ProviderServiceRequest;
@@ -31,6 +32,8 @@ public class ProviderServiceController {
 
 
     @PutMapping("/{id}")
+    @Operation(summary = "Update a providerService", description = "Update a providerService by id")
+
     public ResponseEntity<ApiResponse<ProviderService>> updateProviderService(@PathVariable UUID id, @RequestBody ProviderServiceRequest providerService) {
         log.info("Updating providerService with id: {} and request: {}", id, providerService);
         try {

@@ -16,8 +16,6 @@ public class ServiceRequest {
     private String name;
     @NotBlank(message = "Description must be specified")
     private String description;
-    @NotBlank(message = "Category must be specified")
-    private String category;
     @NotNull(message = "Image must be specified")
     private MultipartFile image;
 }

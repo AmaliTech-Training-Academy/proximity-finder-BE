@@ -32,11 +32,27 @@ public class ServiceExperienceController {
     }
 
     @GetMapping
+    @Operation(summary = "Retrieve all service experiences", description = "Returns a list of all available service experiences")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of service experiences",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ServiceExperience.class))),
+            @ApiResponse(responseCode = "401", description = "You are not authorized to view the resource"),
+            @ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
+    })
     public List<ServiceExperience> getAllServiceExperiences() {
         return experienceService.getAllServiceExperiences();
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Retrieve a service experience by id", description = "Returns a service experience by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved service experience by id",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ServiceExperience.class))),
+            @ApiResponse(responseCode = "401", description = "You are not authorized to view the resource"),
+            @ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
+    })
     public ResponseEntity<ServiceExperience> getServiceExperienceById(@PathVariable Long id) {
         return experienceService.getServiceExperienceById(id)
                 .map(ResponseEntity::ok)
@@ -44,11 +60,27 @@ public class ServiceExperienceController {
     }
 
     @PostMapping
+    @Operation(summary = "Create a new service experience", description = "Creates a new service experience")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully created a new service experience",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ServiceExperience.class))),
+            @ApiResponse(responseCode = "401", description = "You are not authorized to view the resource"),
+            @ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
+    })
     public ServiceExperience createServiceExperience( @ModelAttribute ServiceExperienceRequest serviceExperienceRequest) {
         return experienceService.createServiceExperience(serviceExperienceRequest);
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Update a service experience", description = "Updates a service experience")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully updated service experience",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ServiceExperience.class))),
+            @ApiResponse(responseCode = "401", description = "You are not authorized to view the resource"),
+            @ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
+    })
     public ResponseEntity<Optional<ServiceExperience>> updateServiceExperience(
             @PathVariable Long id,
             @RequestBody ServiceExperienceRequest serviceExperienceRequest) {
@@ -58,6 +90,13 @@ public class ServiceExperienceController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a service experience", description = "Deletes a service experience")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Successfully deleted service experience"),
+            @ApiResponse(responseCode = "401", description = "You are not authorized to view the resource"),
+            @ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
+    })
     public ResponseEntity<Void> deleteServiceExperience(@PathVariable Long id) {
         if (experienceService.getServiceExperienceById(id).isPresent()) {
             experienceService.deleteServiceExperience(id);

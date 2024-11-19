@@ -48,7 +48,6 @@ public class ServicesService {
         Services service = Services.builder()
                 .name(serviceRequest.getName())
                 .description(serviceRequest.getDescription())
-                .category(serviceRequest.getCategory())
                 .image(imageUrl)
                 .build();
 
@@ -61,7 +60,6 @@ public class ServicesService {
                 .map(service -> {
                     service.setName(serviceRequest.getName());
                     service.setDescription(serviceRequest.getDescription());
-                    service.setCategory(serviceRequest.getCategory());
 
                     if (serviceRequest.getImage() != null && !serviceRequest.getImage().isEmpty()) {
                         try {
