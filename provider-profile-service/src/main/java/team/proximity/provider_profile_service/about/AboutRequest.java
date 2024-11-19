@@ -20,7 +20,7 @@ public record AboutRequest(
         @PastOrPresent(message = "Inception date must be in the past or present")
         LocalDate inceptionDate,
 
-        @NotNull(message = "Social media links are required")
+
         @Size(max = 5, message = "Maximum 5 social media links allowed")
         Set<String> socialMediaLinks,
 
