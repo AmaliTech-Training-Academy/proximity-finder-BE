@@ -39,8 +39,8 @@ class ServicesServiceTest {
     @Test
     void getAllServicesTest() {
         // Arrange
-        Services service1 = new Services(UUID.randomUUID(), "Service 1", "Description 1", "Category 1", "image1.jpg");
-        Services service2 = new Services(UUID.randomUUID(), "Service 2", "Description 2", "Category 2", "image2.jpg");
+        Services service1 = new Services(UUID.randomUUID(), "Service 1", "Description 1",  "image1.jpg");
+        Services service2 = new Services(UUID.randomUUID(), "Service 2", "Description 2",  "image2.jpg");
         when(servicesRepository.findAll()).thenReturn(Arrays.asList(service1, service2));
 
         // Act
@@ -55,7 +55,7 @@ class ServicesServiceTest {
     void getServiceByIdTest() {
         // Arrange
         UUID serviceId = UUID.randomUUID();
-        Services service = new Services(serviceId, "Service 1", "Description 1", "Category 1", "image1.jpg");
+        Services service = new Services(serviceId, "Service 1", "Description 1", "image1.jpg");
         when(servicesRepository.findById(serviceId)).thenReturn(Optional.of(service));
 
         // Act
@@ -74,8 +74,8 @@ class ServicesServiceTest {
         when(imageFile.getOriginalFilename()).thenReturn("image.jpg");
         when(s3Service.uploadFile(imageFile)).thenReturn("s3://bucket/image.jpg");
 
-        ServiceRequest serviceRequest = new ServiceRequest("New Service", "New Description", "New Category", imageFile);
-        Services service = new Services(UUID.randomUUID(), "New Service", "New Description", "New Category", "s3://bucket/image.jpg");
+        ServiceRequest serviceRequest = new ServiceRequest("New Service", "New Description", imageFile);
+        Services service = new Services(UUID.randomUUID(), "New Service", "New Description",  "s3://bucket/image.jpg");
         when(servicesRepository.save(any(Services.class))).thenReturn(service);
 
         // Act
@@ -96,8 +96,8 @@ class ServicesServiceTest {
         when(newImage.getOriginalFilename()).thenReturn("newImage.jpg");
         when(s3Service.uploadFile(newImage)).thenReturn("s3://bucket/newImage.jpg");
 
-        ServiceRequest serviceRequest = new ServiceRequest("Updated Service", "Updated Description", "Updated Category", newImage);
-        Services existingService = new Services(serviceId, "Old Service", "Old Description", "Old Category", "oldImage.jpg");
+        ServiceRequest serviceRequest = new ServiceRequest("Updated Service", "Updated Description",  newImage);
+        Services existingService = new Services(serviceId, "Old Service", "Old Description","oldImage.jpg");
 
         when(servicesRepository.findById(serviceId)).thenReturn(Optional.of(existingService));
         when(servicesRepository.save(any(Services.class))).thenReturn(existingService);
@@ -116,7 +116,7 @@ class ServicesServiceTest {
     void updateServiceTest_ServiceNotFound() {
         // Arrange
         UUID serviceId = UUID.randomUUID();
-        ServiceRequest serviceRequest = new ServiceRequest("Updated Service", "Updated Description", "Updated Category", null);
+        ServiceRequest serviceRequest = new ServiceRequest("Updated Service", "Updated Description",  null);
 
         when(servicesRepository.findById(serviceId)).thenReturn(Optional.empty());
 
