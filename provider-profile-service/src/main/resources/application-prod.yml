@@ -1,7 +1,4 @@
 spring:
-  profiles:
-    active: prod
-
   app:
     jwtSecret: ${JWT_SECRET}
   application:
