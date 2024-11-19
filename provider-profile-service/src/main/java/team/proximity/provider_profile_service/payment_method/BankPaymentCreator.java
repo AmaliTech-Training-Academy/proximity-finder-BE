@@ -8,7 +8,7 @@ import team.proximity.provider_profile_service.exception.payment_method.PaymentM
 public class BankPaymentCreator implements PaymentMethodCreator {
     @Override
     public PaymentMethod create(PaymentMethodRequest request) {
-        if (request.bankName() == null || request.accountName() == null || request.bankName().isBlank()) {
+        if (request.bankName() == null || request.accountName() == null || request.bankName().isBlank()|| request.userEmail().isBlank()) {
             throw new PaymentMethodCreationException("All fields are required: bankName, accountName, accountNumber");
         }
         BankPayment bankPayment = new BankPayment();
