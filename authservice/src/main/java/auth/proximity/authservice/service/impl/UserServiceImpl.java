@@ -61,13 +61,14 @@ public class UserServiceImpl implements IUserService {
 
         if (roleStr != null) {
             switch (roleStr.toString()) {
-                case "admin" -> roleRepository.findByRoleName(AppRole.ROLE_ADMIN)
+                case "ADMIN" -> role = roleRepository.findByRoleName(AppRole.ROLE_ADMIN)
                         .orElseThrow(() -> new ResourceNotFoundException("User", "role", roleStr.toString()));
-                case "seeker" -> roleRepository.findByRoleName(AppRole.ROLE_SEEKER)
+                case "SEEKER" -> role = roleRepository.findByRoleName(AppRole.ROLE_SEEKER)
                         .orElseThrow(() -> new ResourceNotFoundException("User", "role", roleStr.toString()));
-                case "provider" -> roleRepository.findByRoleName(AppRole.ROLE_PROVIDER)
+                case "PROVIDER" -> role = roleRepository.findByRoleName(AppRole.ROLE_PROVIDER)
                         .orElseThrow(() -> new ResourceNotFoundException("User", "role", roleStr.toString()));
                 default -> {
+                    throw new ResourceNotFoundException("Role", "role", roleStr.toString());
                 }
             }
         } else {

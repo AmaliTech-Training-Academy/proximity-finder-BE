@@ -25,11 +25,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     @Value("${spring.app.oauth2FrontendUrl}")
     private String frontendUrl;
     private final JwtUtils jwtUtils;
-    private final UserServiceImpl userServiceImpl;
 
-    public OAuth2AuthenticationSuccessHandler(JwtUtils jwtUtils, UserServiceImpl userServiceImpl) {
+    public OAuth2AuthenticationSuccessHandler(JwtUtils jwtUtils) {
         this.jwtUtils = jwtUtils;
-        this.userServiceImpl = userServiceImpl;
     }
 
     @Override

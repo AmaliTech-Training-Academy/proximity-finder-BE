@@ -29,7 +29,7 @@ public class InitialUserInfo implements CommandLineRunner {
         Role adminRole = roleRepository.findByRoleName(AppRole.ROLE_ADMIN)
                 .orElseGet(() -> roleRepository.save(new Role(AppRole.ROLE_ADMIN)));
         if (!userRepository.existsByUserName("admin")) {
-            User admin = new User("admin", "admin@gmail.com", passwordEncoder.encode("adminPass"), "0243847248");
+            User admin = new User("admin", "admin@gmail.com", passwordEncoder.encode("adminPass@1234"), "0243847248");
             admin.setAccountNonLocked(true);
             admin.setAccountNonExpired(true);
             admin.setCredentialsNonExpired(true);
