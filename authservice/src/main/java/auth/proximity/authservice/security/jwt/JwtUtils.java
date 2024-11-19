@@ -1,5 +1,6 @@
 package auth.proximity.authservice.security.jwt;
 
+import auth.proximity.authservice.exception.TokenExpiredException;
 import auth.proximity.authservice.security.service.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -85,6 +86,8 @@ public class JwtUtils {
             logger.error("Invalid JWT token: {}", e.getMessage());
         } catch (ExpiredJwtException e) {
             logger.error("JWT token is expired: {}", e.getMessage());
+
+            throw new TokenExpiredException("JWT token is expired");
         } catch (UnsupportedJwtException e) {
             logger.error("JWT token is unsupported: {}", e.getMessage());
         } catch (IllegalArgumentException e) {
