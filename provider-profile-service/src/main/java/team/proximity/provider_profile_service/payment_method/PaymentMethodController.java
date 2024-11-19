@@ -53,7 +53,6 @@ public class PaymentMethodController {
                     )
             )
     )
-    @SecurityRequirement(name = "BearerAuth")
     @PostMapping
     ResponseEntity<ApiSuccessResponse> createPaymentMethod(@RequestBody PaymentMethodRequest request) {
         paymentMethodService.createNewPaymentMethod(request);
