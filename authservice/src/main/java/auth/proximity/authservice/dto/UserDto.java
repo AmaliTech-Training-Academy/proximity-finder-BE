@@ -1,12 +1,8 @@
 package auth.proximity.authservice.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -32,7 +28,7 @@ public class UserDto {
     private String email;
 
 
-    @Pattern(regexp="(^$|[0-9]{10})", message = "Mobile Number must be 10 digits")
+    @Pattern(regexp="(^\\+?[1-9]\\d{1,3}[-\\s]?(\\(?\\d{1,4}\\)?[-\\s]?)?\\d{6,10}$)", message = "Mobile Number must be 10 digits")
     @Schema(
             description = "Mobile Number of the user", example = "0209187470"
     )
@@ -55,11 +51,10 @@ public class UserDto {
     )
     private String businessOwnerName;
 
-    @NotEmpty(message = "Role can not be  null or empty")
-    @Column(name = "password")
+    @NotNull(message = "Role can not be  null or empty")
     @Schema(
             description = "Role of the user", example = "seeker"
     )
-    private String role;
+    private RequestRole role;
 
 }
