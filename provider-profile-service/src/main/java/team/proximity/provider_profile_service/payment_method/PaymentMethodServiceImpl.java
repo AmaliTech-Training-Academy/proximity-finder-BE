@@ -67,7 +67,7 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
     }
 
     public void createNewPaymentMethod(PaymentMethodRequest request) {
-        logger.info("Creating new payment method for user: {}", AuthHelper.getAuthenticatedUsername());
+        logger.info("Creating new payment method for user: {}", request.userEmail());
 
         PaymentPreference paymentPreference = paymentPreferenceRepository.findByPreference(request.paymentPreference())
                 .orElseThrow(() -> {
@@ -75,7 +75,7 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
                     return new PaymentPreferenceDoesNotExist("Payment Preference not found with name: " + request.paymentPreference());
                 });
 
-        paymentMethodRepository.findByCreatedByAndPaymentPreference(AuthHelper.getAuthenticatedUsername(), paymentPreference)
+        paymentMethodRepository.findByCreatedByAndPaymentPreference(request.userEmail(), paymentPreference)
                 .ifPresent(paymentMethod -> {
                     logger.info("Deleting existing payment method for user: {}", AuthHelper.getAuthenticatedUsername());
                     paymentMethodRepository.delete(paymentMethod);
@@ -83,9 +83,9 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
 
         PaymentMethod paymentMethod = paymentMethodFactory.createPaymentMethod(request);
         paymentMethod.setPaymentPreference(paymentPreference);
-        paymentMethod.setCreatedBy(AuthHelper.getAuthenticatedUsername());
+        paymentMethod.setCreatedBy(request.userEmail());
 
         paymentMethodRepository.save(paymentMethod);
-        logger.info("New payment method created successfully for user: {}", AuthHelper.getAuthenticatedUsername());
+        logger.info("New payment method created successfully for user: {}", request.userEmail());
     }
 }
