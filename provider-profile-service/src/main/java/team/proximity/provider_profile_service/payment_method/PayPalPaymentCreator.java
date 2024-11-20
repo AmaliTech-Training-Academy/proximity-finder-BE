@@ -8,7 +8,7 @@ import team.proximity.provider_profile_service.exception.payment_method.PaymentM
 public class PayPalPaymentCreator implements PaymentMethodCreator {
     @Override
     public PaymentMethod create(PaymentMethodRequest request) {
-        if(request.accountName() == null || request.accountNumber() == null || request.userEmail().isBlank()){
+        if(request.accountName() == null || request.accountNumber() == null){
             throw new PaymentMethodCreationException("All fields are required: accountName, accountNumber");
         }
         PayPalPayment payPalPayment = new PayPalPayment();

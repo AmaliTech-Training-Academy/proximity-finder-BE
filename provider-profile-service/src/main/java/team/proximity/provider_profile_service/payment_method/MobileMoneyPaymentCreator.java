@@ -8,7 +8,7 @@ import team.proximity.provider_profile_service.exception.payment_method.PaymentM
 public class MobileMoneyPaymentCreator implements PaymentMethodCreator {
     @Override
     public PaymentMethod create(PaymentMethodRequest request) {
-        if (request.userEmail().isEmpty()|| request.serviceProvider().isEmpty() || request.phoneNumber().isEmpty()) {
+        if ( request.serviceProvider().isEmpty() || request.phoneNumber().isEmpty()) {
             throw new PaymentMethodCreationException("All fields are required: service provider, accountName, mobile number");
         }
         MobileMoneyServiceProvider provider = MobileMoneyServiceProvider.valueOf(request.serviceProvider().toUpperCase());

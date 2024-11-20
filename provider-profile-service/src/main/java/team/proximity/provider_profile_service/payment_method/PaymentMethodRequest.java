@@ -6,10 +6,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 
 public record PaymentMethodRequest(
-        @Schema(description = "User email", example = "john.doe@example.com")
-        @NotNull(message = "User email is required")
-        @Email(message = "Invalid email format")
-        String userEmail,
 
         String paymentPreference,
 

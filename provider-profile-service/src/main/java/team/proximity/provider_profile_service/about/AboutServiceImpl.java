@@ -54,7 +54,7 @@ public class AboutServiceImpl implements AboutService {
 
         LOGGER.info("Processing About record for user: {}", AuthHelper.getAuthenticatedUsername());
 
-        Optional<About> existingAbout = aboutRepository.findByCreatedBy(aboutRequest.userEmail());
+        Optional<About> existingAbout = aboutRepository.findByCreatedBy(AuthHelper.getAuthenticatedUsername());
         existingAbout.ifPresent(about -> {
 
             LOGGER.info("Deleting existing About record for user: {}", AuthHelper.getAuthenticatedUsername());
@@ -75,7 +75,7 @@ public class AboutServiceImpl implements AboutService {
                 .businessIdentityCard(businessIdentityCardPath)
                 .businessCertificate(businessCertificatePath)
                 .businessSummary(aboutRequest.businessSummary())
-                .createdBy(aboutRequest.userEmail())
+                .createdBy(AuthHelper.getAuthenticatedUsername())
                 .build();
 
         aboutRepository.save(about);
