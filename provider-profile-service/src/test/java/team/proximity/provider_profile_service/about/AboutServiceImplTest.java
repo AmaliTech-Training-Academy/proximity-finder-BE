@@ -41,7 +41,7 @@ class AboutServiceImplTest {
         authHelper.when(AuthHelper::getAuthenticatedUsername).thenReturn(username);
 
         AboutRequest aboutRequest = new AboutRequest(
-                "samuelnapasco20@gmail.com",
+
             LocalDate.now(),
             Set.of("link1", "link2"),
             10,
@@ -86,7 +86,7 @@ class AboutServiceImplTest {
             .build();
 
         AboutRequest aboutRequest = new AboutRequest(
-                "samuelnapasco20@gmail.com",
+
             LocalDate.now(),
             Set.of("link1", "link2"),
             10,
@@ -122,7 +122,7 @@ class AboutServiceImplTest {
         authHelper.when(AuthHelper::getAuthenticatedUsername).thenReturn(username);
 
         AboutRequest aboutRequest = new AboutRequest(
-                "samuelnapasco20@gmail.com",
+
             LocalDate.now(),
             Set.of("link1", "link2"),
             10,
