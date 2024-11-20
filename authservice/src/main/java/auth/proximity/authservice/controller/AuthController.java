@@ -158,7 +158,7 @@ public class AuthController {
     }
 
 
-    @Operation(summary = "Validate Token REST API", description = "REST API to validate a token to confirm whether valid or invalid")
+    @Operation(summary = "Validate Token REST        API", description = "REST API to validate a token to confirm whether valid or invalid")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "HTTP Status OK"),
             @ApiResponse(responseCode = "500", description = "HTTP Status Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
@@ -190,7 +190,20 @@ public class AuthController {
         UserInfoResponse userInfoResponse = userService.getUserInfo(email);
         return ResponseEntity.ok(userInfoResponse);
     }
-
+//    @PutMapping("/update/info")
+//    ResponseEntity<ResponseDto> updateUserInfo( @RequestParam String email, @RequestBody UserUpdateRequest userUpdateRequest) {
+//        userService.updateUserInfoByEmail(email,userUpdateRequest);
+//        return ResponseEntity.ok(new ResponseDto("200", "User updated successfully"));
+//    }
+    @PutMapping("/update/info")
+    ResponseEntity<ResponseDto> updateUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UserUpdateRequest userUpdateRequest) {
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDto("401", "Unauthorized: Token is missing or invalid"));
+        }
+        String email = userDetails.getEmail();
+        userService.updateUserInfoByEmail(email, userUpdateRequest);
+        return ResponseEntity.ok(new ResponseDto("200", "User updated successfully"));
+    }
 
 
 }

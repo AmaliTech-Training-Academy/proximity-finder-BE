@@ -114,6 +114,23 @@ public class UserServiceImpl implements IUserService {
         user.setProfileImage(profilePictureUpdateRequest.file().getContentType());
         userRepository.save(user);
     }
+    public void updateUserInfoByEmail(String email, UserUpdateRequest userUpdateRequest) {
+        User foundUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "email", email));
+        if (userUpdateRequest.userName() != null) {
+            foundUser.setUserName(userUpdateRequest.userName());
+        }
+        if (userUpdateRequest.phoneNumber() != null) {
+            foundUser.setMobileNumber(userUpdateRequest.phoneNumber());
+        }
+        if (userUpdateRequest.businessOwnerName() != null) {
+            foundUser.setBusinessOwnerName(userUpdateRequest.businessOwnerName());
+        }
+        if (userUpdateRequest.businessAddress() != null) {
+            foundUser.setBusinessAddress(userUpdateRequest.businessAddress());
+        }
+        userRepository.save(foundUser);
+    }
 }
 
 
