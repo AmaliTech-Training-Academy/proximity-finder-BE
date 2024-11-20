@@ -23,6 +23,7 @@ public class AboutController {
         this.aboutService = aboutService;
     }
 
+    @SecurityRequirement(name = "BearerAuth")
     @Operation(summary = "Create About Company")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiSuccessResponse> createOneAbout(@Valid @ModelAttribute AboutRequest aboutRequest) throws IOException {
