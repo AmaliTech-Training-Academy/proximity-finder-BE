@@ -1,8 +1,6 @@
 services:
   authservice:
-    build:
-      context: ./authservice
-      dockerfile: Dockerfile
+    image: 909544387219.dkr.ecr.eu-west-1.amazonaws.com/authservice:latest
     container_name: auth-service-container
     restart: on-failure:3
     ports:
@@ -16,9 +14,7 @@ services:
       - prox-volume
 
   eurekaserver:
-    build:
-      context: ./eurekaserver
-      dockerfile: Dockerfile
+    image: 909544387219.dkr.ecr.eu-west-1.amazonaws.com/eurekaserver:latest
     container_name: eureka-server-container
     restart: on-failure:3
     ports:
@@ -30,9 +26,7 @@ services:
       - prox-volume
 
   management:
-    build:
-      context: ./management
-      dockerfile: Dockerfile
+    image: 909544387219.dkr.ecr.eu-west-1.amazonaws.com/management:latest
     container_name: management-service-container
     restart: on-failure:3
     ports:
@@ -47,9 +41,7 @@ services:
 
 
   provider-profile-service:
-    build:
-      context: ./provider-profile-service
-      dockerfile: Dockerfile
+    image: 909544387219.dkr.ecr.eu-west-1.amazonaws.com/provider-profile-service:latest
     container_name: provider-profile-service-container
     restart: on-failure:3
     ports:
