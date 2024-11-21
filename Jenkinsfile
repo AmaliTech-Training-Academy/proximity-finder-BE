@@ -24,7 +24,7 @@ def deployConfig = [
         codeDeployAppName: 'gtp',
         codeDeployGroup: appName
     ],
-    'dev': [
+    dev: [
         revisionTag: appName,
         revisionLocation: 'gtp-artifacts-2',
         assetsPath: appName,
@@ -45,7 +45,7 @@ def runMavenCommand(command) {
     }
 }
 
-def prepareDeploymentFiles(dirName, imageRegistry, gitSha, imageName, changedServices) {
+def prepareDeploymentFiles(imageRegistry, gitSha, imageName, changedServices) {
     // Convert changedServices to a space-separated string
     def servicesString = changedServices.collect { "\"$it\"" }.join(' ')
     echo "Preparing deployment files for services: ${changedServices.join(', ')}"
@@ -54,9 +54,9 @@ def prepareDeploymentFiles(dirName, imageRegistry, gitSha, imageName, changedSer
     // Create and set up the app directory
     echo "Creating the 'app/' directory and copying required files..."
     sh 'mkdir -p app/'
-    sh "cp ${dirName}/docker-compose.yml app/"
-    sh "cp -r ${dirName}/deploy-scripts/ app/"
-    sh "cp ${dirName}/appspec.yml app/"
+    sh "cp ./docker-compose.yml app/"
+    sh "cp -r ./deploy-scripts/ app/"
+    sh "cp ./appspec.yml app/"
 
     // Update the boot script
     echo "Updating the boot script with the list of changed services..."
@@ -158,7 +158,7 @@ pipeline {
                 script {
                     echo "Starting Maven clean for changed services: ${changedServices.join(', ')}"
                     changedServices.each { service ->
-                        dir("${dirName}/${service}"){
+                        dir("./${service}"){
                             echo "current workdir: "
                             sh 'pwd'
                             echo "Running Maven clean for ${service}..."
@@ -175,7 +175,7 @@ pipeline {
                 script {
                     echo "Starting Maven validate for changed services: ${changedServices.join(', ')}"
                     changedServices.each { service ->
-                        dir("${dirName}/${service}"){
+                        dir("./${service}"){
                             echo "current workdir: "
                             sh 'pwd'
                             runMavenCommand('validate')
@@ -195,7 +195,7 @@ pipeline {
                     changedServices.each { service ->
                         stage("Build ${service}") {
                             echo "Building ${service}..."
-                            buildDockerImage(imageTag: "${imageRegistry}/${imageName}:${service}-${gitSha}", buildContext: "./${dirName}/${service}")
+                            buildDockerImage(imageTag: "${imageRegistry}/${imageName}:${service}-${gitSha}", buildContext: "./${service}")
                         }
                     }
                 }
@@ -224,7 +224,7 @@ pipeline {
             }
             steps {
                 script {
-                    prepareDeploymentFiles(dirName, imageRegistry, gitSha, imageName, changedServices)
+                    prepareDeploymentFiles(imageRegistry, gitSha, imageName, changedServices)
                     prepareToDeployECR(environment: currentBranch, deploymentConfig: deployConfig, awsCreds: awsCreds)
                 }
             }
@@ -245,7 +245,7 @@ pipeline {
             always {
                 echo "Pipeline execution completed."
                 script {
-                      echo "Starting cleanup tasks..."/* /* /*  */ */ */
+                      echo "Starting cleanup tasks..."
                       try {
                         echo "Removing Docker images for changed services: ${changedServices.join(', ')}"
                         changedServices.each { service ->
@@ -260,10 +260,10 @@ pipeline {
                 }
             }
             success {
-              echo "Successfull :)"
+              echo "Successfull :)😊"
             }
             failure {
-              echo "Failed :("
+              echo "Failed :(😒"
             }
         }
     }
