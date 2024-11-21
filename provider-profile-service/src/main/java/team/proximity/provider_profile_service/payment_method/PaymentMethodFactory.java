@@ -1,6 +1,7 @@
 package team.proximity.provider_profile_service.payment_method;
 
 import org.springframework.stereotype.Component;
+import team.proximity.provider_profile_service.bank.BankRepository;
 import team.proximity.provider_profile_service.exception.payment_method.UnsupportedPaymentPreference;
 
 
@@ -12,11 +13,7 @@ public class PaymentMethodFactory {
     private final Map<String, PaymentMethodCreator> creators;
 
     public PaymentMethodFactory(Map<String, PaymentMethodCreator> creators) {
-        this.creators = Map.of(
-                "BANK ACCOUNT", new BankPaymentCreator(),
-                "MOBILE MONEY", new MobileMoneyPaymentCreator(),
-                "PAYPAL", new PayPalPaymentCreator()
-        );
+      this.creators = creators;
     }
 
     public PaymentMethod createPaymentMethod(PaymentMethodRequest request) {
