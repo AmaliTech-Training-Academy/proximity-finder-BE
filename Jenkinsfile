@@ -17,14 +17,14 @@ def deployConfig = [
         codeDeployAppName: 'gtp',
         codeDeployGroup: appName
     ],
-    'devops/Deployment': [
+    devops: [
         revisionTag: appName,
         revisionLocation: 'gtp-artifacts-2',
         assetsPath: "app/",
         codeDeployAppName: 'gtp',
         codeDeployGroup: appName
     ],
-    dev: [
+    develop: [
         revisionTag: appName,
         revisionLocation: 'gtp-artifacts-2',
         assetsPath: appName,
@@ -33,7 +33,7 @@ def deployConfig = [
     ]
 ]
 
-def sharedBranches = ['main', 'dev', 'devops/Deployment']
+def sharedBranches = ['main', 'develop', 'devops']
 
 def runMavenCommand(command) {
     def mvn = tool 'maven'
