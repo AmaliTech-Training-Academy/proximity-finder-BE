@@ -240,31 +240,31 @@ pipeline {
                 }
             }
         }
-
-        post {
-            always {
-                echo "Pipeline execution completed."
-                script {
-                      echo "Starting cleanup tasks..."
-                      try {
-                        echo "Removing Docker images for changed services: ${changedServices.join(', ')}"
-                        changedServices.each { service ->
-                        sh "docker rmi ${imageRegistry}/${imageName}:${service}-${gitSha}"
-                        echo "Removed image: ${imageRegistry}/${imageName}:${service}-${gitSha}"
-                        }
-                        sh 'docker system prune -f'
-                        cleanWs()
-                      } catch (Exception e) {
-                        echo "Cleanup failed: ${e.getMessage()}"
-                      }
-                }
-            }
-            success {
-              echo "Successfull :)😊"
-            }
-            failure {
-              echo "Failed :(😒"
+    }
+    post {
+        always {
+            echo "Pipeline execution completed."
+            script {
+                  echo "Starting cleanup tasks..."
+                  try {
+                    echo "Removing Docker images for changed services: ${changedServices.join(', ')}"
+                    changedServices.each { service ->
+                    sh "docker rmi ${imageRegistry}/${imageName}:${service}-${gitSha}"
+                    echo "Removed image: ${imageRegistry}/${imageName}:${service}-${gitSha}"
+                    }
+                    sh 'docker system prune -f'
+                    cleanWs()
+                  } catch (Exception e) {
+                    echo "Cleanup failed: ${e.getMessage()}"
+                  }
             }
         }
+        success {
+          echo "Successfull :)😊"
+        }
+        failure {
+          echo "Failed :(😒"
+        }
     }
+
 }
