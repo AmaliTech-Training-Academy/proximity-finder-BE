@@ -112,7 +112,7 @@ pipeline {
 
                     // Detect changes between the last merge commit and HEAD
                     echo "Detecting changed files since last merge commit..."
-                    def detectedChanges = sh(script: """#!/bin/bash
+                    detectedChanges = sh(script: """#!/bin/bash
                         git diff --name-only ${lastMergeCommit}...HEAD | sort -u
                     """, returnStdout: true).trim().split("\n")
 
@@ -260,10 +260,10 @@ pipeline {
             }
         }
         success {
-          echo "Successfull :)😊"
+          echo "Successful 😊"
         }
         failure {
-          echo "Failed :(😒"
+          echo "Failed 😒"
         }
     }
 
