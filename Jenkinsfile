@@ -130,7 +130,7 @@ pipeline {
                     def servicesInChanges = detectedChanges.collect { change ->
                         echo "change ${change}"
                         def parts = change.split('/')
-                        parts.size() > 1 ? parts[1] : null
+                        parts.size() > 1 ? parts[0] : null
                     }.findAll { it }
 
                     // Filter only available services
