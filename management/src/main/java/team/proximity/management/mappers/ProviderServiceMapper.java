@@ -36,20 +36,18 @@ public class ProviderServiceMapper {
     }
 
     public void updateEntity(ProviderServiceRequest providerServiceRequest, ProviderService preference) {
-        // Update basic fields
+
         updatePreferenceFields(providerServiceRequest, preference);
 
-        // Update documents without replacing the collection
+
         updateDocuments(preference, providerServiceRequest.getDocuments());
     }
     private void updateDocuments(ProviderService preference, List<MultipartFile> newDocuments) {
-        // Remove old documents not present in the new list
         List<Document> currentDocuments = preference.getDocuments();
         currentDocuments.removeIf(doc ->
                 newDocuments.stream().noneMatch(file -> file.getOriginalFilename().equals(doc.getUrl()))
         );
 
-        // Add new documents
         newDocuments.forEach(file -> {
             if (currentDocuments.stream().noneMatch(doc -> doc.getUrl().equals(file.getOriginalFilename()))) {
                 currentDocuments.add(createDocument(file, preference));
