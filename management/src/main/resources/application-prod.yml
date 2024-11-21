@@ -5,7 +5,7 @@ spring:
     jwt-secret: ${JWT_SECRET}
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/managementservice
+    url: jdbc:postgresql://99.81.103.204:5432/managementservice
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
