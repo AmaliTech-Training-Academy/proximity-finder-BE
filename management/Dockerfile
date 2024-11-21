@@ -1,34 +1,13 @@
-FROM eclipse-temurin:21-jdk-jammy AS build
-
+FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /app
-
-COPY mvnw .
-COPY .mvn .mvn
 COPY pom.xml .
-COPY src src
+COPY src ./src
+RUN mvn clean package -Dmaven.test.skip=true
 
-RUN chmod +x ./mvnw && \
-    ./mvnw dependency:resolve
-
-RUN ./mvnw clean package -Dmaven.test.skip=true
-
-FROM eclipse-temurin:21-jre-jammy
-
+FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
-
-ARG UID=10001
-RUN adduser \
-    --disabled-password \
-    --gecos "" \
-    --home "/nonexistent" \
-    --shell "/sbin/nologin" \
-    --no-create-home \
-    --uid "${UID}" \
-    appuser
-USER appuser
-
 COPY --from=build /app/target/*.jar app.jar
-
 EXPOSE 8081
-
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+RUN adduser -D appuser
+USER appuser
+CMD ["java", "-jar", "app.jar"]
