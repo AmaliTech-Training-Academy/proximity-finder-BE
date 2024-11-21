@@ -1,36 +1,36 @@
 services:
-  auth-service:
+  authservice:
     build:
       context: ./authservice
       dockerfile: Dockerfile
     container_name: auth-service-container
     restart: on-failure:3
     ports:
-      - "8087:8080"
+      - "8081:8081"
     networks:
       - proximity-finder-network
     env_file:
       - ./authservice/.env
 
-  eureka-server:
+  eurekaserver:
     build:
       context: ./eurekaserver
       dockerfile: Dockerfile
     container_name: eureka-server-container
     restart: on-failure:3
     ports:
-      - "8081:8080"
+      - "8082:8082"
     networks:
       - proximity-finder-network
 
-  management-service:
+  management:
     build:
       context: ./management
       dockerfile: Dockerfile
     container_name: management-service-container
     restart: on-failure:3
     ports:
-      - "8082:8080"
+      - "8082:8083"
     networks:
       - proximity-finder-network
     env_file:
@@ -45,7 +45,7 @@ services:
     container_name: provider-profile-service-container
     restart: on-failure:3
     ports:
-      - "8083:8080"
+      - "8083:8083"
     networks:
       - proximity-finder-network
 
