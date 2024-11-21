@@ -123,8 +123,7 @@ pipeline {
                     }
 
                      // Split changes into a list
-                    def changeList = detectedChanges.split("\n")
-                    echo "Detected changes:\n${changeList.join('\n')}"
+                    echo "Detected changes:\n${detectedChanges.join('\n')}"
 
                     // Extract services from the changed file paths
                     echo "Identifying services from changed files..."
