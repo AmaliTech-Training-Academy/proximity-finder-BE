@@ -29,3 +29,5 @@ app:
   awsServices:
     bucketName: gtp-group-three-lms
 
+server:
+  port: ${SERVER_PORT}

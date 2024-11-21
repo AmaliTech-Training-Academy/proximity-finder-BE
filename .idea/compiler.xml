@@ -10,6 +10,7 @@
         <module name="eurekaserver" />
         <module name="authservice" />
         <module name="management" />
+        <module name="provider-profile-service" />
       </profile>
     </annotationProcessing>
   </component>
@@ -18,6 +19,7 @@
       <module name="authservice" options="-parameters" />
       <module name="eurekaserver" options="-parameters" />
       <module name="management" options="-parameters" />
+      <module name="provider-profile-service" options="-parameters" />
     </option>
   </component>
 </project>

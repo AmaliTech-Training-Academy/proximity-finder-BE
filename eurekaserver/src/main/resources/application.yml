@@ -9,7 +9,7 @@ spring:
       roles: ADMIN
 
 server:
-  port: 8761
+  port: 9091
 
 eureka:
   instance:

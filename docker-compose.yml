@@ -6,11 +6,14 @@ services:
     container_name: auth-service-container
     restart: on-failure:3
     ports:
-      - "8081:8081"
+      - "9090:9090"
     networks:
       - proximity-finder-network
+      - training-shared-network
     env_file:
       - ./authservice/.env
+    volumes:
+      - prox-volume
 
   eurekaserver:
     build:
@@ -19,9 +22,12 @@ services:
     container_name: eureka-server-container
     restart: on-failure:3
     ports:
-      - "8082:8082"
+      - "9091:9091"
     networks:
       - proximity-finder-network
+      - training-shared-network
+    volumes:
+      - prox-volume
 
   management:
     build:
@@ -30,12 +36,14 @@ services:
     container_name: management-service-container
     restart: on-failure:3
     ports:
-      - "8082:8083"
+      - "9092:9092"
     networks:
       - proximity-finder-network
+      - training-shared-network
     env_file:
       - ./management/.env
-
+    volumes:
+      - prox-volume
 
 
   provider-profile-service:
@@ -45,12 +53,19 @@ services:
     container_name: provider-profile-service-container
     restart: on-failure:3
     ports:
-      - "8083:8083"
+      - "9093:9093"
     networks:
       - proximity-finder-network
+      - training-shared-network
+    env_file:
+      - ./provider-profile-service/.env
+    volumes:
+      - prox-volume
 
 networks:
   proximity-finder-network:
+    driver: bridge
+  training-shared-network:
     driver: bridge
 
 volumes:
