@@ -26,7 +26,7 @@ public class ProviderProfileServiceApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		if (paymentPreferenceRepository.count() == 0) {
 			PaymentPreference bankAccount = new PaymentPreference("Bank Account");
-			PaymentPreference mobileMoney = new PaymentPreference("MobileMoney");
+			PaymentPreference mobileMoney = new PaymentPreference("Mobile Money");
 			PaymentPreference payPal = new PaymentPreference("PayPal");
 
 			paymentPreferenceRepository.saveAll(List.of(bankAccount, mobileMoney, payPal));
