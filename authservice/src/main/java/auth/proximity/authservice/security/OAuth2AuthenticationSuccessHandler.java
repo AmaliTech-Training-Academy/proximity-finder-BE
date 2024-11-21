@@ -1,4 +1,5 @@
 package auth.proximity.authservice.security;
+import auth.proximity.authservice.entity.User;
 import auth.proximity.authservice.security.jwt.JwtUtils;
 import auth.proximity.authservice.security.service.UserDetailsImpl;
 import auth.proximity.authservice.service.impl.UserServiceImpl;

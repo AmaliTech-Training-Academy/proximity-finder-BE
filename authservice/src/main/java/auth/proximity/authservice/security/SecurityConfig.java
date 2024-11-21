@@ -69,13 +69,13 @@ public class SecurityConfig {
     private void configureOAuth2Login(HttpSecurity http) throws Exception {
        http.oauth2Login(oauth2 -> oauth2
                 .authorizationEndpoint(authorization -> authorization
-                        .baseUri("/oauth2/authorize")  // Initiate authorization request
+                        .baseUri("/oauth2/authorize")
                 )
                 .redirectionEndpoint(redirection -> redirection
-                        .baseUri("/oauth2/callback/*") // Handle Google's callback
+                        .baseUri("/oauth2/callback/*")
                 )
-                .successHandler(oAuth2AuthenticationSuccessHandler)  // Custom success handler to send JWT
-                .failureHandler(oAuth2AuthenticationFailureHandler)  // Custom failure handler if needed
+                .successHandler(oAuth2AuthenticationSuccessHandler)
+                .failureHandler(oAuth2AuthenticationFailureHandler)
         );
     }
     @Bean

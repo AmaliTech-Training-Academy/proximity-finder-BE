@@ -174,7 +174,11 @@ public class AuthController {
         return ResponseEntity.ok(new ResponseDto("200", "Password updated successfully"));
     }
     @PutMapping("/public/update-profile-picture")
-    public ResponseEntity<String> uploadProfilePicture(@RequestParam String email, @ModelAttribute ProfilePictureUpdateRequest profilePictureUpdateRequest) {
+    public ResponseEntity<String> uploadProfilePicture(@AuthenticationPrincipal UserDetailsImpl userDetails, @ModelAttribute ProfilePictureUpdateRequest profilePictureUpdateRequest) {
+        if (userDetails == null) {
+            return new ResponseEntity<>("Unauthorized: Token is missing or invalid", HttpStatus.UNAUTHORIZED);
+        }
+        String email = userDetails.getEmail();
         try {
             String fileUrl = profilePictureService.updateProfilePicture(email, profilePictureUpdateRequest);
             return new ResponseEntity<>(fileUrl, HttpStatus.OK);
@@ -190,11 +194,6 @@ public class AuthController {
         UserInfoResponse userInfoResponse = userService.getUserInfo(email);
         return ResponseEntity.ok(userInfoResponse);
     }
-//    @PutMapping("/update/info")
-//    ResponseEntity<ResponseDto> updateUserInfo( @RequestParam String email, @RequestBody UserUpdateRequest userUpdateRequest) {
-//        userService.updateUserInfoByEmail(email,userUpdateRequest);
-//        return ResponseEntity.ok(new ResponseDto("200", "User updated successfully"));
-//    }
     @PutMapping("/update/info")
     ResponseEntity<ResponseDto> updateUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UserUpdateRequest userUpdateRequest) {
         if (userDetails == null) {
