@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 
 public record PaymentMethodRequest(
 
+
         String paymentPreference,
 
         @Schema(description = "The name of the bank, required if payment preference is Bank Account", example = "Fidelity Bank")
@@ -24,6 +25,9 @@ public record PaymentMethodRequest(
         @Schema(description = "The service provider, required if payment preference is Mobile Money", example = "MTN")
         String serviceProvider,
         @Schema(description = "Phone Number, required if payment preference is Mobile Money")
-        String phoneNumber
+        String phoneNumber,
+        String firstName,
+        String lastName,
+        String email
 ) {}
 
