@@ -131,6 +131,12 @@ public class UserServiceImpl implements IUserService {
         }
         userRepository.save(foundUser);
     }
+    public void deleteProfilePicture(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new ResourceNotFoundException("User", "email", email));
+        user.setProfileImage(null);
+        userRepository.save(user);
+    }
 }
 
 

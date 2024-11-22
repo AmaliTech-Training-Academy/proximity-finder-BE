@@ -22,4 +22,5 @@ public interface IUserService {
 
     void updatePassword(String email, AdminUpdatePasswordRequest adminUpdatePasswordRequest);
     void updateUserInfoByEmail(String email, UserUpdateRequest userUpdateRequest);
+    void deleteProfilePicture(String email);
 }

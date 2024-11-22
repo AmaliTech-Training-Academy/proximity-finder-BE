@@ -204,5 +204,14 @@ public class AuthController {
         return ResponseEntity.ok(new ResponseDto("200", "User updated successfully"));
     }
 
+    @DeleteMapping("/profile-picture")
+    public ResponseEntity<ResponseDto> deleteProfilePicture(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDto("401", "Unauthorized: Token is missing or invalid"));
+        }
+        String email = userDetails.getEmail();
+        userService.deleteProfilePicture(email);
+        return ResponseEntity.ok(new ResponseDto("200", "Profile picture deleted successfully"));
+    }
 
 }
