@@ -1,4 +1,4 @@
-package auth.proximity.authservice.security;
+package auth.proximity.authservice.seeders;
 
 import auth.proximity.authservice.entity.AppRole;
 import auth.proximity.authservice.entity.Role;

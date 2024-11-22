@@ -1,8 +1,6 @@
 package auth.proximity.authservice.security;
-import auth.proximity.authservice.entity.User;
 import auth.proximity.authservice.security.jwt.JwtUtils;
-import auth.proximity.authservice.security.service.UserDetailsImpl;
-import auth.proximity.authservice.service.impl.UserServiceImpl;
+import auth.proximity.authservice.services.security.UserDetailsImpl;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

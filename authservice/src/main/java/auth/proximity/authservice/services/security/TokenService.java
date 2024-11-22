@@ -1,4 +1,4 @@
-package auth.proximity.authservice.security.service;
+package auth.proximity.authservice.services.security;
 
 import auth.proximity.authservice.entity.PasswordResetToken;
 import auth.proximity.authservice.entity.User;

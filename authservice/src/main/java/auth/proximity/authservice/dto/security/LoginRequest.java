@@ -1,4 +1,4 @@
-package auth.proximity.authservice.security.dto;
+package auth.proximity.authservice.dto.security;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;

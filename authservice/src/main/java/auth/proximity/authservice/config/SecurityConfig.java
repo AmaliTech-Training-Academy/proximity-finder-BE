@@ -1,9 +1,11 @@
-package auth.proximity.authservice.security;
+package auth.proximity.authservice.config;
 
 import auth.proximity.authservice.repository.UserRepository;
+import auth.proximity.authservice.security.OAuth2AuthenticationFailureHandler;
+import auth.proximity.authservice.security.OAuth2AuthenticationSuccessHandler;
 import auth.proximity.authservice.security.jwt.JWTAuthorizationFilter;
 import auth.proximity.authservice.security.jwt.JwtUtils;
-import auth.proximity.authservice.security.service.UserDetailsServiceImpl;
+import auth.proximity.authservice.services.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +18,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;

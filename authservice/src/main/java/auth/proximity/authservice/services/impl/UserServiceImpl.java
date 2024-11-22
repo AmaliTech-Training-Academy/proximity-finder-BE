@@ -1,6 +1,10 @@
-package auth.proximity.authservice.service.impl;
+package auth.proximity.authservice.services.impl;
 
 import auth.proximity.authservice.dto.*;
+import auth.proximity.authservice.dto.user.AdminUpdatePasswordRequest;
+import auth.proximity.authservice.dto.user.UserDto;
+import auth.proximity.authservice.dto.user.UserInfoResponse;
+import auth.proximity.authservice.dto.user.UserUpdateRequest;
 import auth.proximity.authservice.entity.AppRole;
 import auth.proximity.authservice.entity.Role;
 import auth.proximity.authservice.entity.User;
@@ -8,8 +12,7 @@ import auth.proximity.authservice.exception.ResourceNotFoundException;
 import auth.proximity.authservice.exception.UserAlreadyExistsException;
 import auth.proximity.authservice.repository.RoleRepository;
 import auth.proximity.authservice.repository.UserRepository;
-import auth.proximity.authservice.security.service.UserDetailsImpl;
-import auth.proximity.authservice.service.IUserService;
+import auth.proximity.authservice.services.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

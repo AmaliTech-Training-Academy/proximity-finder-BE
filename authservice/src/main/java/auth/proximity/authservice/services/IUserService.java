@@ -1,6 +1,9 @@
-package auth.proximity.authservice.service;
+package auth.proximity.authservice.services;
 
-import auth.proximity.authservice.dto.*;
+import auth.proximity.authservice.dto.user.AdminUpdatePasswordRequest;
+import auth.proximity.authservice.dto.user.UserDto;
+import auth.proximity.authservice.dto.user.UserInfoResponse;
+import auth.proximity.authservice.dto.user.UserUpdateRequest;
 import auth.proximity.authservice.entity.User;
 
 public interface IUserService {

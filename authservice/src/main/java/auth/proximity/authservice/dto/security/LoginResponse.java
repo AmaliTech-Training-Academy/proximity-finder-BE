@@ -1,4 +1,4 @@
-package auth.proximity.authservice.security.dto;
+package auth.proximity.authservice.dto.security;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,9 +1,8 @@
 package auth.proximity.authservice.controller;
 
 import auth.proximity.authservice.dto.ForgotPasswordRequest;
-import auth.proximity.authservice.dto.ResponseDto;
-import auth.proximity.authservice.dto.UserPasswordResetRequest;
-import auth.proximity.authservice.service.PasswordService;
+import auth.proximity.authservice.dto.user.UserPasswordResetRequest;
+import auth.proximity.authservice.services.PasswordService;
 import jakarta.mail.MessagingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +27,7 @@ public class PasswordController {
         return new ResponseEntity<>("Password reset successful", HttpStatus.OK);
     }
 
-    // Endpoint to initiate a password reset
+
     @PostMapping("/reset-request")
     public ResponseEntity<String> initiatePasswordReset(@RequestBody ForgotPasswordRequest forgotPasswordRequest) {
         try {

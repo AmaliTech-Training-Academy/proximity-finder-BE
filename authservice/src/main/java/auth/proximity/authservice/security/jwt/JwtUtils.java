@@ -1,22 +1,19 @@
 package auth.proximity.authservice.security.jwt;
 
 import auth.proximity.authservice.exception.TokenExpiredException;
-import auth.proximity.authservice.security.service.UserDetailsImpl;
+import auth.proximity.authservice.services.security.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.security.Key;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static auth.proximity.authservice.security.jwt.JwtConstants.*;
 
