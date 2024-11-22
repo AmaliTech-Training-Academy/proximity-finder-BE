@@ -32,4 +32,12 @@ cloud:
 app:
   awsServices:
     bucketName: gtp-group-three-lms
+management:
+  endpoints:
+    web:
+      exposure:
+        exclude: '*'
+  httpexchanges:
+    recording:
+      enabled: true
 
