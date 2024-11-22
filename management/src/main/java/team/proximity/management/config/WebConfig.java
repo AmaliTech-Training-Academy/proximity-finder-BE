@@ -1,6 +1,9 @@
 package team.proximity.management.config;
 
 
+import org.springframework.boot.actuate.web.exchanges.HttpExchangeRepository;
+import org.springframework.boot.actuate.web.exchanges.InMemoryHttpExchangeRepository;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -24,5 +27,9 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(requestLoggingInterceptor);
+    }
+    @Bean
+    public HttpExchangeRepository httpTraceRepository() {
+        return new InMemoryHttpExchangeRepository();
     }
 }

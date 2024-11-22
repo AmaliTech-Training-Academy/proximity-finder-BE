@@ -8,6 +8,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.stream.Collectors;
+
 @Component
 public class RequestLoggingInterceptor implements HandlerInterceptor {
 
@@ -21,6 +23,8 @@ public class RequestLoggingInterceptor implements HandlerInterceptor {
         request.getHeaderNames().asIterator().forEachRemaining(headerName ->
                 logger.info("Header: {} = {}", headerName, request.getHeader(headerName))
         );
+        String requestBody = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        logger.info("Request Body: {}", requestBody);
 
         return true; // Continue request processing
     }

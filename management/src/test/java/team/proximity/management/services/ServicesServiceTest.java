@@ -4,6 +4,7 @@ import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.hibernate.sql.Update;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import team.proximity.management.requests.ServiceRequest;
 import team.proximity.management.model.Services;
 import team.proximity.management.repositories.ServicesRepository;
+import team.proximity.management.requests.UpdateServiceRequest;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -96,7 +98,7 @@ class ServicesServiceTest {
         when(newImage.getOriginalFilename()).thenReturn("newImage.jpg");
         when(s3Service.uploadFile(newImage)).thenReturn("s3://bucket/newImage.jpg");
 
-        ServiceRequest serviceRequest = new ServiceRequest("Updated Service", "Updated Description",  newImage);
+         UpdateServiceRequest serviceRequest = new UpdateServiceRequest("Updated Service", "Updated Description",  newImage);
         Services existingService = new Services(serviceId, "Old Service", "Old Description","oldImage.jpg");
 
         when(servicesRepository.findById(serviceId)).thenReturn(Optional.of(existingService));
@@ -116,7 +118,7 @@ class ServicesServiceTest {
     void updateServiceTest_ServiceNotFound() {
         // Arrange
         UUID serviceId = UUID.randomUUID();
-        ServiceRequest serviceRequest = new ServiceRequest("Updated Service", "Updated Description",  null);
+       UpdateServiceRequest serviceRequest = new UpdateServiceRequest("Updated Service", "Updated Description",  null);
 
         when(servicesRepository.findById(serviceId)).thenReturn(Optional.empty());
 
