@@ -28,7 +28,6 @@ public class PaymentMethodController {
 
     @Operation(summary = "Get a list of all payment methods for the authenticated user")
     @SecurityRequirement(name = "BearerAuth")
-    @PreAuthorize("hasAuthority('ROLE_PROVIDER')")
     @GetMapping
     public List<PaymentMethodResponse> getPaymentMethodsForAuthenticatedUser() {
         return paymentMethodService.getPaymentMethodsForAuthenticatedUser();
@@ -56,7 +55,6 @@ public class PaymentMethodController {
             )
     )
     @SecurityRequirement(name = "BearerAuth")
-    @PreAuthorize("hasAuthority('ROLE_PROVIDER')")
     @PostMapping
     ResponseEntity<ApiSuccessResponse> createPaymentMethod(@RequestBody PaymentMethodRequest request) {
         paymentMethodService.createNewPaymentMethod(request);
@@ -82,7 +80,6 @@ public class PaymentMethodController {
             )
     )
     @SecurityRequirement(name = "BearerAuth")
-    @PreAuthorize("hasAuthority('ROLE_PROVIDER')")
     @PostMapping("/new-payment-method")
     ResponseEntity<ApiSuccessResponse> createAnotherPaymentMethod(@RequestBody PaymentMethodRequest request) {
         paymentMethodService.createAnotherPaymentMethod(request);

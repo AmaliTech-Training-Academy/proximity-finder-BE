@@ -26,7 +26,6 @@ public class AboutController {
 
     @SecurityRequirement(name = "BearerAuth")
     @Operation(summary = "Create About Company")
-    @PreAuthorize("hasAuthority('ROLE_PROVIDER')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiSuccessResponse> createOneAbout(@Valid @ModelAttribute AboutRequest aboutRequest) throws IOException {
 
@@ -37,7 +36,6 @@ public class AboutController {
     }
     @Operation(summary = "Get About Company for the authenticated user")
     @SecurityRequirement(name = "BearerAuth")
-    @PreAuthorize("hasAuthority('ROLE_PROVIDER')")
     @GetMapping("/about-company")
     public ResponseEntity<AboutBusinessResponse> getAboutForAuthenticatedUser() {
         AboutBusinessResponse response = aboutService.getAboutForAuthenticatedUser();
