@@ -1,9 +1,12 @@
 package team.proximity.provider_profile_service.about;
 
 import jakarta.transaction.Transactional;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
+import org.apache.tomcat.util.http.fileupload.impl.FileUploadIOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import team.proximity.provider_profile_service.common.AuthHelper;
 import team.proximity.provider_profile_service.exception.about.AboutNotFoundException;
 import team.proximity.provider_profile_service.exception.about.UnauthorizedAccessException;
@@ -39,16 +42,15 @@ public class AboutServiceImpl implements AboutService {
         if (authenticatedUsername == null) {
             throw new UnauthorizedAccessException("User is not authenticated.");
         }
-
         About about = aboutRepository.findByCreatedBy(authenticatedUsername)
                 .orElseThrow(() -> new AboutNotFoundException("No business found for the authenticated user."));
-
         return aboutBusinessMapper.mapToResponse(about);
     }
 
 
-    @Transactional
-    public void createOneAbout(AboutRequest aboutRequest) throws IOException {
+@Transactional
+public void createOneAbout(AboutRequest aboutRequest) {
+
         fileValidator.validate(aboutRequest.businessIdentityCard());
         fileValidator.validate(aboutRequest.businessCertificate());
 
@@ -56,19 +58,32 @@ public class AboutServiceImpl implements AboutService {
 
         Optional<About> existingAbout = aboutRepository.findByCreatedBy(AuthHelper.getAuthenticatedUsername());
         existingAbout.ifPresent(about -> {
-
             LOGGER.info("Deleting existing About record for user: {}", AuthHelper.getAuthenticatedUsername());
             aboutRepository.delete(about);
         });
 
+        String businessIdentityCardPath = uploadFileSafely(aboutRequest.businessIdentityCard());
+        String businessCertificatePath = uploadFileSafely(aboutRequest.businessCertificate());
 
-        String businessIdentityCardPath = fileStorageService.uploadFile(aboutRequest.businessIdentityCard());
-        LOGGER.info("Uploaded business identity card for user: {}", AuthHelper.getAuthenticatedUsername());
+        About about = createAboutFromRequest(aboutRequest, businessIdentityCardPath, businessCertificatePath);
 
-        String businessCertificatePath = fileStorageService.uploadFile(aboutRequest.businessCertificate());
-        LOGGER.info("Uploaded business certificate for user: {}", AuthHelper.getAuthenticatedUsername());
+        aboutRepository.save(about);
+        LOGGER.info("Successfully created About record for user: {}", AuthHelper.getAuthenticatedUsername());
 
-        About about = About.builder()
+}
+    private String uploadFileSafely(MultipartFile file) {
+        try {
+            String filePath = fileStorageService.uploadFile(file);
+            LOGGER.info("File uploaded successfully for user: {}", AuthHelper.getAuthenticatedUsername());
+            return filePath;
+        } catch (IOException e) {
+            LOGGER.error("File upload failed for user: {}", AuthHelper.getAuthenticatedUsername(), e);
+            return null;
+        }
+    }
+
+    private static About createAboutFromRequest(AboutRequest aboutRequest, String businessIdentityCardPath, String businessCertificatePath) {
+        return About.builder()
                 .inceptionDate(aboutRequest.inceptionDate())
                 .socialMediaLinks(aboutRequest.socialMediaLinks())
                 .numberOfEmployees(aboutRequest.numberOfEmployees())
@@ -77,13 +92,7 @@ public class AboutServiceImpl implements AboutService {
                 .businessSummary(aboutRequest.businessSummary())
                 .createdBy(AuthHelper.getAuthenticatedUsername())
                 .build();
-
-        aboutRepository.save(about);
-
-        LOGGER.info("Successfully created About record for user: {}", AuthHelper.getAuthenticatedUsername());
     }
-
-
 }
 
 
