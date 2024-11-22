@@ -11,7 +11,7 @@ services:
     env_file:
       - ./.authservice.env
     volumes:
-      - prox-volume/app/data
+      - prox-volume:/app/data
 
   eurekaserver:
     image: 909544387219.dkr.ecr.eu-west-1.amazonaws.com/eurekaserver:latest
@@ -23,7 +23,7 @@ services:
       - proximity-finder-network
       - training-shared-network
     volumes:
-      - prox-volume/app/data
+      - prox-volume:/app/data
 
   management:
     image: 909544387219.dkr.ecr.eu-west-1.amazonaws.com/management:latest
@@ -37,7 +37,7 @@ services:
     env_file:
       - ./.management.env
     volumes:
-      - prox-volume/app/data
+      - prox-volume:/app/data
 
 
   provider-profile-service:
@@ -52,7 +52,7 @@ services:
     env_file:
       - ./.provider-profile-service.env
     volumes:
-      - prox-volume/app/data
+      - prox-volume:/app/data
 
 networks:
   proximity-finder-network:
