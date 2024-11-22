@@ -42,7 +42,15 @@ public class ProviderServiceService {
         // Initialize ProviderServiceMapper with dependencies
         this.preferenceMapper = new ProviderServiceMapper(s3Service, servicesRepository);
     }
-
+    public ProviderService createOrUpdateProviderService(ProviderServiceRequest providerServiceRequest) throws JsonProcessingException {
+        if (providerServiceRequest.getId() != null) {
+            log.info("Updating existing providerService with id: {}", providerServiceRequest.getId());
+            return updateProviderService(providerServiceRequest.getId(), providerServiceRequest);
+        } else {
+            log.info("Creating new providerService");
+            return createProviderService(providerServiceRequest);
+        }
+    }
 
     public ProviderService createProviderService(ProviderServiceRequest providerServiceRequest) throws JsonProcessingException {
         List<BookingDayRequest> bookingDays = objectMapper.readValue(
@@ -78,9 +86,6 @@ public class ProviderServiceService {
     }
 
     public void deleteProviderService(UUID id) {
-        if (!providerServiceRepository.existsById(id)) {
-            throw new ProviderServiceNotFoundException(id);
-        }
         providerServiceRepository.deleteById(id);
     }
 }
