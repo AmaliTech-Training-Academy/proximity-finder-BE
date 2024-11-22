@@ -29,8 +29,6 @@ public class ProviderServiceController {
         this.providerServiceService = providerServiceService;
     }
 
-
-
     @PutMapping("/{id}")
     @Operation(summary = "Update a providerService", description = "Update a providerService by id")
 

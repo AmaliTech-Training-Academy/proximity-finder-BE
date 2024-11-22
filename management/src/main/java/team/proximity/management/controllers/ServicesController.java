@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import team.proximity.management.exceptions.ResourceNotFoundException;
 import team.proximity.management.model.Services;
 import team.proximity.management.requests.ServiceRequest;
+import team.proximity.management.requests.UpdateServiceRequest;
 import team.proximity.management.responses.ApiResponse;
 import team.proximity.management.responses.ApiResponseStatus;
 import team.proximity.management.services.ServicesService;
@@ -101,7 +102,7 @@ public class ServicesController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
     })
-    public ResponseEntity<ApiResponse<Services>> updateService(@PathVariable UUID id, @RequestBody ServiceRequest serviceDetails) {
+    public ResponseEntity<ApiResponse<Services>> updateService(@PathVariable UUID id, @ModelAttribute UpdateServiceRequest serviceDetails) {
         log.info("Updating service with id: {} and request: {}", id, serviceDetails);
         Services updatedService = servicesService.updateService(id, serviceDetails);
         return ResponseEntity.ok(ApiResponse.<Services>builder()
