@@ -2,12 +2,6 @@ spring:
   application:
     name: "eureka-server"
 
-  security:
-    user:
-      name: admin
-      password: ${ADMIN_PASSWORD:Admin8962@#}
-      roles: ADMIN
-
 server:
   port: 8761
 
