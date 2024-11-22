@@ -1,4 +1,3 @@
-# Create a stage for resolving and downloading dependencies.
 FROM eclipse-temurin:21-jdk-jammy as deps
 
 WORKDIR /build
@@ -6,9 +5,11 @@ WORKDIR /build
 COPY --chmod=0755 mvnw mvnw
 COPY .mvn/ .mvn/
 
+
 RUN --mount=type=bind,source=pom.xml,target=pom.xml \
     --mount=type=cache,target=/root/.m2 ./mvnw dependency:go-offline -DskipTests
 
+################################################################################
 
 FROM deps as package
 
@@ -30,8 +31,8 @@ RUN java -Djarmode=layertools -jar target/app.jar extract --destination target/e
 
 ################################################################################
 
-FROM eclipse-temurin:21-jre-jammy AS final
 
+FROM eclipse-temurin:21-jre-jammy AS final
 
 ARG UID=10001
 RUN adduser \
@@ -44,11 +45,12 @@ RUN adduser \
     appuser
 USER appuser
 
+# Copy the executable from the "package" stage.
 COPY --from=extract build/target/extracted/dependencies/ ./
 COPY --from=extract build/target/extracted/spring-boot-loader/ ./
 COPY --from=extract build/target/extracted/snapshot-dependencies/ ./
 COPY --from=extract build/target/extracted/application/ ./
 
-EXPOSE 9091
+EXPOSE 8888
 
 ENTRYPOINT [ "java", "org.springframework.boot.loader.launch.JarLauncher" ]
