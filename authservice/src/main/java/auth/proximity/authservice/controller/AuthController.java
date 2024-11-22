@@ -1,18 +1,22 @@
 package auth.proximity.authservice.controller;
 
 import auth.proximity.authservice.dto.*;
+import auth.proximity.authservice.dto.user.AdminUpdatePasswordRequest;
+import auth.proximity.authservice.dto.user.UserDto;
+import auth.proximity.authservice.dto.user.UserInfoResponse;
+import auth.proximity.authservice.dto.user.UserUpdateRequest;
 import auth.proximity.authservice.entity.User;
 
-import auth.proximity.authservice.security.dto.LoginRequest;
-import auth.proximity.authservice.security.dto.LoginResponse;
-import auth.proximity.authservice.security.dto.RefreshTokenResponse;
-import auth.proximity.authservice.security.dto.InfoResponse;
+import auth.proximity.authservice.dto.security.LoginRequest;
+import auth.proximity.authservice.dto.security.LoginResponse;
+import auth.proximity.authservice.dto.security.RefreshTokenResponse;
+import auth.proximity.authservice.dto.security.InfoResponse;
 import auth.proximity.authservice.security.jwt.JwtConstants;
 import auth.proximity.authservice.security.jwt.JwtUtils;
-import auth.proximity.authservice.security.service.UserDetailsImpl;
-import auth.proximity.authservice.security.service.UserDetailsServiceImpl;
-import auth.proximity.authservice.service.IUserService;
-import auth.proximity.authservice.service.ProfilePictureService;
+import auth.proximity.authservice.services.security.UserDetailsImpl;
+import auth.proximity.authservice.services.security.UserDetailsServiceImpl;
+import auth.proximity.authservice.services.IUserService;
+import auth.proximity.authservice.services.ProfilePictureService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -158,7 +162,7 @@ public class AuthController {
     }
 
 
-    @Operation(summary = "Validate Token REST API", description = "REST API to validate a token to confirm whether valid or invalid")
+    @Operation(summary = "Validate Token REST        API", description = "REST API to validate a token to confirm whether valid or invalid")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "HTTP Status OK"),
             @ApiResponse(responseCode = "500", description = "HTTP Status Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
@@ -174,7 +178,11 @@ public class AuthController {
         return ResponseEntity.ok(new ResponseDto("200", "Password updated successfully"));
     }
     @PutMapping("/public/update-profile-picture")
-    public ResponseEntity<String> uploadProfilePicture(@RequestParam String email, @ModelAttribute ProfilePictureUpdateRequest profilePictureUpdateRequest) {
+    public ResponseEntity<String> uploadProfilePicture(@AuthenticationPrincipal UserDetailsImpl userDetails, @ModelAttribute ProfilePictureUpdateRequest profilePictureUpdateRequest) {
+        if (userDetails == null) {
+            return new ResponseEntity<>("Unauthorized: Token is missing or invalid", HttpStatus.UNAUTHORIZED);
+        }
+        String email = userDetails.getEmail();
         try {
             String fileUrl = profilePictureService.updateProfilePicture(email, profilePictureUpdateRequest);
             return new ResponseEntity<>(fileUrl, HttpStatus.OK);
@@ -190,7 +198,24 @@ public class AuthController {
         UserInfoResponse userInfoResponse = userService.getUserInfo(email);
         return ResponseEntity.ok(userInfoResponse);
     }
+    @PutMapping("/update/info")
+    ResponseEntity<ResponseDto> updateUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UserUpdateRequest userUpdateRequest) {
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDto("401", "Unauthorized: Token is missing or invalid"));
+        }
+        String email = userDetails.getEmail();
+        userService.updateUserInfoByEmail(email, userUpdateRequest);
+        return ResponseEntity.ok(new ResponseDto("200", "User updated successfully"));
+    }
 
-
+    @DeleteMapping("/profile-picture")
+    public ResponseEntity<ResponseDto> deleteProfilePicture(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDto("401", "Unauthorized: Token is missing or invalid"));
+        }
+        String email = userDetails.getEmail();
+        userService.deleteProfilePicture(email);
+        return ResponseEntity.ok(new ResponseDto("200", "Profile picture deleted successfully"));
+    }
 
 }

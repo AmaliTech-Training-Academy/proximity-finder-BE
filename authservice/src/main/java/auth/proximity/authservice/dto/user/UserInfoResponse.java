@@ -1,4 +1,6 @@
-package auth.proximity.authservice.dto;
+package auth.proximity.authservice.dto.user;
+
+import auth.proximity.authservice.entity.Role;
 
 public record UserInfoResponse(
 
@@ -8,8 +10,7 @@ public record UserInfoResponse(
         String mobileNumber,
         String businessOwnerName,
         String profileImage,
-        String businessAddress
-
-
+        String businessAddress,
+        Role role
 ) {
 }

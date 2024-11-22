@@ -1,4 +1,4 @@
-package auth.proximity.authservice.service;
+package auth.proximity.authservice.services;
 
 import auth.proximity.authservice.dto.ProfilePictureUpdateRequest;
 import auth.proximity.authservice.entity.User;
