@@ -9,7 +9,7 @@ services:
       - proximity-finder-network
       - training-shared-network
     env_file:
-      - ./authservice/.env
+      - ./.authservice.env
     volumes:
       - prox-volume
 
@@ -35,7 +35,7 @@ services:
       - proximity-finder-network
       - training-shared-network
     env_file:
-      - ./management/.env
+      - ./.management.env
     volumes:
       - prox-volume
 
@@ -50,7 +50,7 @@ services:
       - proximity-finder-network
       - training-shared-network
     env_file:
-      - ./provider-profile-service/.env
+      - ./.provider-profile-service.env
     volumes:
       - prox-volume
 
