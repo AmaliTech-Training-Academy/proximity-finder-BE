@@ -41,7 +41,7 @@ eureka-server:
 eureka:
   client:
     service-url:
-      defaultZone: http://${eureka-server.hostname}:${eureka-server.port}/eureka/
+      defaultZone: https://${eureka-server.hostname}:${eureka-server.port}/eureka/
     register-with-eureka: true
     fetch-registry: true
 
