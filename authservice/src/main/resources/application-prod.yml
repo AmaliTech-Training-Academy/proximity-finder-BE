@@ -61,6 +61,10 @@ email:
   subject: Reset Your Password
   reset-url: ${FRONT_END_RESET_URL}
 
+eureka-server:
+  port: ${EUREKA_PORT:8761}
+  hostname: ${EUREKA_HOSTNAME:localhost}
+
 eureka:
   client:
     service-url:
