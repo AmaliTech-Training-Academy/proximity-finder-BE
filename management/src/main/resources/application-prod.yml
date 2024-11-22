@@ -36,8 +36,17 @@ management:
   endpoints:
     web:
       exposure:
-        exclude: '*'
+        exclude: 'health,metrics,info'
   httpexchanges:
     recording:
+      enabled: true
+eureka:
+  client:
+    service-url:
+      defaultZone: https://${eureka-server.hostname}:${eureka-server.port}/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+    enabled: true
+    healthcheck:
       enabled: true
 
