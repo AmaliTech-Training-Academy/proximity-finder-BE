@@ -36,7 +36,8 @@ public class UserServiceImpl implements IUserService {
                 foundUser.getMobileNumber(),
                 foundUser.getBusinessOwnerName(),
                 foundUser.getProfileImage(),
-                foundUser.getBusinessAddress()
+                foundUser.getBusinessAddress(),
+                foundUser.getRole()
         );
     }
 
