@@ -60,3 +60,16 @@ email:
   from-address: Proximity Team <samuel.amo@amalitechtraining.org>
   subject: Reset Your Password
   reset-url: ${FRONT_END_RESET_URL}
+eureka-server:
+  port: ${EUREKA_PORT:8761}
+  hostname: ${EUREKA_HOSTNAME:localhost}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: https://${eureka-server.hostname}:${eureka-server.port}/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+    enabled: true
+    healthcheck:
+      enabled: true
