@@ -2,11 +2,15 @@ package team.proximity.management.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import team.proximity.management.requests.ProviderServiceRequest;
 import team.proximity.management.model.ProviderService;
-import team.proximity.management.responses.ApiResponse;
+import team.proximity.management.responses.ApiSuccessResponse;
 import team.proximity.management.responses.ApiResponseStatus;
 import team.proximity.management.responses.ErrorResponse;
 import team.proximity.management.services.ProviderServiceService;
@@ -29,69 +33,66 @@ public class ProviderServiceController {
         this.providerServiceService = providerServiceService;
     }
     @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<ApiResponse<ProviderService>> createOrUpdateProviderService(@Validated @ModelAttribute ProviderServiceRequest providerServiceRequest) throws JsonProcessingException {
+    @Operation(summary = "Create or update a provider service", description = "Creates or updates a provider service")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "Successfully deleted service experience"),
+            @ApiResponse(responseCode = "201", description = "Successfully created or updated provider service",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProviderService.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input"),
+            @ApiResponse(responseCode = "401", description = "You are not authorized to view the resource"),
+            @ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
+    })
+    public ResponseEntity<ApiSuccessResponse<ProviderService>> createOrUpdateProviderService(@Validated @ModelAttribute ProviderServiceRequest providerServiceRequest) throws JsonProcessingException {
         log.info("Processing providerService request: {}", providerServiceRequest);
 
         ProviderService providerService = providerServiceService.createOrUpdateProviderService(providerServiceRequest);
 
         log.debug("Processed providerService: {}", providerService);
-        ApiResponse<ProviderService> response = ApiResponse.<ProviderService>builder()
+        ApiSuccessResponse<ProviderService> response = ApiSuccessResponse.<ProviderService>builder()
                 .status(ApiResponseStatus.SUCCESS)
                 .result(providerService)
                 .build();
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    @Operation(summary = "Update a providerService", description = "Update a providerService by id")
-
-    public ResponseEntity<ApiResponse<ProviderService>> updateProviderService(@PathVariable UUID id, @RequestBody ProviderServiceRequest providerService) {
-        log.info("Updating providerService with id: {} and request: {}", id, providerService);
-        try {
-            ProviderService updatedProviderService = providerServiceService.updateProviderService(id, providerService);
-            log.debug("Updated providerService: {}", updatedProviderService);
-            ApiResponse<ProviderService> response = ApiResponse.<ProviderService>builder()
-                    .status(ApiResponseStatus.SUCCESS)
-                    .result(updatedProviderService)
-                    .build();
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (RuntimeException e) {
-            log.warn("ProviderService not found with id: {}", id);
-            ApiResponse<ProviderService> response = ApiResponse.<ProviderService>builder()
-                    .status(ApiResponseStatus.ERROR)
-                    .errors(Collections.singletonList(new ErrorResponse("Not Found", "ProviderService not found with id " + id)))
-                    .build();
-            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-        }
-    }
-
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<ProviderService>> getProviderServiceById(@PathVariable UUID id) {
+    @Operation(summary = "Retrieve a provider service by id", description = "Returns a provider service by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved provider service by id",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProviderService.class))),
+            @ApiResponse(responseCode = "401", description = "You are not authorized to view the resource"),
+            @ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
+    })
+    public ResponseEntity<ApiSuccessResponse<ProviderService>> getProviderServiceById(@PathVariable UUID id) {
         log.info("Fetching providerService with id: {}", id);
-        Optional<ProviderService> optionalProviderService = providerServiceService.getProviderServiceById(id);
-        if (optionalProviderService.isPresent()) {
-            log.debug("Fetched providerService: {}", optionalProviderService.get());
-            ApiResponse<ProviderService> response = ApiResponse.<ProviderService>builder()
-                    .status(ApiResponseStatus.SUCCESS)
-                    .result(optionalProviderService.get())
-                    .build();
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } else {
-            log.warn("ProviderService not found with id: {}", id);
-            ApiResponse<ProviderService> response = ApiResponse.<ProviderService>builder()
-                    .status(ApiResponseStatus.ERROR)
-                    .errors(Collections.singletonList(new ErrorResponse("Not Found", "ProviderService not found with id " + id)))
-                    .build();
-            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-        }
+
+        ProviderService providerService = providerServiceService.getProviderServiceById(id);
+
+        ApiSuccessResponse<ProviderService> response = ApiSuccessResponse.<ProviderService>builder()
+                .status(ApiResponseStatus.SUCCESS)
+                .result(providerService)
+                .build();
+
+        log.debug("Fetched providerService: {}", providerService);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<ProviderService>>> getAllProviderServices() {
+    @Operation(summary = "Retrieve all provider services", description = "Returns a list of all available provider services")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of provider services",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProviderService.class))),
+            @ApiResponse(responseCode = "401", description = "You are not authorized to view the resource"),
+            @ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
+    })
+    public ResponseEntity<ApiSuccessResponse<List<ProviderService>>> getAllProviderServices() {
         log.info("Fetching all providerServices");
         List<ProviderService> providerServices = providerServiceService.getAllProviderServices();
         log.debug("Fetched providerServices: {}", providerServices);
-        ApiResponse<List<ProviderService>> response = ApiResponse.<List<ProviderService>>builder()
+        ApiSuccessResponse<List<ProviderService>> response = ApiSuccessResponse.<List<ProviderService>>builder()
                 .status(ApiResponseStatus.SUCCESS)
                 .result(providerServices)
                 .build();
@@ -99,24 +100,20 @@ public class ProviderServiceController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteProviderService(@PathVariable UUID id) {
+    @Operation(summary = "Delete a provider service", description = "Deletes a provider service")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Successfully deleted provider service"),
+            @ApiResponse(responseCode = "401", description = "You are not authorized to view the resource"),
+            @ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
+    })
+    public ResponseEntity<ApiSuccessResponse<Void>> deleteProviderService(@PathVariable UUID id) {
         log.info("Deleting providerService with id: {}", id);
-        Optional<ProviderService> optionalProviderService = providerServiceService.getProviderServiceById(id);
-        if (optionalProviderService.isPresent()) {
-            providerServiceService.deleteProviderService(id);
-            log.debug("Deleted providerService with id: {}", id);
-            ApiResponse<Void> response = ApiResponse.<Void>builder()
-                    .status(ApiResponseStatus.SUCCESS)
-                    .build();
-            return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
-        } else {
-            log.warn("ProviderService not found with id: {}", id);
-            ApiResponse<Void> response = ApiResponse.<Void>builder()
-                    .status(ApiResponseStatus.ERROR)
-                    .errors(Collections.singletonList(new ErrorResponse("Not Found", "ProviderService not found with id " + id)))
-                    .build();
-            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-        }
+        providerServiceService.deleteProviderService(id);
+        ApiSuccessResponse<Void> response = ApiSuccessResponse.<Void>builder()
+                .status(ApiResponseStatus.SUCCESS)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
     }
 
 }
