@@ -1,6 +1,8 @@
 package team.proximity.management.mappers;
 
 import org.springframework.web.multipart.MultipartFile;
+import team.proximity.management.exceptions.FileUploadException;
+import team.proximity.management.exceptions.InvalidFileTypeException;
 import team.proximity.management.model.Services;
 import team.proximity.management.repositories.ServicesRepository;
 import team.proximity.management.requests.BookingDayRequest;
@@ -9,6 +11,7 @@ import team.proximity.management.model.BookingDay;
 import team.proximity.management.model.Document;
 import team.proximity.management.model.ProviderService;
 import team.proximity.management.services.S3Service;
+import team.proximity.management.validators.upload.PDFValidationStrategy;
 
 import java.io.IOException;
 import java.util.List;
@@ -102,9 +105,9 @@ public class ProviderServiceMapper {
 
     private String uploadFileToS3(MultipartFile file) {
         try {
-            return s3Service.uploadFile(file);
+            return s3Service.uploadFile(file, new PDFValidationStrategy());
         } catch (IOException e) {
-            throw new RuntimeException("Failed to upload file to S3", e);
+            throw new FileUploadException("Failed to upload file to S3", e);
         }
     }
 

@@ -5,6 +5,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import team.proximity.management.exceptions.FileUploadException;
 import team.proximity.management.exceptions.ResourceNotFoundException;
 import team.proximity.management.model.Services;
 import team.proximity.management.repositories.ServicesRepository;
@@ -13,6 +14,7 @@ import team.proximity.management.requests.UpdateServiceRequest;
 import team.proximity.management.responses.ApiResponseStatus;
 import team.proximity.management.responses.ErrorResponse;
 import team.proximity.management.utils.Helpers;
+import team.proximity.management.validators.upload.ImageValidationStrategy;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -45,7 +47,7 @@ public class ServicesService {
     @Transactional
     public Services createService(ServiceRequest serviceRequest) throws IOException {
 //        log.info("Creating service: {}", Helpers.jsonAsString(serviceRequest));
-        String imageUrl = s3Service.uploadFile(serviceRequest.getImage());
+        String imageUrl = s3Service.uploadFile(serviceRequest.getImage(), new ImageValidationStrategy());
         log.info("Image uploaded to S3: {}", imageUrl);
         Services service = Services.builder()
                 .name(serviceRequest.getName())
@@ -76,10 +78,10 @@ public class ServicesService {
     }
     private void updateServiceImage(Services service, MultipartFile image) {
         try {
-            String imageUrl = s3Service.uploadFile(image);
+            String imageUrl = s3Service.uploadFile(image, new ImageValidationStrategy());
             service.setImage(imageUrl);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new FileUploadException("Failed to upload service Image", e);
         }
     }
     public void deleteService(UUID id) {

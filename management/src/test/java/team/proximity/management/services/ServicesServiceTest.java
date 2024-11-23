@@ -15,6 +15,7 @@ import team.proximity.management.requests.ServiceRequest;
 import team.proximity.management.model.Services;
 import team.proximity.management.repositories.ServicesRepository;
 import team.proximity.management.requests.UpdateServiceRequest;
+import team.proximity.management.validators.upload.ImageValidationStrategy;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -74,7 +75,7 @@ class ServicesServiceTest {
         // Arrange
         MultipartFile imageFile = mock(MultipartFile.class);
         when(imageFile.getOriginalFilename()).thenReturn("image.jpg");
-        when(s3Service.uploadFile(imageFile)).thenReturn("s3://bucket/image.jpg");
+        when(s3Service.uploadFile(imageFile, new ImageValidationStrategy())).thenReturn("s3://bucket/image.jpg");
 
         ServiceRequest serviceRequest = new ServiceRequest("New Service", "New Description", imageFile);
         Services service = new Services(UUID.randomUUID(), "New Service", "New Description",  "s3://bucket/image.jpg");
@@ -86,7 +87,7 @@ class ServicesServiceTest {
         // Assert
         assertThat(createdService.getImage()).isEqualTo("s3://bucket/image.jpg");
         assertThat(createdService.getName()).isEqualTo("New Service");
-        verify(s3Service, times(1)).uploadFile(imageFile);
+        verify(s3Service, times(1)).uploadFile(imageFile, new ImageValidationStrategy());
         verify(servicesRepository, times(1)).save(any(Services.class));
     }
 
@@ -96,7 +97,7 @@ class ServicesServiceTest {
         UUID serviceId = UUID.randomUUID();
         MultipartFile newImage = mock(MultipartFile.class);
         when(newImage.getOriginalFilename()).thenReturn("newImage.jpg");
-        when(s3Service.uploadFile(newImage)).thenReturn("s3://bucket/newImage.jpg");
+        when(s3Service.uploadFile(newImage, new ImageValidationStrategy())).thenReturn("s3://bucket/newImage.jpg");
 
          UpdateServiceRequest serviceRequest = new UpdateServiceRequest("Updated Service", "Updated Description",  newImage);
         Services existingService = new Services(serviceId, "Old Service", "Old Description","oldImage.jpg");
@@ -110,7 +111,7 @@ class ServicesServiceTest {
         // Assert
         assertThat(updatedService.getImage()).isEqualTo("s3://bucket/newImage.jpg");
         assertThat(updatedService.getName()).isEqualTo("Updated Service");
-        verify(s3Service, times(1)).uploadFile(newImage);
+        verify(s3Service, times(1)).uploadFile(newImage , new ImageValidationStrategy());
         verify(servicesRepository, times(1)).save(existingService);
     }
 

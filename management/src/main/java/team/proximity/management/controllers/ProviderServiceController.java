@@ -1,5 +1,6 @@
 package team.proximity.management.controllers;
 
+import com.amazonaws.Response;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -117,7 +118,7 @@ public class ProviderServiceController {
                 .status(ApiResponseStatus.SUCCESS)
                 .result(providerServices)
                 .build();
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
@@ -134,7 +135,7 @@ public class ProviderServiceController {
         ApiSuccessResponse<Void> response = ApiSuccessResponse.<Void>builder()
                 .status(ApiResponseStatus.SUCCESS)
                 .build();
-        return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }
