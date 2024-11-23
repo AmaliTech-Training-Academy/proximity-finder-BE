@@ -1,7 +1,6 @@
 package team.proximity.management.mappers;
 
 import org.springframework.web.multipart.MultipartFile;
-import team.proximity.management.exceptions.ResourceNotFoundException;
 import team.proximity.management.model.Services;
 import team.proximity.management.repositories.ServicesRepository;
 import team.proximity.management.requests.BookingDayRequest;

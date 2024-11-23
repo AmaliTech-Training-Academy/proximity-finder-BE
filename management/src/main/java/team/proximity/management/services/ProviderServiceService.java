@@ -87,4 +87,7 @@ public class ProviderServiceService {
     public void deleteProviderService(UUID id) {
         providerServiceRepository.deleteById(id);
     }
+    public List<ProviderService> getProviderServicesByUserId(UUID userId) {
+        return providerServiceRepository.findByUserId(userId).orElseThrow(() -> new ResourceNotFoundException("Provider Service not found"));
+    }
 }

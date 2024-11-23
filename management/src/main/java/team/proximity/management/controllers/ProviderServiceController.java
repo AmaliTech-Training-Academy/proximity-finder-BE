@@ -78,6 +78,27 @@ public class ProviderServiceController {
         log.debug("Fetched providerService: {}", providerService);
         return ResponseEntity.ok(response);
     }
+    @GetMapping("/provider/{userId}")
+    @Operation(summary = "Retrieve  provider services by user id", description = "Returns a provider service by user id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved provider service by user id",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProviderService.class))),
+            @ApiResponse(responseCode = "401", description = "You are not authorized to view the resource"),
+            @ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
+    })
+    public ResponseEntity<ApiSuccessResponse<List<ProviderService>>> getProviderServiceByUserId(@PathVariable UUID userId) {
+        log.info("Fetching providerService with userId: {}", userId);
+
+        List<ProviderService> providerServices = providerServiceService.getProviderServicesByUserId(userId);
+        ApiSuccessResponse<List<ProviderService>> response = ApiSuccessResponse.<List<ProviderService>>builder()
+                .status(ApiResponseStatus.SUCCESS)
+                .result(providerServices)
+                .build();
+
+        log.debug("Fetched providerService: {}", providerServices);
+        return ResponseEntity.ok(response);
+    }
 
     @GetMapping
     @Operation(summary = "Retrieve all provider services", description = "Returns a list of all available provider services")
