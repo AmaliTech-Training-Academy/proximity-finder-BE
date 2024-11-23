@@ -98,10 +98,7 @@ public class ServiceExperienceController {
             @ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
     })
     public ResponseEntity<Void> deleteServiceExperience(@PathVariable Long id) {
-        if (experienceService.getServiceExperienceById(id).isPresent()) {
-            experienceService.deleteServiceExperience(id);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+        experienceService.deleteServiceExperience(id);
+        return ResponseEntity.noContent().build();
     }
 }

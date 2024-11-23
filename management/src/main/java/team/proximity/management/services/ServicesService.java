@@ -4,13 +4,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import team.proximity.management.exceptions.FileUploadException;
 import team.proximity.management.exceptions.ResourceNotFoundException;
 import team.proximity.management.model.Services;
 import team.proximity.management.repositories.ServicesRepository;
 import team.proximity.management.requests.ServiceRequest;
+import team.proximity.management.requests.UpdateServiceRequest;
 import team.proximity.management.responses.ApiResponseStatus;
 import team.proximity.management.responses.ErrorResponse;
 import team.proximity.management.utils.Helpers;
+import team.proximity.management.validators.upload.ImageValidationStrategy;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -42,8 +46,8 @@ public class ServicesService {
 
     @Transactional
     public Services createService(ServiceRequest serviceRequest) throws IOException {
-        log.info("Creating service: {}", Helpers.jsonAsString(serviceRequest));
-        String imageUrl = s3Service.uploadFile(serviceRequest.getImage());
+//        log.info("Creating service: {}", Helpers.jsonAsString(serviceRequest));
+        String imageUrl = s3Service.uploadFile(serviceRequest.getImage(), new ImageValidationStrategy());
         log.info("Image uploaded to S3: {}", imageUrl);
         Services service = Services.builder()
                 .name(serviceRequest.getName())
@@ -55,26 +59,31 @@ public class ServicesService {
     }
 
     @Transactional
-    public Services updateService(UUID id, ServiceRequest serviceRequest) {
+    public Services updateService(UUID id, UpdateServiceRequest serviceRequest) {
         return servicesRepository.findById(id)
                 .map(service -> {
-                    service.setName(serviceRequest.getName());
-                    service.setDescription(serviceRequest.getDescription());
-
+                    if (serviceRequest.getName() != null && !serviceRequest.getName().isEmpty()) {
+                        service.setName(serviceRequest.getName());
+                    }
+                    if (serviceRequest.getDescription() != null && !serviceRequest.getDescription().isEmpty()) {
+                        service.setDescription(serviceRequest.getDescription());
+                    }
                     if (serviceRequest.getImage() != null && !serviceRequest.getImage().isEmpty()) {
-                        try {
-                            String imageUrl = s3Service.uploadFile(serviceRequest.getImage());
-                            service.setImage(imageUrl);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
+                        updateServiceImage(service, serviceRequest.getImage());
                     }
 
                     return servicesRepository.save(service);
                 })
                 .orElseThrow(() -> new ResourceNotFoundException("Service not found with id " + id));
     }
-
+    private void updateServiceImage(Services service, MultipartFile image) {
+        try {
+            String imageUrl = s3Service.uploadFile(image, new ImageValidationStrategy());
+            service.setImage(imageUrl);
+        } catch (IOException e) {
+            throw new FileUploadException("Failed to upload service Image", e);
+        }
+    }
     public void deleteService(UUID id) {
         servicesRepository.deleteById(id);
     }
