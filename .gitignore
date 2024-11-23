@@ -1,5 +1,11 @@
 HELP.md
 target/
+
+**/.mvn/wrapper/maven-wrapper.jar
+**/src/main/**/target/
+**/src/test/**/target/
+gatewayserver/src/main/resources/application-dev.yml
+
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -8,6 +14,7 @@ target/
 **/src/main/**/target/
 **/src/test/**/target/
 authservice/src/main/resources/application-dev.yml
+
 
 ### STS ###
 .apt_generated
@@ -18,11 +25,14 @@ authservice/src/main/resources/application-dev.yml
 .springBeans
 .sts4-cache
 
+
+
 ###IntelliJ IDEA ###
 .idea
 *.iws
 *.iml
 *.ipr
+
 
 ### IntelliJ IDEA ###
 .idea/
@@ -38,6 +48,10 @@ authservice/src/main/resources/application-dev.yml
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
+
+### VS Code ###
+*/.vscode/
+
 
 ### VS Code ###
 .vscode/
@@ -56,3 +70,4 @@ gatewayserver/.env
 
 ### VS Code ###
 */.vscode/
+
