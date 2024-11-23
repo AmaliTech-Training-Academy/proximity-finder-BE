@@ -8,10 +8,10 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="eurekaserver" />
+        <module name="gatewayserver" />
         <module name="authservice" />
         <module name="management" />
         <module name="provider-profile-service" />
-        <module name="gatewayserver" />
       </profile>
     </annotationProcessing>
   </component>
@@ -19,9 +19,9 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="authservice" options="-parameters" />
       <module name="eurekaserver" options="-parameters" />
+      <module name="gatewayserver" options="-parameters" />
       <module name="management" options="-parameters" />
       <module name="provider-profile-service" options="-parameters" />
-      <module name="gatewayserver" options="-parameters" />
     </option>
   </component>
 </project>

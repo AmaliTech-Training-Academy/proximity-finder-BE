@@ -31,3 +31,15 @@ app:
 
 server:
   port: ${SERVER_PORT}
+
+eureka-server:
+  port: ${EUREKA_PORT}
+  hostname: ${EUREKA_HOSTNAME}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${eureka-server.hostname}:${eureka-server.port}/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+

@@ -54,6 +54,20 @@ services:
     volumes:
       - prox-volume:/app/data
 
+  gatewayserver:
+    image: 909544387219.dkr.ecr.eu-west-1.amazonaws.com/gatewayserver:latest
+    container_name: gatewayserver-container
+    restart: on-failure:3
+    ports:
+      - "9094:9094"
+    networks:
+      - proximity-finder-network
+      - training-shared-network
+    env_file:
+      - ./.gatewayserver.env
+    volumes:
+      - prox-volume:/app/data
+
 networks:
   proximity-finder-network:
     driver: bridge
