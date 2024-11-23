@@ -47,6 +47,11 @@ provider-profile-service/src/main/resources/application-dev.yml
 provider-profile-service/compose.yaml
 provider-profile-service/README.Docker.md
 provider-profile-service/.dockerignore
+authservice/.env
+management/.env
+provider-profile-service/.env
+eurekaserver/.env
+gatewayserver/.env
 .env
 
 ### VS Code ###
