@@ -1,15 +1,13 @@
-# Use an official OpenJDK runtime as a parent image
-FROM openjdk:21-jdk-slim
-
-# Set the working directory in the container
+FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -Dmaven.test.skip=true
 
-ENV spring.profiles.active=prod
-# Copy the JAR file into the container
-COPY target/*.jar app.jar
-
-# Expose the port the application runs on
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8081
-
-# Run the JAR file
-ENTRYPOINT ["java", "-jar", "app.jar"]
+RUN adduser -D appuser
+USER appuser
+CMD ["java", "-jar", "app.jar"]

@@ -1,4 +1,7 @@
 spring:
+#  profiles:
+#    active: prod
+
   app:
     jwtSecret: ${JWT_SECRET}
   application:
@@ -10,7 +13,7 @@ spring:
     password: ${POSTGRES_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
 
   servlet:
     multipart:

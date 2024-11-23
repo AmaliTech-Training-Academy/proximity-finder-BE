@@ -1,0 +1,66 @@
+spring:
+  application:
+    name: gateway-server
+  cloud:
+    gateway:
+      routes:
+
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin, RETAIN_FIRST
+        - DedupeResponseHeader=Vary, RETAIN_UNIQUE
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - ${FRONTEND_URL}
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+
+jwt:
+  secret: ${JWT_SECRET}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+eureka-server:
+  port: ${EUREKA_PORT:8761}
+  hostname: ${EUREKA_HOSTNAME:localhost}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${eureka-server.hostname}:${eureka-server.port}/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+    enabled: true
+    healthcheck:
+      enabled: true
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          gateway: TRACE
+        http:
+          server:
+            reactive: DEBUG
+        web:
+          reactive: DEBUG
+
+server:
+  port: ${SERVER_PORT:8888}
+
+
+provider-profile-url: ${PROVIDER_PROFILE_SERVICE_URL}
+
+management-service-url: ${MANAGEMENT_SERVICE_URL}
+
