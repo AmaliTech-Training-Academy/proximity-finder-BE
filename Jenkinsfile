@@ -1,7 +1,7 @@
 @Library('shared-libraries') _
 
 def appName = 'proximity-finder'
-def availableServices = ["authservice", "eurekaserver", "management", "provider-profile-service"]
+def availableServices = ["authservice", "eurekaserver", "management", "provider-profile-service", "gatewayserver"]
 def changedServices = []
 
 def awsCreds = [
