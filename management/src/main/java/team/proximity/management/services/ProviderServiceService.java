@@ -68,6 +68,7 @@ public class ProviderServiceService {
     }
 
     public ProviderService updateProviderService(UUID id, ProviderServiceRequest updatedProviderServiceRequest) {
+        log.info("Updating providerService with id: {}", id);
         ProviderService preference = providerServiceRepository.findById(id)
                 .orElseThrow(() -> new ProviderServiceNotFoundException(id));
         preferenceMapper.updateEntity(updatedProviderServiceRequest, preference);
@@ -76,18 +77,22 @@ public class ProviderServiceService {
     }
 
     public ProviderService getProviderServiceById(UUID id) {
+        log.info("Fetching providerService with id: {}", id);
         return providerServiceRepository.findById(id)
                 .orElseThrow(() -> new ProviderServiceNotFoundException(id));
     }
 
     public List<ProviderService> getAllProviderServices() {
+        log.info("Fetching all providerServices ");
         return providerServiceRepository.findAll();
     }
 
     public void deleteProviderService(UUID id) {
+        log.info("Deleting providerService with id: {}", id);
         providerServiceRepository.deleteById(id);
     }
     public List<ProviderService> getProviderServicesByUserId(UUID userId) {
+        log.info("Fetching providerServices for userId: {}", userId);
         return providerServiceRepository.findByUserId(userId).orElseThrow(() -> new ResourceNotFoundException("Provider Service not found"));
     }
 }
