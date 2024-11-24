@@ -60,7 +60,4 @@ server:
   port: ${SERVER_PORT:8888}
 
 
-provider-profile-url: ${PROVIDER_PROFILE_SERVICE_URL}
-
-management-service-url: ${MANAGEMENT_SERVICE_URL}
 
