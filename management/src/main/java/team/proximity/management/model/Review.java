@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Data
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +29,9 @@ public class Review {
     @ManyToOne(fetch = FetchType.LAZY)
     private ProviderService providerService;
 
-    private Long author;
+    private boolean isAnonymous = false;
+
+    private String authorEmail;
 
     private LocalDateTime createdAt = LocalDateTime.now();
     private String sentiment;
