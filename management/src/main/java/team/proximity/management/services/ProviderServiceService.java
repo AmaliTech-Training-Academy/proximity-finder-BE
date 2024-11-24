@@ -30,6 +30,16 @@ public class ProviderServiceService {
     private final ProviderServiceMapper preferenceMapper;
     private final BookingDayHoursValidator bookingDayHoursValidator;
 
+    private static final String LOG_UPDATE_PROVIDER_SERVICE = "Updating existing providerService with id: {}";
+    private static final String LOG_CREATE_PROVIDER_SERVICE = "Creating new providerService";
+    private static final String LOG_CREATE_PREFERENCE = "Creating new preference with request: {}";
+    private static final String LOG_UPDATE_PROVIDER_SERVICE_ID = "Updating providerService with id: {}";
+    private static final String LOG_FETCH_PROVIDER_SERVICE_ID = "Fetching providerService with id: {}";
+    private static final String LOG_FETCH_ALL_PROVIDER_SERVICES = "Fetching all providerServices";
+    private static final String LOG_DELETE_PROVIDER_SERVICE_ID = "Deleting providerService with id: {}";
+    private static final String LOG_FETCH_PROVIDER_SERVICES_USER_ID = "Fetching providerServices for userId: {}";
+
+
     public ProviderServiceService(ProviderServiceRepository providerServiceRepository,
                                   ServicesRepository servicesRepository,
                                   S3Service s3Service,
@@ -43,10 +53,10 @@ public class ProviderServiceService {
     }
     public ProviderService createOrUpdateProviderService(ProviderServiceRequest providerServiceRequest) throws JsonProcessingException {
         if (providerServiceRequest.getId() != null) {
-            log.info("Updating existing providerService with id: {}", providerServiceRequest.getId());
+            log.info(LOG_UPDATE_PROVIDER_SERVICE, providerServiceRequest.getId());
             return updateProviderService(providerServiceRequest.getId(), providerServiceRequest);
         } else {
-            log.info("Creating new providerService");
+            log.info(LOG_CREATE_PROVIDER_SERVICE);
             return createProviderService(providerServiceRequest);
         }
     }
@@ -54,21 +64,21 @@ public class ProviderServiceService {
     public ProviderService createProviderService(ProviderServiceRequest providerServiceRequest) throws JsonProcessingException {
         List<BookingDayRequest> bookingDays = objectMapper.readValue(
                 providerServiceRequest.getBookingDays(), new TypeReference<List<BookingDayRequest>>() {});
-        log.info("Creating new preference with request: {}", providerServiceRequest);
+        log.info(LOG_CREATE_PREFERENCE, providerServiceRequest);
         for (BookingDayRequest bookingDayRequest : bookingDays) {
             bookingDayHoursValidator.validate(bookingDayRequest);
 
         }
-        log.info("Creating new preference with request: {}", providerServiceRequest);
+        log.info(LOG_CREATE_PREFERENCE, providerServiceRequest);
         ProviderService preference = preferenceMapper.toEntity(providerServiceRequest, bookingDays);
-        log.info("Creating new preference with request: {}", providerServiceRequest);
+        log.info(LOG_CREATE_PREFERENCE, providerServiceRequest);
         preference.setCreatedAt(LocalDateTime.now());
         preference.setUpdatedAt(LocalDateTime.now());
         return providerServiceRepository.save(preference);
     }
 
-    public ProviderService updateProviderService(UUID id, ProviderServiceRequest updatedProviderServiceRequest) {
-        log.info("Updating providerService with id: {}", id);
+    public ProviderService updateProviderService(UUID id, ProviderServiceRequest updatedProviderServiceRequest) throws JsonProcessingException {
+        log.info(LOG_UPDATE_PROVIDER_SERVICE_ID, id);
         List<BookingDayRequest> bookingDays = objectMapper.readValue(
                 updatedProviderServiceRequest.getBookingDays(), new TypeReference<List<BookingDayRequest>>() {});
         ProviderService preference = providerServiceRepository.findById(id)
@@ -79,22 +89,22 @@ public class ProviderServiceService {
     }
 
     public ProviderService getProviderServiceById(UUID id) {
-        log.info("Fetching providerService with id: {}", id);
+        log.info(LOG_FETCH_PROVIDER_SERVICE_ID, id);
         return providerServiceRepository.findById(id)
                 .orElseThrow(() -> new ProviderServiceNotFoundException(id));
     }
 
     public List<ProviderService> getAllProviderServices() {
-        log.info("Fetching all providerServices ");
+        log.info(LOG_FETCH_ALL_PROVIDER_SERVICES);
         return providerServiceRepository.findAll();
     }
 
     public void deleteProviderService(UUID id) {
-        log.info("Deleting providerService with id: {}", id);
+        log.info(LOG_DELETE_PROVIDER_SERVICE_ID, id);
         providerServiceRepository.deleteById(id);
     }
     public List<ProviderService> getProviderServicesByUserId(UUID userId) {
-        log.info("Fetching providerServices for userId: {}", userId);
+        log.info(LOG_FETCH_PROVIDER_SERVICES_USER_ID, userId);
         return providerServiceRepository.findByUserId(userId).orElseThrow(() -> new ResourceNotFoundException("Provider Service not found"));
     }
 }
