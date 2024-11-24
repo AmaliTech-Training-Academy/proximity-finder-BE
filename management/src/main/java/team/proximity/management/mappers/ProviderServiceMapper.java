@@ -15,6 +15,7 @@ import team.proximity.management.validators.upload.PDFValidationStrategy;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -96,16 +97,17 @@ public class ProviderServiceMapper {
     }
 
     private Document createDocument(MultipartFile file, ProviderService preference) {
-        String imageUrl = uploadFileToS3(file);
+        Map<String, String> fileDetails = uploadFileToS3(file);
         return Document.builder()
-                .url(imageUrl)
+                .url(fileDetails.get("url"))
+                .fileName(fileDetails.get("fileName"))
                 .preference(preference)
                 .build();
     }
 
-    private String uploadFileToS3(MultipartFile file) {
+    private Map<String, String> uploadFileToS3(MultipartFile file) {
         try {
-            return s3Service.uploadFile(file, new PDFValidationStrategy());
+           return  s3Service.uploadFile(file, new PDFValidationStrategy());
         } catch (IOException e) {
             throw new FileUploadException("Failed to upload file to S3", e);
         }

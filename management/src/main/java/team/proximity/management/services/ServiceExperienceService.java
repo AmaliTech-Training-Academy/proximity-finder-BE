@@ -17,6 +17,7 @@ import team.proximity.management.validators.upload.ImageValidationStrategy;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -46,8 +47,9 @@ public class ServiceExperienceService {
     // Helper method to handle S3 file upload
     private String uploadFileToS3(MultipartFile file) {
         try {
-            return s3Service.uploadFile(file, new ImageValidationStrategy());
-        } catch (IOException e) {
+            return s3Service.uploadFile(file, new ImageValidationStrategy()).get("url");
+        }
+        catch (IOException e) {
             throw new FileUploadException("Failed to upload file to S3", e);
         }
     }
