@@ -38,9 +38,9 @@ public class ProviderServiceMapper {
         return preference;
     }
 
-    public void updateEntity(ProviderServiceRequest providerServiceRequest, ProviderService preference) {
+    public void updateEntity(ProviderServiceRequest providerServiceRequest, ProviderService preference, List<BookingDayRequest> bookingDays) {
 
-        updatePreferenceFields(providerServiceRequest, preference);
+        updatePreferenceFields(providerServiceRequest, preference, bookingDays);
 
 
         updateDocuments(preference, providerServiceRequest.getDocuments());
@@ -77,11 +77,11 @@ public class ProviderServiceMapper {
                 .build();
     }
 
-    private void updatePreferenceFields(ProviderServiceRequest dto, ProviderService preference) {
+    private void updatePreferenceFields(ProviderServiceRequest dto, ProviderService preference, List<BookingDayRequest> bookingDays) {
         preference.setPaymentPreference(dto.getPaymentPreference());
         preference.setLocation(dto.getLocation());
         preference.setSchedulingPolicy(dto.getSchedulingPolicy());
-//        preference.setBookingDays(mapBookingDays(dto.getBookingDays()));
+        preference.setBookingDays(mapBookingDays(bookingDays));
     }
 
     private List<BookingDay> mapBookingDays(List<BookingDayRequest> dtos) {

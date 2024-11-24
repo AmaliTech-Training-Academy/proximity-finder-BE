@@ -69,9 +69,11 @@ public class ProviderServiceService {
 
     public ProviderService updateProviderService(UUID id, ProviderServiceRequest updatedProviderServiceRequest) {
         log.info("Updating providerService with id: {}", id);
+        List<BookingDayRequest> bookingDays = objectMapper.readValue(
+                updatedProviderServiceRequest.getBookingDays(), new TypeReference<List<BookingDayRequest>>() {});
         ProviderService preference = providerServiceRepository.findById(id)
                 .orElseThrow(() -> new ProviderServiceNotFoundException(id));
-        preferenceMapper.updateEntity(updatedProviderServiceRequest, preference);
+        preferenceMapper.updateEntity(updatedProviderServiceRequest, preference, bookingDays);
         preference.setUpdatedAt(LocalDateTime.now());
         return providerServiceRepository.save(preference);
     }
