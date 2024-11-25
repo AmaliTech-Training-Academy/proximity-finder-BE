@@ -19,4 +19,24 @@ public class MobileMoneyPaymentCreator implements PaymentMethodCreator {
         mobileMoneyPayment.setPhoneNumber(request.phoneNumber());
         return mobileMoneyPayment;
     }
+
+    @Override
+    public PaymentMethod update(PaymentMethod existing, PaymentMethodRequest request) {
+        MobileMoneyPayment mobileMoneyPayment = (MobileMoneyPayment) existing;
+
+        if (request.serviceProvider() != null) {
+            MobileMoneyServiceProvider provider = MobileMoneyServiceProvider.valueOf(request.serviceProvider().toUpperCase());
+            mobileMoneyPayment.setServiceProvider(provider);
+        }
+        if (request.accountName() != null) {
+            mobileMoneyPayment.setAccountName(request.accountName());
+        }
+        if (request.accountAlias() != null) {
+            mobileMoneyPayment.setAccountAlias(request.accountAlias());
+        }
+        if (request.phoneNumber() != null) {
+            mobileMoneyPayment.setPhoneNumber(request.phoneNumber());
+        }
+        return mobileMoneyPayment;
+    }
 }
