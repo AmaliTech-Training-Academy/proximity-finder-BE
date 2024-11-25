@@ -30,4 +30,29 @@ public class BankPaymentCreator implements PaymentMethodCreator {
         bankPayment.setAccountNumber(request.accountNumber());
         return bankPayment;
     }
+
+    @Override
+    public PaymentMethod update(PaymentMethod existing, PaymentMethodRequest request) {
+        BankPayment bankPayment = (BankPayment) existing;
+
+        return getBankPayment(request, bankPayment);
+    }
+
+    private BankPayment getBankPayment(PaymentMethodRequest request, BankPayment bankPayment) {
+        if (request.bankName() != null) {
+            Bank bank = bankRepository.findByBankName(request.bankName())
+                    .orElseThrow(() -> new PaymentMethodCreationException("Bank does not exist."));
+            bankPayment.setBankName(bank.getBankName());
+        }
+        if (request.accountNumber() != null) {
+            bankPayment.setAccountNumber(request.accountNumber());
+        }
+        if (request.accountAlias() != null) {
+            bankPayment.setAccountAlias(request.accountAlias());
+        }
+        if(request.accountName() != null) {
+            bankPayment.setAccountName(request.accountName());
+        }
+        return bankPayment;
+    }
 }
