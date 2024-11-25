@@ -89,4 +89,16 @@ public class PaymentMethodController {
     }
 
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<ApiSuccessResponse> updatePaymentMethod(@PathVariable Long id, @RequestBody PaymentMethodRequest request) {
+        paymentMethodService.updatePaymentMethod(request, id);
+        return new ResponseEntity<>(new ApiSuccessResponse("Payment Method updated successfully", true), HttpStatus.OK);
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiSuccessResponse> deletePaymentMethodById(@PathVariable Long id) {
+        paymentMethodService.deletePaymentMethodById(id);
+        return new ResponseEntity<>(new ApiSuccessResponse("Payment Method deleted successfully", true), HttpStatus.OK);
+    }
+
+
 }
