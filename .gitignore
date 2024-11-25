@@ -65,6 +65,9 @@ authservice/.env
 management/.env
 provider-profile-service/.env
 eurekaserver/.env
+gatewayserver/.env
+.env
+
 ### VS Code ###
 */.vscode/
 
