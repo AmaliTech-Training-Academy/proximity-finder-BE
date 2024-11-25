@@ -32,6 +32,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/api/v1/banks/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"api/v1/payment-method/providers/mobile-money-providers/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"api/v1/payment-preferences/**").permitAll()
                         .anyRequest().authenticated()

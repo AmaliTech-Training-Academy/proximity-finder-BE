@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import team.proximity.management.exceptions.ResourceNotFoundException;
 import team.proximity.management.repositories.ServicesRepository;
 import team.proximity.management.requests.BookingDayRequest;
 import team.proximity.management.requests.ProviderServiceRequest;
@@ -28,7 +29,6 @@ public class ProviderServiceService {
     private final ProviderServiceRepository providerServiceRepository;
     private final ProviderServiceMapper preferenceMapper;
     private final BookingDayHoursValidator bookingDayHoursValidator;
-    private final ServicesRepository servicesRepository;
 
     public ProviderServiceService(ProviderServiceRepository providerServiceRepository,
                                   ServicesRepository servicesRepository,
@@ -36,18 +36,25 @@ public class ProviderServiceService {
                                   BookingDayHoursValidator bookingDayHoursValidator,
                                   ObjectMapper objectMapper) {
         this.providerServiceRepository = providerServiceRepository;
-        this.servicesRepository = servicesRepository;
         this.bookingDayHoursValidator = bookingDayHoursValidator;
         this.objectMapper = objectMapper;
         // Initialize ProviderServiceMapper with dependencies
         this.preferenceMapper = new ProviderServiceMapper(s3Service, servicesRepository);
     }
-
+    public ProviderService createOrUpdateProviderService(ProviderServiceRequest providerServiceRequest) throws JsonProcessingException {
+        if (providerServiceRequest.getId() != null) {
+            log.info("Updating existing providerService with id: {}", providerServiceRequest.getId());
+            return updateProviderService(providerServiceRequest.getId(), providerServiceRequest);
+        } else {
+            log.info("Creating new providerService");
+            return createProviderService(providerServiceRequest);
+        }
+    }
 
     public ProviderService createProviderService(ProviderServiceRequest providerServiceRequest) throws JsonProcessingException {
         List<BookingDayRequest> bookingDays = objectMapper.readValue(
                 providerServiceRequest.getBookingDays(), new TypeReference<List<BookingDayRequest>>() {});
-    log.info("Creating new preference with request: {}", providerServiceRequest);
+        log.info("Creating new preference with request: {}", providerServiceRequest);
         for (BookingDayRequest bookingDayRequest : bookingDays) {
             bookingDayHoursValidator.validate(bookingDayRequest);
 
@@ -68,9 +75,9 @@ public class ProviderServiceService {
         return providerServiceRepository.save(preference);
     }
 
-    public Optional<ProviderService> getProviderServiceById(UUID id) {
+    public ProviderService getProviderServiceById(UUID id) {
         return providerServiceRepository.findById(id)
-                .or(() -> { throw new ProviderServiceNotFoundException(id); });
+                .orElseThrow(() -> new ProviderServiceNotFoundException(id));
     }
 
     public List<ProviderService> getAllProviderServices() {
@@ -78,9 +85,9 @@ public class ProviderServiceService {
     }
 
     public void deleteProviderService(UUID id) {
-        if (!providerServiceRepository.existsById(id)) {
-            throw new ProviderServiceNotFoundException(id);
-        }
         providerServiceRepository.deleteById(id);
+    }
+    public List<ProviderService> getProviderServicesByUserId(UUID userId) {
+        return providerServiceRepository.findByUserId(userId).orElseThrow(() -> new ResourceNotFoundException("Provider Service not found"));
     }
 }
