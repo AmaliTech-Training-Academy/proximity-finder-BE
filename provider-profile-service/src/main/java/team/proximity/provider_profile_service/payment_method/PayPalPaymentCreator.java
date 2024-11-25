@@ -18,4 +18,23 @@ public class PayPalPaymentCreator implements PaymentMethodCreator {
         payPalPayment.setEmail(request.email());
         return payPalPayment;
     }
+
+    @Override
+    public PaymentMethod update(PaymentMethod existing, PaymentMethodRequest request) {
+        PayPalPayment payPalPayment = (PayPalPayment) existing;
+
+        if (request.firstName() != null) {
+            payPalPayment.setFirstName(request.firstName());
+        }
+
+        if (request.lastName() != null) {
+            payPalPayment.setLastName(request.lastName());
+        }
+
+        if (request.email() != null) {
+            payPalPayment.setEmail(request.email());
+        }
+
+        return payPalPayment;
+    }
 }
