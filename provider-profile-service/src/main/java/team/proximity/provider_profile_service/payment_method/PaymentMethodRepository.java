@@ -11,12 +11,14 @@ import java.util.Optional;
 
 public interface PaymentMethodRepository extends JpaRepository<PaymentMethod, Long> {
 
-
-
     List<PaymentMethod> findByCreatedBy(String username);
 
+    Optional<PaymentMethod> findByIdAndCreatedBy(Long id, String createdBy);
 
-    @Query("SELECT p FROM PaymentMethod p WHERE p.createdBy = :createdBy AND p.paymentPreference = :paymentPreference")
-    Optional<PaymentMethod> findByCreatedByAndPaymentPreference(@Param("createdBy") String createdBy,
-                                                                @Param("paymentPreference") PaymentPreference paymentPreference);
+
+    @Query("SELECT p FROM PaymentMethod p WHERE p.createdBy = " +
+            ":createdBy AND p.paymentPreference = :paymentPreference")
+    Optional<PaymentMethod> findByCreatedByAndPaymentPreference(
+            @Param("createdBy") String createdBy,
+            @Param("paymentPreference") PaymentPreference paymentPreference);
 }
