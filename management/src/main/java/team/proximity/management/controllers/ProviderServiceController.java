@@ -1,6 +1,7 @@
 package team.proximity.management.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import team.proximity.management.requests.ProviderServiceRequest;
@@ -20,7 +21,7 @@ import java.util.UUID;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/providerServices")
+@RequestMapping("/api/v1/provider-services")
 public class ProviderServiceController {
     private final ProviderServiceService providerServiceService;
 
@@ -28,19 +29,11 @@ public class ProviderServiceController {
         this.providerServiceService = providerServiceService;
     }
 
-    @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<ApiResponse<ProviderService>> createProviderService(@Validated @ModelAttribute ProviderServiceRequest providerServiceRequest) throws JsonProcessingException {
-        log.info("Creating new providerService with request: {}", providerServiceRequest);
-        ProviderService createdProviderService = providerServiceService.createProviderService(providerServiceRequest);
-        log.debug("Created providerService: {}", createdProviderService);
-        ApiResponse<ProviderService> response = ApiResponse.<ProviderService>builder()
-                .status(ApiResponseStatus.SUCCESS)
-                .result(createdProviderService)
-                .build();
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
+
 
     @PutMapping("/{id}")
+    @Operation(summary = "Update a providerService", description = "Update a providerService by id")
+
     public ResponseEntity<ApiResponse<ProviderService>> updateProviderService(@PathVariable UUID id, @RequestBody ProviderServiceRequest providerService) {
         log.info("Updating providerService with id: {} and request: {}", id, providerService);
         try {
@@ -113,5 +106,26 @@ public class ProviderServiceController {
                     .build();
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
+    }
+    @PostMapping(consumes = "multipart/form-data")
+    public ResponseEntity<ApiResponse<ProviderService>> createOrUpdateProviderService(@Validated @ModelAttribute ProviderServiceRequest providerServiceRequest) throws JsonProcessingException {
+        log.info("Processing providerService request: {}", providerServiceRequest);
+
+        ProviderService providerService;
+        if (providerServiceRequest.getId() != null) {
+            log.info("Updating existing providerService with id: {}", providerServiceRequest.getId());
+            providerService = providerServiceService.updateProviderService(providerServiceRequest.getId(), providerServiceRequest);
+        } else {
+            // Create new record
+            log.info("Creating new providerService");
+            providerService = providerServiceService.createProviderService(providerServiceRequest);
+        }
+
+        log.debug("Processed providerService: {}", providerService);
+        ApiResponse<ProviderService> response = ApiResponse.<ProviderService>builder()
+                .status(ApiResponseStatus.SUCCESS)
+                .result(providerService)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 }

@@ -1,4 +1,5 @@
 spring:
+
   app:
     jwtSecret: ${JWT_SECRET}
   application:

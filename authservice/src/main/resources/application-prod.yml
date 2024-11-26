@@ -1,0 +1,76 @@
+spring:
+  application:
+    name: "authservice"
+
+  mail:
+    host: smtp.sendgrid.net
+    port: 587
+    username: apikey
+    password: ${SENDGRID_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+        debug: true
+
+  app:
+    jwtSecret: ${JWT_SECRET}
+    baseurl: ${BASE_URL}
+    oauth2FrontendUrl: ${OAUTH2_FRONTEND_URL}
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope: profile, email
+            redirect-uri: "${BASE_URL}/oauth2/callback/google"
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+server:
+  port: ${SERVER_PORT}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+aws:
+  accessKeyId: ${ACCESS_KEY}
+  secretAccessKey: ${SECRET_KEY}
+  s3:
+    bucketName: ${BUCKET_NAME}
+    region: ${REGION}
+
+email:
+  from-address: Proximity Team <samuel.amo@amalitechtraining.org>
+  subject: Reset Your Password
+  reset-url: ${FRONT_END_RESET_URL}
+
+eureka-server:
+  port: ${EUREKA_PORT:8761}
+  hostname: ${EUREKA_HOSTNAME:localhost}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${eureka-server.hostname}:${eureka-server.port}/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+    enabled: true
+    healthcheck:
+      enabled: true

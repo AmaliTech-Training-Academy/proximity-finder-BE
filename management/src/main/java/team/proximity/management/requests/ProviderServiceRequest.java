@@ -11,16 +11,16 @@ import java.util.UUID;
 
 @Data
 public class ProviderServiceRequest {
+    private UUID id;
     @NotNull(message = "User must be specified")
     private UUID userId;
     @NotNull(message = "Service must be specified")
-    private UUID serviceId;
+    private String serviceName;
     @NotBlank(message = "Payment preference must be specified")
     private String paymentPreference;
     @NotBlank(message = "Location must be specified")
     private String location;
-    @NotNull(message = "Scheduling policy must be specified")
-    private Boolean sameLocation;
+
     @NotBlank(message = "Scheduling policy must be specified")
     private String schedulingPolicy;
     @NotNull(message = "Booking days must be specified")

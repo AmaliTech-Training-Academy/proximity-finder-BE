@@ -39,22 +39,38 @@ public class ProviderServiceMapper {
         // Update basic fields
         updatePreferenceFields(providerServiceRequest, preference);
 
-        // Update documents
-        List<Document> documents = createDocuments(providerServiceRequest, preference);
-        preference.setDocuments(documents);
+        // Update documents without replacing the collection
+        updateDocuments(preference, providerServiceRequest.getDocuments());
+    }
+    private void updateDocuments(ProviderService preference, List<MultipartFile> newDocuments) {
+        // Remove old documents not present in the new list
+        List<Document> currentDocuments = preference.getDocuments();
+        currentDocuments.removeIf(doc ->
+                newDocuments.stream().noneMatch(file -> file.getOriginalFilename().equals(doc.getUrl()))
+        );
+
+        // Add new documents
+        newDocuments.forEach(file -> {
+            if (currentDocuments.stream().noneMatch(doc -> doc.getUrl().equals(file.getOriginalFilename()))) {
+                currentDocuments.add(createDocument(file, preference));
+            }
+        });
     }
 
     private ProviderService buildPreferenceFromDTO(ProviderServiceRequest dto, List<BookingDayRequest> bookingDays) {
-        Optional<Services> service = servicesRepository.findById(dto.getServiceId());
+        Optional<Services> service = servicesRepository.findByName(dto.getServiceName());
         if (service.isEmpty()) {
-            throw new ResourceNotFoundException("Service not found");
+            Services newService = Services.builder()
+                    .name(dto.getServiceName())
+                    .build();
+            newService = servicesRepository.save(newService);
+            service = Optional.of(newService);
         }
         return ProviderService.builder()
                 .userId(dto.getUserId())
                 .service(service.get())
                 .paymentPreference(dto.getPaymentPreference())
                 .location(dto.getLocation())
-                .sameLocation(dto.getSameLocation())
                 .schedulingPolicy(dto.getSchedulingPolicy())
                 .bookingDays(mapBookingDays(bookingDays))
                 .build();
@@ -63,7 +79,6 @@ public class ProviderServiceMapper {
     private void updatePreferenceFields(ProviderServiceRequest dto, ProviderService preference) {
         preference.setPaymentPreference(dto.getPaymentPreference());
         preference.setLocation(dto.getLocation());
-        preference.setSameLocation(dto.getSameLocation());
         preference.setSchedulingPolicy(dto.getSchedulingPolicy());
 //        preference.setBookingDays(mapBookingDays(dto.getBookingDays()));
     }

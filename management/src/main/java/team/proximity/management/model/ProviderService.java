@@ -29,16 +29,13 @@ public class ProviderService {
 
     private String paymentPreference;
     private String location;
-    private Boolean sameLocation;
 
     private String schedulingPolicy;
-
-    @OneToMany(mappedBy = "preference", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "preference", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<BookingDay> bookingDays;
 
-    @OneToMany(mappedBy = "preference", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "preference", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Document> documents;
-
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
