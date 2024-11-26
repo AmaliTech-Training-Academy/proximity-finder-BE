@@ -1,6 +1,4 @@
 spring:
-#  profiles:
-#    active: prod
 
   app:
     jwtSecret: ${JWT_SECRET}
@@ -13,7 +11,8 @@ spring:
     password: ${POSTGRES_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
+    show-sql: true
 
   servlet:
     multipart:
@@ -44,7 +43,7 @@ eureka-server:
 eureka:
   client:
     service-url:
-      defaultZone: http://${eureka-server.hostname}:${eureka-server.port}/eureka/
+      defaultZone: https://${eureka-server.hostname}:${eureka-server.port}/eureka/
     register-with-eureka: true
     fetch-registry: true
 

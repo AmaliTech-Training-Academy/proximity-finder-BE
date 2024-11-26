@@ -2,26 +2,40 @@ package team.proximity.provider_profile_service.payment_method;
 
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 public record PaymentMethodRequest(
 
+        @NotNull(message = "Payment preference is required.")
         String paymentPreference,
 
-        @Schema(description = "The name of the bank, required if payment preference is Bank Account", example = "Fidelity Bank")
-        String bankName,
+       @Pattern(regexp = "^[A-Za-z\\s]+$", message = "Invalid bank name format.")
+       String bankName,
 
-        @Schema(description = "The account number, required for all payment methods", example = "123456789")
+        @Pattern(regexp = "^\\d{13}$", message = "Account number must be exactly 13 digits.")
         String accountNumber,
 
-        @Schema(description = "The account name, required for all payment methods", example = "John Doe")
-        String accountName,
+       @Pattern(regexp = "^[A-Za-z\\s'-]+$", message = "Invalid account name format.")
+       String accountName,
 
-        @Schema(description = "An alias for the account, optional", example = "JD123")
-        String accountAlias,
+       @Pattern(regexp = "^[A-Za-z0-9-_]+$", message = "Invalid account alias format.")
+       String accountAlias,
 
-        @Schema(description = "The service provider, required if payment preference is Mobile Money", example = "MTN")
-        String serviceProvider,
-        @Schema(description = "Phone Number, required if payment preference is Mobile Money")
-        String phoneNumber
+       @Pattern(regexp = "^[A-Za-z\\s]+$", message = "Invalid service provider format.")
+       String serviceProvider,
+
+       @Pattern(regexp = "^(\\+\\d{1,3}[- ]?)?\\(?\\d{1,4}\\)?[- ]?\\d{1,4}[- ]?\\d{1,4}$", message = "Invalid phone number format.")
+       String phoneNumber,
+
+       @Pattern(regexp = "^[A-Za-z\\s'-]+$", message = "Invalid first name format.")
+       String firstName,
+
+       @Pattern(regexp = "^[A-Za-z\\s'-]+$", message = "Invalid last name format.")
+       String lastName,
+
+       @Email(message = "Invalid email format.")
+       String email
 ) {}
 
