@@ -1,9 +1,12 @@
+
 FROM eclipse-temurin:21-jdk-jammy as deps
 
 WORKDIR /build
 
+# Copy the mvnw wrapper with executable permissions.
 COPY --chmod=0755 mvnw mvnw
 COPY .mvn/ .mvn/
+
 
 RUN --mount=type=bind,source=pom.xml,target=pom.xml \
     --mount=type=cache,target=/root/.m2 ./mvnw dependency:go-offline -DskipTests
@@ -22,6 +25,7 @@ RUN --mount=type=bind,source=pom.xml,target=pom.xml \
 
 ################################################################################
 
+
 FROM package as extract
 
 WORKDIR /build
@@ -30,8 +34,11 @@ RUN java -Djarmode=layertools -jar target/app.jar extract --destination target/e
 
 ################################################################################
 
+
 FROM eclipse-temurin:21-jre-jammy AS final
 
+# Create a non-privileged user that the app will run under.
+# See https://docs.docker.com/go/dockerfile-user-best-practices/
 ARG UID=10001
 RUN adduser \
     --disabled-password \

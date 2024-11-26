@@ -1,7 +1,8 @@
 package team.proximity.management.mappers;
 
 import org.springframework.web.multipart.MultipartFile;
-import team.proximity.management.exceptions.ResourceNotFoundException;
+import team.proximity.management.exceptions.FileUploadException;
+import team.proximity.management.exceptions.InvalidFileTypeException;
 import team.proximity.management.model.Services;
 import team.proximity.management.repositories.ServicesRepository;
 import team.proximity.management.requests.BookingDayRequest;
@@ -10,6 +11,7 @@ import team.proximity.management.model.BookingDay;
 import team.proximity.management.model.Document;
 import team.proximity.management.model.ProviderService;
 import team.proximity.management.services.S3Service;
+import team.proximity.management.validators.upload.PDFValidationStrategy;
 
 import java.io.IOException;
 import java.util.List;
@@ -36,20 +38,18 @@ public class ProviderServiceMapper {
     }
 
     public void updateEntity(ProviderServiceRequest providerServiceRequest, ProviderService preference) {
-        // Update basic fields
+
         updatePreferenceFields(providerServiceRequest, preference);
 
-        // Update documents without replacing the collection
+
         updateDocuments(preference, providerServiceRequest.getDocuments());
     }
     private void updateDocuments(ProviderService preference, List<MultipartFile> newDocuments) {
-        // Remove old documents not present in the new list
         List<Document> currentDocuments = preference.getDocuments();
         currentDocuments.removeIf(doc ->
                 newDocuments.stream().noneMatch(file -> file.getOriginalFilename().equals(doc.getUrl()))
         );
 
-        // Add new documents
         newDocuments.forEach(file -> {
             if (currentDocuments.stream().noneMatch(doc -> doc.getUrl().equals(file.getOriginalFilename()))) {
                 currentDocuments.add(createDocument(file, preference));
@@ -96,18 +96,18 @@ public class ProviderServiceMapper {
     }
 
     private Document createDocument(MultipartFile file, ProviderService preference) {
-        String imageUrl = uploadFileToS3(file);
+        String documentUrl = uploadFileToS3(file);
         return Document.builder()
-                .url(imageUrl)
+                .url(documentUrl)
                 .preference(preference)
                 .build();
     }
 
     private String uploadFileToS3(MultipartFile file) {
         try {
-            return s3Service.uploadFile(file);
+            return s3Service.uploadFile(file, new PDFValidationStrategy());
         } catch (IOException e) {
-            throw new RuntimeException("Failed to upload file to S3", e);
+            throw new FileUploadException("Failed to upload file to S3", e);
         }
     }
 

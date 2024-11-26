@@ -29,7 +29,6 @@ public class ServicesRepositoryTest {
         Services service = new Services();
         service.setName("Test Service");
         service.setDescription("This is a test service description.");
-        service.setCategory("Test Category");
         service.setImage("test_image.jpg");
 
         Services savedService = servicesRepository.save(service);
