@@ -6,9 +6,9 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import team.proximity.provider_profile_service.common.ApiSuccessResponse;
 
@@ -56,7 +56,7 @@ public class PaymentMethodController {
     )
     @SecurityRequirement(name = "BearerAuth")
     @PostMapping
-    ResponseEntity<ApiSuccessResponse> createPaymentMethod(@RequestBody PaymentMethodRequest request) {
+    ResponseEntity<ApiSuccessResponse> createPaymentMethod(@Valid @RequestBody PaymentMethodRequest request) {
         paymentMethodService.createNewPaymentMethod(request);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -81,7 +81,7 @@ public class PaymentMethodController {
     )
     @SecurityRequirement(name = "BearerAuth")
     @PostMapping("/new-payment-method")
-    ResponseEntity<ApiSuccessResponse> createAnotherPaymentMethod(@RequestBody PaymentMethodRequest request) {
+    ResponseEntity<ApiSuccessResponse> createAnotherPaymentMethod(@Valid @RequestBody PaymentMethodRequest request) {
         paymentMethodService.createAnotherPaymentMethod(request);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -90,7 +90,7 @@ public class PaymentMethodController {
 
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ApiSuccessResponse> updatePaymentMethod(@PathVariable Long id, @RequestBody PaymentMethodRequest request) {
+    public ResponseEntity<ApiSuccessResponse> updatePaymentMethod(@Valid @PathVariable Long id, @RequestBody PaymentMethodRequest request) {
         paymentMethodService.updatePaymentMethod(request, id);
         return new ResponseEntity<>(new ApiSuccessResponse("Payment Method updated successfully", true), HttpStatus.OK);
     }
