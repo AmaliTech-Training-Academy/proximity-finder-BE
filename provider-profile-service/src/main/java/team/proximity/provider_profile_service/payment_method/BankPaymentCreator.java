@@ -1,6 +1,7 @@
 package team.proximity.provider_profile_service.payment_method;
 
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import team.proximity.provider_profile_service.bank.Bank;
 import team.proximity.provider_profile_service.bank.BankRepository;
 import team.proximity.provider_profile_service.exception.payment_method.PaymentMethodCreationException;
@@ -39,18 +40,18 @@ public class BankPaymentCreator implements PaymentMethodCreator {
     }
 
     private BankPayment getBankPayment(PaymentMethodRequest request, BankPayment bankPayment) {
-        if (request.bankName() != null) {
+        if (StringUtils.hasText(request.bankName())) { // Checks for not null, not empty, and not only whitespace
             Bank bank = bankRepository.findByBankName(request.bankName())
                     .orElseThrow(() -> new PaymentMethodCreationException("Bank does not exist."));
             bankPayment.setBankName(bank.getBankName());
         }
-        if (request.accountNumber() != null) {
+        if (StringUtils.hasText(request.accountNumber())) {
             bankPayment.setAccountNumber(request.accountNumber());
         }
-        if (request.accountAlias() != null) {
+        if (StringUtils.hasText(request.accountAlias())) {
             bankPayment.setAccountAlias(request.accountAlias());
         }
-        if(request.accountName() != null) {
+        if (StringUtils.hasText(request.accountName())) {
             bankPayment.setAccountName(request.accountName());
         }
         return bankPayment;

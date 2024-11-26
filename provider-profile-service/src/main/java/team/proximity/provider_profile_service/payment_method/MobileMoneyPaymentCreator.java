@@ -1,6 +1,7 @@
 package team.proximity.provider_profile_service.payment_method;
 
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import team.proximity.provider_profile_service.exception.payment_method.PaymentMethodCreationException;
 
 
@@ -24,17 +25,17 @@ public class MobileMoneyPaymentCreator implements PaymentMethodCreator {
     public PaymentMethod update(PaymentMethod existing, PaymentMethodRequest request) {
         MobileMoneyPayment mobileMoneyPayment = (MobileMoneyPayment) existing;
 
-        if (request.serviceProvider() != null) {
+        if (StringUtils.hasText(request.serviceProvider())) {
             MobileMoneyServiceProvider provider = MobileMoneyServiceProvider.valueOf(request.serviceProvider().toUpperCase());
             mobileMoneyPayment.setServiceProvider(provider);
         }
-        if (request.accountName() != null) {
+        if (StringUtils.hasText(request.accountName())) {
             mobileMoneyPayment.setAccountName(request.accountName());
         }
-        if (request.accountAlias() != null) {
+        if (StringUtils.hasText(request.accountAlias())) {
             mobileMoneyPayment.setAccountAlias(request.accountAlias());
         }
-        if (request.phoneNumber() != null) {
+        if (StringUtils.hasText(request.phoneNumber())) {
             mobileMoneyPayment.setPhoneNumber(request.phoneNumber());
         }
         return mobileMoneyPayment;
