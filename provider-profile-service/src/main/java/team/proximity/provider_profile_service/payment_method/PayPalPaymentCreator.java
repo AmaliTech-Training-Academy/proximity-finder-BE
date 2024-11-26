@@ -1,6 +1,7 @@
 package team.proximity.provider_profile_service.payment_method;
 
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import team.proximity.provider_profile_service.exception.payment_method.PaymentMethodCreationException;
 
 
@@ -23,18 +24,15 @@ public class PayPalPaymentCreator implements PaymentMethodCreator {
     public PaymentMethod update(PaymentMethod existing, PaymentMethodRequest request) {
         PayPalPayment payPalPayment = (PayPalPayment) existing;
 
-        if (request.firstName() != null) {
+        if (StringUtils.hasText(request.firstName())) {
             payPalPayment.setFirstName(request.firstName());
         }
-
-        if (request.lastName() != null) {
+        if (StringUtils.hasText(request.lastName())) {
             payPalPayment.setLastName(request.lastName());
         }
-
-        if (request.email() != null) {
+        if (StringUtils.hasText(request.email())) {
             payPalPayment.setEmail(request.email());
         }
-
         return payPalPayment;
     }
 }
