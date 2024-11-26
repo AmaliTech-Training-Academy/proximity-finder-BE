@@ -18,6 +18,7 @@ import team.proximity.management.services.ProviderServiceService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import team.proximity.management.utils.AuthenticationHelper;
 
 import java.util.Collections;
 import java.util.List;
@@ -137,5 +138,7 @@ public class ProviderServiceController {
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+
 
 }
