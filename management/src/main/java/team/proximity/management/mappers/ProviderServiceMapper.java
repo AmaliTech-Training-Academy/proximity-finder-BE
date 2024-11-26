@@ -96,9 +96,9 @@ public class ProviderServiceMapper {
     }
 
     private Document createDocument(MultipartFile file, ProviderService preference) {
-        String imageUrl = uploadFileToS3(file);
+        String documentUrl = uploadFileToS3(file);
         return Document.builder()
-                .url(imageUrl)
+                .url(documentUrl)
                 .preference(preference)
                 .build();
     }
