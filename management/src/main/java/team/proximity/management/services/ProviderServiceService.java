@@ -42,14 +42,13 @@ public class ProviderServiceService {
     public ProviderServiceService(ProviderServiceRepository providerServiceRepository,
                                   ServicesRepository servicesRepository,
                                   S3Service s3Service,
-                                  BookingDayHoursValidator bookingDayHoursValidator,
                                   ObjectMapper objectMapper) {
         this.providerServiceRepository = providerServiceRepository;
         this.objectMapper = objectMapper;
         // Initialize ProviderServiceMapper with dependencies
         this.preferenceMapper = new ProviderServiceMapper(s3Service, servicesRepository);
     }
-    public ProviderService createOrUpdateProviderService(ProviderServiceRequest providerServiceRequest) throws JsonProcessingException {
+    public ProviderService createOrUpdateProviderService(ProviderServiceRequest providerServiceRequest)  {
         if (providerServiceRequest.getId() != null) {
             log.info(LOG_UPDATE_PROVIDER_SERVICE, providerServiceRequest.getId());
             return updateProviderService(providerServiceRequest.getId(), providerServiceRequest);
@@ -84,10 +83,9 @@ public class ProviderServiceService {
         }
     }
 
-    public ProviderService updateProviderService(UUID id, ProviderServiceRequest updatedProviderServiceRequest) throws JsonProcessingException {
+    public ProviderService updateProviderService(UUID id, ProviderServiceRequest updatedProviderServiceRequest)  {
         log.info(LOG_UPDATE_PROVIDER_SERVICE_ID, id);
-        List<BookingDayRequest> bookingDays = objectMapper.readValue(
-                updatedProviderServiceRequest.getBookingDays(), new TypeReference<List<BookingDayRequest>>() {});
+        List<BookingDayRequest> bookingDays = parseBookingDays(updatedProviderServiceRequest);
         ProviderService preference = providerServiceRepository.findById(id)
                 .orElseThrow(() -> new ProviderServiceNotFoundException(id));
         preferenceMapper.updateEntity(updatedProviderServiceRequest, preference, bookingDays);
@@ -110,8 +108,8 @@ public class ProviderServiceService {
         log.info(LOG_DELETE_PROVIDER_SERVICE_ID, id);
         providerServiceRepository.deleteById(id);
     }
-    public List<ProviderService> getProviderServicesByUserId(UUID userId) {
-        log.info(LOG_FETCH_PROVIDER_SERVICES_USER_ID, userId);
-        return providerServiceRepository.findByUserId(userId).orElseThrow(() -> new ResourceNotFoundException("Provider Service not found"));
+    public List<ProviderService> getProviderServicesByUserEmail(String email) {
+        log.info(LOG_FETCH_PROVIDER_SERVICES_USER_ID, email);
+        return providerServiceRepository.findByUserEmail(email).orElseThrow(() -> new ResourceNotFoundException("Provider Service not found"));
     }
 }

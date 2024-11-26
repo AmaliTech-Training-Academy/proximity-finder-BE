@@ -8,5 +8,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ProviderServiceRepository extends JpaRepository<ProviderService, UUID> {
-   Optional<List<ProviderService>> findByUserId(UUID userId);
+   Optional<List<ProviderService>> findByUserEmail(String email);
 }
