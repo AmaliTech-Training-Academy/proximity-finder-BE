@@ -31,6 +31,8 @@ public class Review {
 
     private boolean isAnonymous = false;
 
+    private boolean isPublic = true;
+
     private String authorEmail;
 
     private LocalDateTime createdAt = LocalDateTime.now();
