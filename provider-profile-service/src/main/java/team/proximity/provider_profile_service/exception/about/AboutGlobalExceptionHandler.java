@@ -118,6 +118,29 @@ public class AboutGlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(UserFileUploadException.class)
+    public ResponseEntity<ApiErrorResponse> handleUserFileUploadException(UserFileUploadException exception, HttpServletRequest request) {
+        LOGGER.error("User upload error: {}", exception.getMessage());
+        ApiErrorResponse errorResponse = new ApiErrorResponse(
+                request.getRequestURI(),
+                exception.getMessage(),
+                HttpStatus.BAD_REQUEST.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(FileValidationException.class)
+    public ResponseEntity<ApiErrorResponse> handleFileValidationException(FileValidationException exception, HttpServletRequest request) {
+        LOGGER.error("File validation error: {}", exception.getMessage());
+        ApiErrorResponse errorResponse = new ApiErrorResponse(
+                request.getRequestURI(),
+                exception.getMessage(),
+                HttpStatus.BAD_REQUEST.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex, HttpServletRequest request) {
         Map<String, List<String>> fieldErrors = ex.getBindingResult()
