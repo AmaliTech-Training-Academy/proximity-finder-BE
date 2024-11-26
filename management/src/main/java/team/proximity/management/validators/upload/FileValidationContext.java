@@ -3,6 +3,8 @@ package team.proximity.management.validators.upload;
 import org.springframework.web.multipart.MultipartFile;
 import team.proximity.management.exceptions.InvalidFileTypeException;
 
+import java.util.Objects;
+
 public class FileValidationContext {
 
     private FileValidationStrategy strategy;
@@ -16,9 +18,7 @@ public class FileValidationContext {
     }
 
     public void validate(MultipartFile file) throws InvalidFileTypeException {
-        if (strategy == null) {
-            throw new IllegalStateException("No validation strategy set.");
-        }
+        Objects.requireNonNull(strategy, "No validation strategy set.");
         strategy.validate(file);
     }
 }
