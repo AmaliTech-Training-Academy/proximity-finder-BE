@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import team.proximity.management.exceptions.CustomJsonProcessingException;
 import team.proximity.management.exceptions.ResourceNotFoundException;
 import team.proximity.management.repositories.ServicesRepository;
 import team.proximity.management.requests.BookingDayRequest;
@@ -41,7 +42,7 @@ public class ProviderServiceService {
         // Initialize ProviderServiceMapper with dependencies
         this.preferenceMapper = new ProviderServiceMapper(s3Service, servicesRepository);
     }
-    public ProviderService createOrUpdateProviderService(ProviderServiceRequest providerServiceRequest) throws JsonProcessingException {
+    public ProviderService createOrUpdateProviderService(ProviderServiceRequest providerServiceRequest) {
         if (providerServiceRequest.getId() != null) {
             log.info("Updating existing providerService with id: {}", providerServiceRequest.getId());
             return updateProviderService(providerServiceRequest.getId(), providerServiceRequest);
@@ -51,21 +52,31 @@ public class ProviderServiceService {
         }
     }
 
-    public ProviderService createProviderService(ProviderServiceRequest providerServiceRequest) throws JsonProcessingException {
-        List<BookingDayRequest> bookingDays = objectMapper.readValue(
-                providerServiceRequest.getBookingDays(), new TypeReference<List<BookingDayRequest>>() {});
-        log.info("Creating new preference with request: {}", providerServiceRequest);
-        for (BookingDayRequest bookingDayRequest : bookingDays) {
-            bookingDayHoursValidator.validate(bookingDayRequest);
+    public ProviderService createProviderService(ProviderServiceRequest providerServiceRequest) {
+        log.info("Creating new provider service with request: {}", providerServiceRequest);
 
-        }
-        log.info("Creating new preference with request: {}", providerServiceRequest);
-        ProviderService preference = preferenceMapper.toEntity(providerServiceRequest, bookingDays);
-        log.info("Creating new preference with request: {}", providerServiceRequest);
-        preference.setCreatedAt(LocalDateTime.now());
-        preference.setUpdatedAt(LocalDateTime.now());
-        return providerServiceRepository.save(preference);
+        List<BookingDayRequest> bookingDays = parseBookingDays(providerServiceRequest);
+
+        bookingDays.forEach(bookingDayHoursValidator::validate);
+
+        ProviderService providerService = preferenceMapper.toEntity(providerServiceRequest, bookingDays);
+        providerService.setCreatedAt(LocalDateTime.now());
+        providerService.setUpdatedAt(LocalDateTime.now());
+
+        return providerServiceRepository.save(providerService);
     }
+
+    private List<BookingDayRequest> parseBookingDays(ProviderServiceRequest providerServiceRequest) {
+        try {
+            return objectMapper.readValue(
+                    providerServiceRequest.getBookingDays(),
+                    new TypeReference<List<BookingDayRequest>>() {});
+        } catch (JsonProcessingException e) {
+            log.error("Failed to process bookingDays JSON: {}", providerServiceRequest.getBookingDays(), e);
+            throw new CustomJsonProcessingException("Invalid JSON for booking days", e);
+        }
+    }
+
 
     public ProviderService updateProviderService(UUID id, ProviderServiceRequest updatedProviderServiceRequest) {
         ProviderService preference = providerServiceRepository.findById(id)

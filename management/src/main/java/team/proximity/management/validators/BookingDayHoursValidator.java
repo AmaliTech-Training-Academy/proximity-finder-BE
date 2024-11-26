@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class BookingDayHoursValidator {
+public final class BookingDayHoursValidator {
     private static final LocalTime MIN_TIME = LocalTime.of(0, 0);
     private static final LocalTime MAX_TIME = LocalTime.of(23, 59);
     private static final String VALIDATION_ERROR = "Validation Error";
