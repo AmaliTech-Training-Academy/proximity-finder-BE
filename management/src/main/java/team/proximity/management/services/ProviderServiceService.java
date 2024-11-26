@@ -29,17 +29,14 @@ public class ProviderServiceService {
     private final ObjectMapper objectMapper;
     private final ProviderServiceRepository providerServiceRepository;
     private final ProviderServiceMapper preferenceMapper;
-    private final BookingDayHoursValidator bookingDayHoursValidator;
+
 
     public ProviderServiceService(ProviderServiceRepository providerServiceRepository,
                                   ServicesRepository servicesRepository,
                                   S3Service s3Service,
-                                  BookingDayHoursValidator bookingDayHoursValidator,
                                   ObjectMapper objectMapper) {
         this.providerServiceRepository = providerServiceRepository;
-        this.bookingDayHoursValidator = bookingDayHoursValidator;
         this.objectMapper = objectMapper;
-        // Initialize ProviderServiceMapper with dependencies
         this.preferenceMapper = new ProviderServiceMapper(s3Service, servicesRepository);
     }
     public ProviderService createOrUpdateProviderService(ProviderServiceRequest providerServiceRequest) {
@@ -57,7 +54,7 @@ public class ProviderServiceService {
 
         List<BookingDayRequest> bookingDays = parseBookingDays(providerServiceRequest);
 
-        bookingDays.forEach(bookingDayHoursValidator::validate);
+        bookingDays.forEach(BookingDayHoursValidator::validate);
 
         ProviderService providerService = preferenceMapper.toEntity(providerServiceRequest, bookingDays);
         providerService.setCreatedAt(LocalDateTime.now());
