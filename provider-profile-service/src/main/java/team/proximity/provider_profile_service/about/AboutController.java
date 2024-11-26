@@ -27,7 +27,7 @@ public class AboutController {
     @SecurityRequirement(name = "BearerAuth")
     @Operation(summary = "Create About Company")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiSuccessResponse> createOneAbout(@Valid @ModelAttribute AboutRequest aboutRequest) throws IOException {
+    public ResponseEntity<ApiSuccessResponse> createOneAbout(@Valid @ModelAttribute AboutRequest aboutRequest){
 
             aboutService.createOneAbout(aboutRequest);
             return ResponseEntity
