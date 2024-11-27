@@ -17,6 +17,8 @@ spring:
 
   app:
     jwtSecret: ${JWT_SECRET}
+    jwtExpiration: 600000
+    jwtRefreshExpiration: 6000000
     baseurl: ${BASE_URL}
     oauth2FrontendUrl: ${OAUTH2_FRONTEND_URL}
   datasource:
@@ -73,4 +75,4 @@ eureka:
     fetch-registry: true
     enabled: false
     healthcheck:
-      enabled: true
+      enabled: false
