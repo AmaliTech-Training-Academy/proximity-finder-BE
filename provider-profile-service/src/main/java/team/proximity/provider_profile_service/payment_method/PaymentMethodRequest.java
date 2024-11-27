@@ -36,6 +36,10 @@ public record PaymentMethodRequest(
        String lastName,
 
        @Email(message = "Invalid email format.")
+        @Pattern(
+                regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
+                message = "Email must include a valid domain."
+        )
        String email
 ) {}
 
