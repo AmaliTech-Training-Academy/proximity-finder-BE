@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: request-management-service
+  app:
+    jwtSecret: ${JWT_SECRET}
+
+
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+server:
+  port: 9000
+
+aws:
+  accessKeyId: ${AWS_ACCESS_KEY}
+  secretAccessKey: ${AWS_ACCESS_KEY}
+  s3:
+    bucketName: ${BUCKET_NAME}
+    region: ${AWS_REGION}
+
+
