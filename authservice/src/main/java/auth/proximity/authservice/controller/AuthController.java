@@ -28,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -66,7 +67,6 @@ public class AuthController {
     @GetMapping("/user")
     public ResponseEntity<?> getUserDetails(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         User user = userService.findByEmail(userDetails.getEmail());
-
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
@@ -92,29 +92,30 @@ public class AuthController {
     })
     @PostMapping("/public/sign-in")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        Authentication authentication;
         try {
-            authentication = authenticationManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-        } catch (AuthenticationException exception) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("message", "Bad credentials");
-            map.put("status", false);
-            return new ResponseEntity<Object>(map, HttpStatus.UNAUTHORIZED);
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            List<String> roles = userDetails.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList());
+
+            String jwtAccessToken = jwtUtils.generateAccessToken(userDetails);
+            String jwtRefreshToken = jwtUtils.generateRefreshToken(userDetails);
+
+            LoginResponse response = new LoginResponse(
+                    userDetails.getUsername(),
+                    userDetails.getEmail(),
+                    roles,
+                    jwtAccessToken,
+                    jwtRefreshToken);
+
+            return ResponseEntity.ok(response);
+        } catch (AuthenticationException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDto("401", "Invalid credentials"));
         }
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
-
-        String jwtAccessToken = jwtUtils.generateAccessToken(userDetails);
-        String jwtRefreshToken = jwtUtils.generateRefreshToken(userDetails);
-
-        LoginResponse response = new LoginResponse(userDetails.getUsername(), userDetails.getEmail(), roles, jwtAccessToken, jwtRefreshToken);
-
-        return ResponseEntity.ok(response);
     }
 
 
@@ -169,27 +170,29 @@ public class AuthController {
     })
     @GetMapping("/public/validate-token")
     public ResponseEntity<String> validateToken(@RequestParam("token") String token) {
-        jwtUtils.validateJwtToken(token);
+        if(!jwtUtils.validateJwtToken(token)){
+            return ResponseEntity.status(403).body("Token is not valid");
+        }
         return ResponseEntity.ok("Token is valid");
     }
     @PutMapping("/public/update-password")
-    public ResponseEntity<ResponseDto> updatePassword(@RequestParam String email, @RequestBody AdminUpdatePasswordRequest adminUpdatePasswordRequest) {
-        userService.updatePassword(email,adminUpdatePasswordRequest);
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ResponseDto> updatePassword(
+            @RequestParam String email,
+            @RequestBody AdminUpdatePasswordRequest adminUpdatePasswordRequest) {
+
+        userService.updatePassword(email, adminUpdatePasswordRequest);
         return ResponseEntity.ok(new ResponseDto("200", "Password updated successfully"));
     }
+
     @PutMapping("/public/update-profile-picture")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<String> uploadProfilePicture(@AuthenticationPrincipal UserDetailsImpl userDetails, @ModelAttribute ProfilePictureUpdateRequest profilePictureUpdateRequest) {
-        if (userDetails == null) {
-            return new ResponseEntity<>("Unauthorized: Token is missing or invalid", HttpStatus.UNAUTHORIZED);
-        }
-        String email = userDetails.getEmail();
         try {
-            String fileUrl = profilePictureService.updateProfilePicture(email, profilePictureUpdateRequest);
+            String fileUrl = profilePictureService.updateProfilePicture(userDetails.getEmail(), profilePictureUpdateRequest);
             return new ResponseEntity<>(fileUrl, HttpStatus.OK);
-        } catch (IOException e) {
-            return new ResponseEntity<>("Failed to upload profile picture", HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (IOException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload profile picture");
         }
     }
 
@@ -199,20 +202,19 @@ public class AuthController {
         return ResponseEntity.ok(userInfoResponse);
     }
     @PutMapping("/update/info")
-    ResponseEntity<ResponseDto> updateUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UserUpdateRequest userUpdateRequest) {
-        if (userDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDto("401", "Unauthorized: Token is missing or invalid"));
-        }
-        String email = userDetails.getEmail();
-        userService.updateUserInfoByEmail(email, userUpdateRequest);
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ResponseDto> updateUserInfo(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestBody UserUpdateRequest userUpdateRequest) {
+
+        userService.updateUserInfoByEmail(userDetails.getEmail(), userUpdateRequest);
         return ResponseEntity.ok(new ResponseDto("200", "User updated successfully"));
     }
 
     @DeleteMapping("/profile-picture")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseDto> deleteProfilePicture(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        if (userDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDto("401", "Unauthorized: Token is missing or invalid"));
-        }
+
         String email = userDetails.getEmail();
         userService.deleteProfilePicture(email);
         return ResponseEntity.ok(new ResponseDto("200", "Profile picture deleted successfully"));
