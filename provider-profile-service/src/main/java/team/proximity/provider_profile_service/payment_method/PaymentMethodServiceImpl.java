@@ -10,6 +10,8 @@ import team.proximity.provider_profile_service.exception.payment_method.PaymentM
 import team.proximity.provider_profile_service.exception.payment_method.PaymentPreferenceDoesNotExist;
 import team.proximity.provider_profile_service.payment_preference.PaymentPreference;
 import team.proximity.provider_profile_service.payment_preference.PaymentPreferenceRepository;
+import team.proximity.provider_profile_service.validations.PaymentMethodValidator;
+import team.proximity.provider_profile_service.validations.PaymentMethodValidatorFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,12 +26,14 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
     private final PaymentMethodFactory paymentMethodFactory;
     private final PaymentMethodRepository paymentMethodRepository;
     private final PaymentPreferenceRepository paymentPreferenceRepository;
+    private final PaymentMethodValidatorFactory validatorFactory;
 
-    public PaymentMethodServiceImpl(PaymentMethodMapper paymentMethodMapper, PaymentMethodFactory paymentMethodFactory, PaymentMethodRepository paymentMethodRepository, PaymentPreferenceRepository paymentPreferenceRepository) {
+    public PaymentMethodServiceImpl(PaymentMethodMapper paymentMethodMapper, PaymentMethodFactory paymentMethodFactory, PaymentMethodRepository paymentMethodRepository, PaymentPreferenceRepository paymentPreferenceRepository, PaymentMethodValidatorFactory validatorFactory) {
         this.paymentMethodMapper = paymentMethodMapper;
         this.paymentMethodFactory = paymentMethodFactory;
         this.paymentMethodRepository = paymentMethodRepository;
         this.paymentPreferenceRepository = paymentPreferenceRepository;
+        this.validatorFactory = validatorFactory;
     }
     public List<PaymentMethodResponse> getPaymentMethodsForAuthenticatedUser() {
         String username = AuthHelper.getAuthenticatedUsername();
@@ -52,6 +56,9 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
                     LOGGER.error("Payment Preference not found: {}", request.paymentPreference());
                     return new PaymentPreferenceDoesNotExist("Payment Preference not found with name: " + request.paymentPreference());
                 });
+
+        PaymentMethodValidator validator = validatorFactory.getValidator(request.paymentPreference());
+        validator.validate(request);
 
         PaymentMethod paymentMethod = paymentMethodFactory.createPaymentMethod(request);
         paymentMethod.setPaymentPreference(paymentPreference);
