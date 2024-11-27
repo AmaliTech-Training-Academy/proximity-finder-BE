@@ -71,6 +71,6 @@ eureka:
       defaultZone: https://${eureka-server.hostname}:${eureka-server.port}/eureka/
     register-with-eureka: true
     fetch-registry: true
-    enabled: true
+    enabled: false
     healthcheck:
       enabled: true

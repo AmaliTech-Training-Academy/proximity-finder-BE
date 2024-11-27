@@ -2,7 +2,7 @@ package auth.proximity.authservice.security.jwt;
 
 public class JwtConstants {
 
-    public static final long EXPIRE_ACCESS_TOKEN = 2 * 60 * 60 * 1000; //30 * 60 * 1000 = 30 minutes
+    public static final long EXPIRE_ACCESS_TOKEN = 5 * 60 * 1000; //30 * 60 * 1000 = 30 minutes
 
     public static final long EXPIRE_REFRESH_TOKEN = 12 * 60 * 60 * 1000;
 
