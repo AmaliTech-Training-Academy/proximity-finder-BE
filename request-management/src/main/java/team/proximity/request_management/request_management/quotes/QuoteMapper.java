@@ -1,6 +1,8 @@
 package team.proximity.request_management.request_management.quotes;
 
 import org.springframework.stereotype.Component;
+import team.proximity.request_management.request_management.descision.DecisionResponse;
+import team.proximity.request_management.request_management.descision.QuoteDecision;
 
 import java.util.List;
 

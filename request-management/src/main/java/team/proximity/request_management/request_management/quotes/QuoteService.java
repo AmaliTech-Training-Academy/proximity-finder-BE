@@ -1,5 +1,7 @@
 package team.proximity.request_management.request_management.quotes;
 
+import team.proximity.request_management.request_management.descision.QuoteDescisionRequest;
+
 import java.util.List;
 
 public interface QuoteService {

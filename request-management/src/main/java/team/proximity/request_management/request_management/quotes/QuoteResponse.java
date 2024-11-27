@@ -1,6 +1,7 @@
 package team.proximity.request_management.request_management.quotes;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import team.proximity.request_management.request_management.descision.DecisionResponse;
 
 import java.util.List;
 

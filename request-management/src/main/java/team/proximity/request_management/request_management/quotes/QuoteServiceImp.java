@@ -3,6 +3,11 @@ package team.proximity.request_management.request_management.quotes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import team.proximity.request_management.request_management.descision.QuoteDecision;
+import team.proximity.request_management.request_management.descision.QuoteDecisionRepository;
+import team.proximity.request_management.request_management.descision.QuoteDescisionRequest;
+import team.proximity.request_management.request_management.request.Request;
+import team.proximity.request_management.request_management.request.RequestRepository;
 
 import java.util.List;
 import java.util.Objects;

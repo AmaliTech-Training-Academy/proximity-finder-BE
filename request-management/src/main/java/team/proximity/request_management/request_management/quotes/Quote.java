@@ -2,6 +2,7 @@ package team.proximity.request_management.request_management.quotes;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
+import team.proximity.request_management.request_management.descision.QuoteDecision;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
