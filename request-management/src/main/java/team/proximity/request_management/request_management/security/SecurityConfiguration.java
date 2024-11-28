@@ -10,7 +10,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
-
+import team.proximity.request_management.request_management.exception.AppAccessDeniedHandler;
+import team.proximity.request_management.request_management.exception.AppAuthenticationEntryPoint;
 
 
 @Configuration
