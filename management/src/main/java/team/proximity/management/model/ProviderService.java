@@ -36,6 +36,8 @@ public class ProviderService {
     @Column(columnDefinition = "geography(Point,4326)")
     private Point location;
 
+    private String placeName;
+
 
     private String schedulingPolicy;
     @OneToMany(mappedBy = "preference", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
