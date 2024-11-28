@@ -20,7 +20,7 @@ public class GatewayConfig {
     @Bean
     public RouteLocator providerRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
-            .route("provider-profile-service", r -> r.path("/api/v1/**")
+            .route("provider-profile-service", r -> r.path("/api/v1/provider-service/**")
                 .filters(f -> f.filter(authFilter.apply(new AuthenticationFilter.Config())))
                 .uri("lb://service-provider-profile"))
             
@@ -28,14 +28,6 @@ public class GatewayConfig {
             .build();
     }
 
-    @Bean
-    public RouteLocator managementRouteLocator(RouteLocatorBuilder builder) {
-        return builder.routes()
-                .route("management-service", r -> r.path("/api/v1/**")
-                        .filters(f -> f.filter(authFilter.apply(new AuthenticationFilter.Config())))
-                        .uri("lb://management"))
 
-                .build();
-    }
 
 }
