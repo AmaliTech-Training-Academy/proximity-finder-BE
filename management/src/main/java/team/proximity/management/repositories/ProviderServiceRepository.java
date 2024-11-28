@@ -1,8 +1,6 @@
 package team.proximity.management.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import team.proximity.management.model.ProviderService;
 
 import java.util.List;

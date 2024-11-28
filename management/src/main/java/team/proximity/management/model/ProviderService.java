@@ -24,7 +24,7 @@ public class ProviderService {
     private UUID id;
 
     @Column(nullable = false)
-    private UUID userId;
+    private String userEmail;
 
     @ManyToOne
     @JoinColumn(name = "service_id", nullable = false)

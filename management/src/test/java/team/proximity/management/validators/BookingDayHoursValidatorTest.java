@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BookingDayHoursValidatorTest {
 
-    private final BookingDayHoursValidator validator = new BookingDayHoursValidator();
+
 
     @Test
     void testValidTimes() {
@@ -21,7 +21,7 @@ class BookingDayHoursValidatorTest {
         request.setStartTime(LocalTime.of(9, 0));
         request.setEndTime(LocalTime.of(17, 0));
 
-        assertDoesNotThrow(() -> validator.validate(request));
+        assertDoesNotThrow(() -> BookingDayHoursValidator.validate(request));
     }
 
     @Test
@@ -30,7 +30,7 @@ class BookingDayHoursValidatorTest {
         request.setStartTime(LocalTime.of(24, 0));
         request.setEndTime(LocalTime.of(17, 0));
 
-        BookingDayHoursValidationException exception = assertThrows(BookingDayHoursValidationException.class, () -> validator.validate(request));
+        BookingDayHoursValidationException exception = assertThrows(BookingDayHoursValidationException.class, () -> BookingDayHoursValidator.validate(request));
         List<ErrorResponse> errors = exception.getErrors();
         assertEquals(1, errors.size());
         assertEquals("Opening time must be between 00:00 and 23:59. Provided: 24:00", errors.get(0).getMessage());

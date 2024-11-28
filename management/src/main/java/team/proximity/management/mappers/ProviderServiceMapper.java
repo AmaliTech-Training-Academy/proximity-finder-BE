@@ -11,6 +11,7 @@ import team.proximity.management.model.BookingDay;
 import team.proximity.management.model.Document;
 import team.proximity.management.model.ProviderService;
 import team.proximity.management.services.S3Service;
+import team.proximity.management.utils.AuthenticationHelper;
 import team.proximity.management.validators.upload.PDFValidationStrategy;
 
 import java.io.IOException;
@@ -68,7 +69,7 @@ public class ProviderServiceMapper {
             service = Optional.of(newService);
         }
         return ProviderService.builder()
-                .userId(dto.getUserId())
+                .userEmail(AuthenticationHelper.getCurrentUserEmail())
                 .service(service.get())
                 .paymentPreference(dto.getPaymentPreference())
                 .location(dto.getLocation())
