@@ -12,11 +12,9 @@ public interface QuoteRepository extends JpaRepository<Quote, Long> {
     Optional<Quote> findByQuoteIdAndAssignedProvider(Long id, String assignedTo);
     Optional<Quote> findByQuoteIdAndCreatedBy(Long quoteId, String createdBy);
 
-    @Query("SELECT q FROM Quote q " + "LEFT JOIN FETCH q.images " + "LEFT JOIN FETCH q.decision " +
-            "WHERE q.createdBy = :createdBy")
+    @Query("SELECT q FROM Quote q LEFT JOIN FETCH q.images LEFT JOIN FETCH q.decision WHERE q.createdBy = :createdBy")
     List<Quote> findByCreatedByWithDetails(@Param("createdBy") String createdBy);
 
-    @Query("SELECT q FROM Quote q " + "LEFT JOIN FETCH q.images " + "LEFT JOIN FETCH q.decision " +
-            "WHERE q.assignedProvider = :assignedTo")
+    @Query("SELECT q FROM Quote q LEFT JOIN FETCH q.images LEFT JOIN FETCH q.decision WHERE q.assignedProvider = :assignedTo")
     List<Quote> findByAssignedToWithDetails(@Param("assignedTo") String assignedTo);
 }
