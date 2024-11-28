@@ -49,7 +49,7 @@ public class ReviewService {
         review.setAnonymous(request.isAnonymous());
         review.setProviderService(serviceProvider);
         review.setAuthorEmail(request.isAnonymous() ? null : userEmail);
-        review.setPublic(request.isPublic());
+//        review.setPublic(request.isPublic());
 
         // Analyze sentiment
         String sentiment = sentimentAnalyzer.analyzeSentiment(request.getContent());
