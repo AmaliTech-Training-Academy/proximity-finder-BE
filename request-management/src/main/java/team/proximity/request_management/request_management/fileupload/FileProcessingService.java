@@ -5,6 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import team.proximity.request_management.request_management.exception.FileProcessingException;
+import team.proximity.request_management.request_management.exception.FileUploadException;
 import team.proximity.request_management.request_management.validations.FileValidator;
 
 @Service

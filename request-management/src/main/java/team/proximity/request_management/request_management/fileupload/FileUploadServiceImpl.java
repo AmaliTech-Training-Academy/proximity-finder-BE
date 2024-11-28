@@ -1,6 +1,5 @@
 package team.proximity.request_management.request_management.fileupload;
 
-import com.example.websocket.exception.FileUploadException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import team.proximity.request_management.request_management.exception.FileUploadException;
 
 import java.io.IOException;
 import java.util.UUID;
