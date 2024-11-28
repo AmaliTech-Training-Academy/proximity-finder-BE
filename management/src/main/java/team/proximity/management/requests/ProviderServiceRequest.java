@@ -3,6 +3,7 @@ package team.proximity.management.requests;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import org.locationtech.jts.geom.Point;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -19,7 +20,7 @@ public class ProviderServiceRequest {
     @NotBlank(message = "Payment preference must be specified")
     private String paymentPreference;
     @NotBlank(message = "Location must be specified")
-    private String location;
+    private Point location;
 
     @NotBlank(message = "Scheduling policy must be specified")
     private String schedulingPolicy;

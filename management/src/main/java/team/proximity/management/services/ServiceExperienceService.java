@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 import team.proximity.management.exceptions.FileUploadException;
 import team.proximity.management.exceptions.ResourceNotFoundException;
-import team.proximity.management.model.ProviderService;
+
 import team.proximity.management.model.ServiceExperience;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +62,7 @@ public class ServiceExperienceService {
 
     public ServiceExperience createServiceExperience( ServiceExperienceRequest request) {
         log.info("Creating service experience: {}", request);
-        Optional<ProviderService> providerServiceOpt = providerServiceRepository.findById(request.getProviderServiceId());
+        Optional<team.proximity.management.model.ProviderService> providerServiceOpt = providerServiceRepository.findById(request.getProviderServiceId());
         if (providerServiceOpt.isEmpty()) {
             throw new ResourceNotFoundException("ProviderService not found");
         }
