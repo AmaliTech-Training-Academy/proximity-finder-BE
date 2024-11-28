@@ -1,5 +1,6 @@
 package team.proximity.provider_profile_service.payment_method;
 
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class PaymentMethodServiceImpl implements PaymentMethodService {
 
     private  final Logger LOGGER = LoggerFactory.getLogger(PaymentMethodServiceImpl.class);
@@ -28,13 +30,7 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
     private final PaymentPreferenceRepository paymentPreferenceRepository;
     private final PaymentMethodValidatorFactory validatorFactory;
 
-    public PaymentMethodServiceImpl(PaymentMethodMapper paymentMethodMapper, PaymentMethodFactory paymentMethodFactory, PaymentMethodRepository paymentMethodRepository, PaymentPreferenceRepository paymentPreferenceRepository, PaymentMethodValidatorFactory validatorFactory) {
-        this.paymentMethodMapper = paymentMethodMapper;
-        this.paymentMethodFactory = paymentMethodFactory;
-        this.paymentMethodRepository = paymentMethodRepository;
-        this.paymentPreferenceRepository = paymentPreferenceRepository;
-        this.validatorFactory = validatorFactory;
-    }
+
     public List<PaymentMethodResponse> getPaymentMethodsForAuthenticatedUser() {
         String username = AuthHelper.getAuthenticatedUsername();
         if (username == null) {
