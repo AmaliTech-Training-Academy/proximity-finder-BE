@@ -37,7 +37,8 @@ public class ProviderSeeder {
                         .userEmail("hmedzubairu365@gmail.com")
                         .service(services.get(0)) // First service
                         .paymentPreference("CASH")
-                        .location(geometryFactory.createPoint(new Coordinate(-73.935242, 40.730610))) // New York City
+                        .location(geometryFactory.createPoint(new Coordinate(6.656120, -1.628033))) // New York City
+                        .placeName("Ahodwo")
                         .schedulingPolicy("FLEXIBLE")
                         .createdAt(LocalDateTime.now())
                         .updatedAt(LocalDateTime.now())
@@ -47,7 +48,10 @@ public class ProviderSeeder {
                         .userEmail("hmedzubairu365@gmail.com")
                         .service(services.get(1)) // Second service
                         .paymentPreference("BANK_TRANSFER")
-                        .location(geometryFactory.createPoint(new Coordinate(-122.431297, 37.773972))) // San Francisco
+
+
+                .location(geometryFactory.createPoint(new Coordinate(6.656120, -1.628033))) // San Francisco
+                        .placeName("Ahodwo")
                         .schedulingPolicy("STRICT")
                         .createdAt(LocalDateTime.now())
                         .updatedAt(LocalDateTime.now())
@@ -57,8 +61,9 @@ public class ProviderSeeder {
                         .userEmail("hmedzubairu365@gmail.com")
                         .service(services.get(2)) // Third service
                         .paymentPreference("CREDIT_CARD")
-                        .location(geometryFactory.createPoint(new Coordinate(-118.243683, 34.052235))) // Los Angeles
+                        .location(geometryFactory.createPoint(new Coordinate(6.656120, -1.628033))) // Los Angeles
                         .schedulingPolicy("MODERATE")
+                        .placeName("Ahodwo")
                         .createdAt(LocalDateTime.now())
                         .updatedAt(LocalDateTime.now())
                         .build(),
@@ -67,8 +72,9 @@ public class ProviderSeeder {
                         .userEmail("hmedzubairu365@gmail.com")
                         .service(services.get(3)) // Fourth service
                         .paymentPreference("PAYPAL")
-                        .location(geometryFactory.createPoint(new Coordinate(-87.623177, 41.881832))) // Chicago
+                        .location(geometryFactory.createPoint(new Coordinate(5.5268018, -0.4780016))) // Chicago
                         .schedulingPolicy("FLEXIBLE")
+                        .placeName("Kasoa")
                         .createdAt(LocalDateTime.now())
                         .updatedAt(LocalDateTime.now())
                         .build(),
@@ -77,7 +83,7 @@ public class ProviderSeeder {
                         .userEmail("hmedzubairu365@gmail.com")
                         .service(services.get(4)) // Fifth service
                         .paymentPreference("CRYPTO")
-                        .location(geometryFactory.createPoint(new Coordinate(-80.191788, 25.761681))) // Miami
+                        .location(geometryFactory.createPoint(new Coordinate(5.5268018, -0.4780016))) // Miami
                         .schedulingPolicy("STRICT")
                         .createdAt(LocalDateTime.now())
                         .updatedAt(LocalDateTime.now())
