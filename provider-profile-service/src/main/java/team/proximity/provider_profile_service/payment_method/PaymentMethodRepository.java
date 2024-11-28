@@ -15,7 +15,7 @@ public interface PaymentMethodRepository extends JpaRepository<PaymentMethod, Lo
 
     Optional<PaymentMethod> findByIdAndCreatedBy(Long id, String createdBy);
 
-    @Query("SELECT p FROM PaymentMethod p WHERE p.createdBy = " + ":createdBy AND p.paymentPreference = :paymentPreference")
+    @Query("SELECT p FROM PaymentMethod p WHERE p.createdBy = :createdBy AND p.paymentPreference = :paymentPreference")
     Optional<PaymentMethod> findByCreatedByAndPaymentPreference(@Param("createdBy") String createdBy, @Param("paymentPreference") PaymentPreference paymentPreference);
 
     @Query("SELECT COUNT(bp) > 0 FROM BankPayment bp WHERE bp.accountNumber = :accountNumber AND bp.createdBy = :createdBy")
