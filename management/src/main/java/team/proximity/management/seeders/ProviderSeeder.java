@@ -34,7 +34,7 @@ public class ProviderSeeder {
 
         List<ProviderService> providerServices = Arrays.asList(
                 ProviderService.builder()
-                        .userId(UUID.randomUUID())
+                        .userEmail("hmedzubairu365@gmail.com")
                         .service(services.get(0)) // First service
                         .paymentPreference("CASH")
                         .location(geometryFactory.createPoint(new Coordinate(-73.935242, 40.730610))) // New York City
@@ -44,7 +44,7 @@ public class ProviderSeeder {
                         .build(),
 
                 ProviderService.builder()
-                        .userId(UUID.randomUUID())
+                        .userEmail("hmedzubairu365@gmail.com")
                         .service(services.get(1)) // Second service
                         .paymentPreference("BANK_TRANSFER")
                         .location(geometryFactory.createPoint(new Coordinate(-122.431297, 37.773972))) // San Francisco
@@ -54,7 +54,7 @@ public class ProviderSeeder {
                         .build(),
 
                 ProviderService.builder()
-                        .userId(UUID.randomUUID())
+                        .userEmail("hmedzubairu365@gmail.com")
                         .service(services.get(2)) // Third service
                         .paymentPreference("CREDIT_CARD")
                         .location(geometryFactory.createPoint(new Coordinate(-118.243683, 34.052235))) // Los Angeles
@@ -64,7 +64,7 @@ public class ProviderSeeder {
                         .build(),
 
                 ProviderService.builder()
-                        .userId(UUID.randomUUID())
+                        .userEmail("hmedzubairu365@gmail.com")
                         .service(services.get(3)) // Fourth service
                         .paymentPreference("PAYPAL")
                         .location(geometryFactory.createPoint(new Coordinate(-87.623177, 41.881832))) // Chicago
@@ -74,7 +74,7 @@ public class ProviderSeeder {
                         .build(),
 
                 ProviderService.builder()
-                        .userId(UUID.randomUUID())
+                        .userEmail("hmedzubairu365@gmail.com")
                         .service(services.get(4)) // Fifth service
                         .paymentPreference("CRYPTO")
                         .location(geometryFactory.createPoint(new Coordinate(-80.191788, 25.761681))) // Miami
@@ -87,8 +87,8 @@ public class ProviderSeeder {
         providerServiceRepository.saveAll(providerServices);
     }
 
-    @PostConstruct
-    public void init() {
-        seedProviderServices();
-    }
+//    @PostConstruct
+//    public void init() {
+//        seedProviderServices();
+//    }
 }
