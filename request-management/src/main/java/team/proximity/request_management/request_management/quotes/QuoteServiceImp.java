@@ -6,8 +6,11 @@ import org.springframework.stereotype.Service;
 import team.proximity.request_management.request_management.descision.QuoteDecision;
 import team.proximity.request_management.request_management.descision.QuoteDecisionRepository;
 import team.proximity.request_management.request_management.descision.QuoteDescisionRequest;
+import team.proximity.request_management.request_management.exception.QuoteNotFoundException;
+import team.proximity.request_management.request_management.fileupload.FileProcessingService;
 import team.proximity.request_management.request_management.request.Request;
 import team.proximity.request_management.request_management.request.RequestRepository;
+import team.proximity.request_management.request_management.security.SecurityContextUtils;
 
 import java.util.List;
 import java.util.Objects;
