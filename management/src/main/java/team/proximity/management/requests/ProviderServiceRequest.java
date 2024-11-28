@@ -17,9 +17,10 @@ public class ProviderServiceRequest {
     private String serviceName;
     @NotBlank(message = "Payment preference must be specified")
     private String paymentPreference;
-    @NotBlank(message = "Location must be specified")
-    private Point location;
-
+    @NotBlank(message = "Placename must be specified")
+    private String placeName;
+    private double latitude;
+    private double longitude;
     private String schedulingPolicy;
     @NotNull(message = "Booking days must be specified")
     private String bookingDays;
