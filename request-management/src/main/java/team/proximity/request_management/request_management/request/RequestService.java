@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface RequestService {
 
-    List<RequestResponse> findAssignedRequests(String assignedProvider);
+    List<RequestResponse> findAssignedRequests();
 }

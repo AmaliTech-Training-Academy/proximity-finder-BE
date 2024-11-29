@@ -105,15 +105,15 @@ public class QuoteServiceImp implements QuoteService {
         return quoteMapper.mapToQuoteResponse(quote);
     }
 
-    public List<QuoteResponse> getQuotesCreatedBy(String createdBy) {
-        return quoteRepository.findByCreatedByWithDetails(createdBy)
+    public List<QuoteResponse> getQuotesCreatedBy() {
+        return quoteRepository.findByCreatedByWithDetails(SecurityContextUtils.getEmail())
                 .stream()
                 .map(quoteMapper::mapToQuoteResponse)
                 .toList();
     }
 
-    public List<QuoteResponse> getQuotesAssignedTo(String assignedTo) {
-        return quoteRepository.findByAssignedToWithDetails(assignedTo)
+    public List<QuoteResponse> getQuotesAssignedTo() {
+        return quoteRepository.findByAssignedToWithDetails(SecurityContextUtils.getEmail())
                 .stream()
                 .map(quoteMapper::mapToQuoteResponse)
                 .toList();
