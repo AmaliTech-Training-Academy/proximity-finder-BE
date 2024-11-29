@@ -32,25 +32,38 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
+
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**"
+                        ).permitAll()
+
                         .requestMatchers(HttpMethod.POST,
-                                "/api/v1/quotes")
+                                "/api/v1/quote-service/quotes")
                         .hasAuthority("ROLE_SEEKER")
 
                         .requestMatchers(HttpMethod.GET,
-                                "/api/v1/quotes/creator",
-                                "/api/v1/quotes/{quoteId}/creator/details")
+                                "/api/v1/quote-service/quotes/creator",
+                                "/api/v1/quote-service/quotes/{quoteId}/creator/details")
                         .hasAuthority("ROLE_SEEKER")
 
 
                         .requestMatchers(HttpMethod.PUT,
-                                "/api/v1/quotes/{quoteId}/status/approve",
-                                "/api/v1/quotes/{quoteId}/status/decline")
+                                "/api/v1/quote-service/call-request/{requestId}/complete",
+                                "/api/v1/quote-service/quotes/{quoteId}/status/approve",
+                                "/api/v1/quote-service/quotes/{quoteId}/status/decline")
                         .hasAuthority("ROLE_PROVIDER")
 
                         .requestMatchers(HttpMethod.GET,
-                                "/api/v1/quotes/provider",
-                                "/api/v1/requests/assigned",
-                                "/api/v1/quotes/{quoteId}/provider/details")
+                                "/api/v1/quote-service/call-request",
+                                "/api/v1/quote-service/call-request/{requestId}",
+                                "/api/v1/quote-service/quotes/provider",
+                                "/api/v1/quote-service/requests/assigned",
+                                "/api/v1/quote-service/quotes/{quoteId}/provider/details")
+                        .hasAuthority("ROLE_PROVIDER")
+
+                        .requestMatchers(HttpMethod.POST,
+                                "/api/v1/quote-service/call-request")
                         .hasAuthority("ROLE_PROVIDER")
 
                         .anyRequest().authenticated()
