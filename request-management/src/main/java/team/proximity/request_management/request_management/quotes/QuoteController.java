@@ -8,7 +8,7 @@ import team.proximity.request_management.request_management.descision.QuoteDesci
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/quotes")
+@RequestMapping("/api/v1/quote-service/quotes")
 public class QuoteController {
 
     private final QuoteService quoteService;
@@ -40,14 +40,14 @@ public class QuoteController {
     }
 
     @GetMapping("/creator")
-    public List<QuoteResponse> getQuotesByCreator(@RequestParam String createdBy) {
-        return quoteService.getQuotesCreatedBy(createdBy);
+    public List<QuoteResponse> getQuotesByCreator() {
+        return quoteService.getQuotesCreatedBy();
     }
 
 
     @GetMapping("/provider")
-    public List<QuoteResponse> getQuotesByAssignee(@RequestParam String assignedTo) {
-        return quoteService.getQuotesAssignedTo(assignedTo);
+    public List<QuoteResponse> getQuotesByAssignee() {
+        return quoteService.getQuotesAssignedTo();
     }
 
     @GetMapping("/{quoteId}/creator/details")

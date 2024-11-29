@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/requests")
+@RequestMapping("/api/v1/quote-service/requests")
 public class RequestController {
 
     private final RequestService requestService;
@@ -20,8 +20,8 @@ public class RequestController {
     }
 
     @GetMapping("/assigned")
-    public ResponseEntity<List<RequestResponse>> getAssignedRequests(@RequestParam String assignedProvider) {
-        List<RequestResponse> assignedRequests = requestService.findAssignedRequests(assignedProvider);
+    public ResponseEntity<List<RequestResponse>> getAssignedRequests() {
+        List<RequestResponse> assignedRequests = requestService.findAssignedRequests();
 
         return new ResponseEntity<>(assignedRequests, HttpStatus.OK);
     }
