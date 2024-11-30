@@ -1,5 +1,7 @@
 package team.proximity.request_management.request_management.call_request;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import team.proximity.request_management.request_management.security.SecurityContextUtils;
 
@@ -25,13 +27,11 @@ public class CallRequestServiceImpl implements CallRequestService {
     }
 
 
-    public List<ProviderCallRequestResponse> getAllCallRequests() {
+    public Page<ProviderCallRequestResponse> getAllCallRequests(Pageable pageable) {
 
         return callRequestRepository
-                .findByAssignedProvider(SecurityContextUtils.getEmail())
-                .stream()
-                .map(callRequestMapper::mapToProviderCallRequestResponse)
-                .collect(Collectors.toList());
+                .findByAssignedProvider(SecurityContextUtils.getEmail(), pageable)
+                .map(callRequestMapper::mapToProviderCallRequestResponse);
     }
 
     public ProviderCallRequestResponse getCallRequestById(Long requestId) {

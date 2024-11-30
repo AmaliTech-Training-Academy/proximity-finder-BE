@@ -1,5 +1,8 @@
 package team.proximity.request_management.request_management.request;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,10 +23,16 @@ public class RequestController {
     }
 
     @GetMapping("/assigned")
-    public ResponseEntity<List<RequestResponse>> getAssignedRequests() {
-        List<RequestResponse> assignedRequests = requestService.findAssignedRequests();
+    public ResponseEntity<Page<RequestResponse>> getAssignedRequests(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "requestDate") String sortBy,
+            @RequestParam(defaultValue = "DESC") String sortDirection
+    ) {
+        Sort sort = sortDirection.equalsIgnoreCase("ASC") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        PageRequest pageable = PageRequest.of(page, size, sort);
+        Page<RequestResponse> assignedRequests = requestService.findAssignedRequests(pageable);
 
         return new ResponseEntity<>(assignedRequests, HttpStatus.OK);
     }
-
 }

@@ -1,5 +1,7 @@
 package team.proximity.request_management.request_management.request;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import team.proximity.request_management.request_management.security.SecurityContextUtils;
 
@@ -15,13 +17,9 @@ public class RequestServiceImpl implements RequestService {
         this.requestMapper = requestMapper;
     }
 
-    public List<RequestResponse> findAssignedRequests() {
-
+    public Page<RequestResponse> findAssignedRequests(Pageable pageable) {
         return requestRepository
-                .findByAssignedProvider(SecurityContextUtils.getEmail())
-                .stream()
-                .map(requestMapper::mapToResponse)
-                .toList();
-
+                .findByAssignedProvider(SecurityContextUtils.getEmail(), pageable)
+                .map(requestMapper::mapToResponse);
     }
 }

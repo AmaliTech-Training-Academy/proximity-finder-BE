@@ -1,9 +1,14 @@
 package team.proximity.request_management.request_management.call_request;
 
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.proximity.request_management.request_management.quotes.ApiSuccessResponse;
+import team.proximity.request_management.request_management.request.RequestResponse;
 
 import java.util.List;
 
@@ -25,11 +30,19 @@ public class CallRequestController {
 
 
     @GetMapping
-    public ResponseEntity<List<ProviderCallRequestResponse>> getAllCallRequests() {
-        List<ProviderCallRequestResponse> callRequests = callRequestService.getAllCallRequests();
-        return ResponseEntity.ok(callRequests);
-    }
+    public ResponseEntity<Page<ProviderCallRequestResponse>> getAllCallRequests(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "requestDate") String sortBy,
+            @RequestParam(defaultValue = "DESC") String sortDirection
+    ) {
+        Sort sort = sortDirection.equalsIgnoreCase("ASC") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        PageRequest pageable = PageRequest.of(page, size, sort);
+        Page<ProviderCallRequestResponse> callRequests = callRequestService.getAllCallRequests(pageable);
 
+        return new ResponseEntity<>(callRequests, HttpStatus.OK);
+
+    }
 
     @GetMapping("/{requestId}")
     public ResponseEntity<ProviderCallRequestResponse> getCallRequestById(@PathVariable Long requestId) {
