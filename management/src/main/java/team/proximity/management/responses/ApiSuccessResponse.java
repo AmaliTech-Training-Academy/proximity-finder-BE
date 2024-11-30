@@ -11,9 +11,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ApiResponse<T> {
+public class ApiSuccessResponse<T> {
     private ApiResponseStatus status;
     private T result;
-    private List<ErrorResponse> errors;
+
 }
 

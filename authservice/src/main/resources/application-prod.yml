@@ -62,15 +62,17 @@ email:
   reset-url: ${FRONT_END_RESET_URL}
 
 eureka-server:
-  port: ${EUREKA_PORT:8761}
-  hostname: ${EUREKA_HOSTNAME:localhost}
+    hostname: ${EUREKA_SERVER_HOST}
+    port: ${EUREKA_SERVER_PORT}
 
 eureka:
   client:
     service-url:
-      defaultZone: http://${eureka-server.hostname}:${eureka-server.port}/eureka/
+      defaultZone: https://${eureka-server.hostname}:${eureka-server.port}/eureka/
     register-with-eureka: true
     fetch-registry: true
     enabled: true
     healthcheck:
       enabled: true
+  instance:
+    prefer-ip-address: true
