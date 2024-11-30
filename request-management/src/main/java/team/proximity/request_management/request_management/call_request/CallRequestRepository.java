@@ -9,4 +9,5 @@ public interface CallRequestRepository extends JpaRepository<CallRequest, Long> 
 
     List<CallRequest> findByAssignedProvider(String assignedProvider);
     Optional<CallRequest> findByRequestIdAndAssignedProvider(Long requestId, String assignedProvider);
+    Optional<CallRequest> findByPhoneNumberAndAssignedProvider(String phoneNumber, String assignedProvider);
 }
