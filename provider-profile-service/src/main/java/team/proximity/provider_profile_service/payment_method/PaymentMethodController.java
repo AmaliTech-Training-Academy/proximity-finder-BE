@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -55,7 +56,7 @@ public class PaymentMethodController {
     )
     @SecurityRequirement(name = "BearerAuth")
     @PostMapping
-    ResponseEntity<ApiSuccessResponse> createPaymentMethod(@RequestBody PaymentMethodRequest request) {
+    ResponseEntity<ApiSuccessResponse> createPaymentMethod(@Valid @RequestBody PaymentMethodRequest request) {
         paymentMethodService.createNewPaymentMethod(request);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -80,11 +81,23 @@ public class PaymentMethodController {
     )
     @SecurityRequirement(name = "BearerAuth")
     @PostMapping("/new-payment-method")
-    ResponseEntity<ApiSuccessResponse> createAnotherPaymentMethod(@RequestBody PaymentMethodRequest request) {
+    ResponseEntity<ApiSuccessResponse> createAnotherPaymentMethod(@Valid @RequestBody PaymentMethodRequest request) {
         paymentMethodService.createAnotherPaymentMethod(request);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new ApiSuccessResponse("Payment Method added successfully", true));
+    }
+
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ApiSuccessResponse> updatePaymentMethod(@Valid @PathVariable Long id, @RequestBody PaymentMethodRequest request) {
+        paymentMethodService.updatePaymentMethod(request, id);
+        return new ResponseEntity<>(new ApiSuccessResponse("Payment Method updated successfully", true), HttpStatus.OK);
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiSuccessResponse> deletePaymentMethodById(@PathVariable Long id) {
+        paymentMethodService.deletePaymentMethodById(id);
+        return new ResponseEntity<>(new ApiSuccessResponse("Payment Method deleted successfully", true), HttpStatus.OK);
     }
 
 
