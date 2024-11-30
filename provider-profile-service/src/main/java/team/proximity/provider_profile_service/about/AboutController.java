@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import team.proximity.provider_profile_service.common.ApiSuccessResponse;
 
@@ -26,7 +27,7 @@ public class AboutController {
     @SecurityRequirement(name = "BearerAuth")
     @Operation(summary = "Create About Company")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiSuccessResponse> createOneAbout(@Valid @ModelAttribute AboutRequest aboutRequest) throws IOException {
+    public ResponseEntity<ApiSuccessResponse> createOneAbout(@Valid @ModelAttribute AboutRequest aboutRequest){
 
             aboutService.createOneAbout(aboutRequest);
             return ResponseEntity

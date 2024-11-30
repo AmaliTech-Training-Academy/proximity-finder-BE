@@ -25,5 +25,16 @@ public class PaymentMethodFactory {
         }
         return creator.create(request);
     }
+
+    public PaymentMethod updatePaymentMethod(PaymentMethod existing, PaymentMethodRequest request) {
+        String preference = request.paymentPreference().toUpperCase();
+        PaymentMethodCreator creator = creators.get(preference);
+
+        if (creator == null) {
+            throw new UnsupportedPaymentPreference("Unsupported payment preference: " + preference);
+        }
+
+        return creator.update(existing, request);
+    }
 }
 
