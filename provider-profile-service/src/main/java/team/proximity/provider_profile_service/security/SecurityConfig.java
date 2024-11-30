@@ -41,7 +41,7 @@ public class SecurityConfig {
                         .hasAuthority("ROLE_PROVIDER")
 
                         .requestMatchers(
-                                "/api/v1/provider-service/payment-method/**")
+                                "/api/v1/provider-service/payment-method")
                         .hasAnyAuthority("ROLE_PROVIDER", "ROLE_SEEKER")
 
                         .requestMatchers(
@@ -49,11 +49,11 @@ public class SecurityConfig {
 
                         .permitAll()
                         .requestMatchers(HttpMethod.GET,
-                                "api/v1/provider-service/payment-method/providers/mobile-money-providers/**")
+                                "api/v1/provider-service/payment-method/providers/mobile-money-providers",
+                                "api/v1/provider-service/payment-preferences"
+                        )
                         .permitAll()
-                        .requestMatchers(HttpMethod.GET,
-                                "api/v1/provider-service/payment-preferences/**")
-                        .permitAll()
+
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception
