@@ -18,10 +18,12 @@ public class CallRequestServiceImpl implements CallRequestService {
     }
 
     public void createCallRequest(SeekerCallRequest seekerCallRequest) {
+        checkForDuplicateCallRequest(seekerCallRequest);
 
         CallRequest callRequest = callRequestMapper.mapToCallRequest(seekerCallRequest);
         callRequestRepository.save(callRequest);
     }
+
 
     public List<ProviderCallRequestResponse> getAllCallRequests() {
 
@@ -46,5 +48,15 @@ public class CallRequestServiceImpl implements CallRequestService {
         callRequest.setStatus(Status.COMPLETED);
         callRequestRepository.save(callRequest);
 
+    }
+
+    private void checkForDuplicateCallRequest(SeekerCallRequest seekerCallRequest) {
+        boolean exists = callRequestRepository
+                .findByPhoneNumberAndAssignedProvider(seekerCallRequest.phoneNumber(), seekerCallRequest.assignedProvider())
+                .isPresent();
+
+        if (exists) {
+            throw new IllegalArgumentException("A call request for this phone number and provider already exists.");
+        }
     }
 }
