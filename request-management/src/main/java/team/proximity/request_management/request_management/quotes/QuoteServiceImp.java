@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import team.proximity.request_management.request_management.descision.QuoteDecision;
 import team.proximity.request_management.request_management.descision.QuoteDecisionRepository;
 import team.proximity.request_management.request_management.descision.QuoteDescisionRequest;
+import team.proximity.request_management.request_management.exception.DuplicateQuoteException;
 import team.proximity.request_management.request_management.exception.QuoteNotFoundException;
 import team.proximity.request_management.request_management.fileupload.FileProcessingService;
 import team.proximity.request_management.request_management.request.Request;
@@ -36,6 +37,7 @@ public class QuoteServiceImp implements QuoteService {
 
 
     public void createQuote(QuoteRequest quoteRequest) {
+        checkForDuplicateQuote(quoteRequest);
         Quote quote = quoteMapper.mapToQuote(quoteRequest);
 
         List<QuoteImage> uploadedImages = quoteRequest.images().stream()
@@ -53,6 +55,8 @@ public class QuoteServiceImp implements QuoteService {
         requestRepository.save(request);
 
     }
+
+
 
     public void approveQuote(Long quoteId, QuoteDescisionRequest quoteDescisionRequest) {
 
@@ -127,6 +131,15 @@ public class QuoteServiceImp implements QuoteService {
                 .requestDate(quote.getRequestDate().toString())
                 .assignedProvider(quote.getAssignedProvider())
                 .build();
+    }
+    private void checkForDuplicateQuote(QuoteRequest quoteRequest) {
+        if (quoteRepository.existsByTitleAndAssignedProvider(
+                quoteRequest.title(), quoteRequest.assignedProvider())) {
+            throw new DuplicateQuoteException(
+                    String.format("A quote with title '%s' already exists for provider '%s'.",
+                            quoteRequest.title(), quoteRequest.assignedProvider())
+            );
+        }
     }
 
 }
