@@ -1,5 +1,7 @@
 package team.proximity.management.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import team.proximity.management.model.ProviderService;
 import team.proximity.management.repositories.ProviderServiceRepository;
@@ -15,8 +17,8 @@ public class ProviderServiceDiscovery {
         this.repository = repository;
     }
 
-    public List<ProviderService> searchByServiceAndProximity(String serviceName, double latitude, double longitude, double radius) {
-        return repository.findByServiceNameAndLocationWithinRadiusNative(serviceName, latitude, longitude, radius);
+    public Page<ProviderService> searchByServiceAndProximity(String serviceName, double latitude, double longitude, double radius, Pageable pageable) {
+        return repository.findByServiceNameAndLocationWithinRadiusNative(serviceName, latitude, longitude, radius, pageable);
     }
 }
 
