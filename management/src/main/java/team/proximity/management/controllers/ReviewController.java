@@ -4,12 +4,15 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import team.proximity.management.requests.ReviewRequest;
+import team.proximity.management.responses.ApiResponseStatus;
+import team.proximity.management.responses.ApiSuccessResponse;
 import team.proximity.management.responses.ReviewDTO;
 import team.proximity.management.services.ReviewService;
 import team.proximity.management.utils.AuthenticationHelper;
@@ -30,10 +33,14 @@ public class ReviewController {
 
     @PostMapping
 //    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<ReviewDTO> createReview(
+    public ResponseEntity<ApiSuccessResponse<ReviewDTO>> createReview(
             @RequestBody @Valid ReviewRequest request) {
         ReviewDTO review = reviewService.createReview(request, AuthenticationHelper.getCurrentUserEmail());
-        return ResponseEntity.ok(review);
+        ApiSuccessResponse<ReviewDTO> response = ApiSuccessResponse.<ReviewDTO>builder()
+                .status(ApiResponseStatus.SUCCESS)
+                .result(review)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
 //    @PostMapping("/{reviewId}/report")
@@ -45,6 +52,7 @@ public class ReviewController {
 //        ReviewReport report = reviewService.reportReview(reviewId, reason, userDetails.getUsername());
 //        return ResponseEntity.ok(report);
 //    }
+
 
     @GetMapping("/service-provider/{serviceProviderId}")
     public ResponseEntity<Page<ReviewDTO>> getServiceProviderReviews(
