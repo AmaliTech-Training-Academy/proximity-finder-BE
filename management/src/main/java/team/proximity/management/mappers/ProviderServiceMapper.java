@@ -76,7 +76,7 @@ public class ProviderServiceMapper {
         GeometryFactory geometryFactory = new GeometryFactory();
 
         // Create Point from latitude and longitude
-        Point point = geometryFactory.createPoint(new Coordinate(dto.getLatitude(), dto.getLongitude()));
+        Point point = geometryFactory.createPoint(new Coordinate(dto.getLongitude(), dto.getLatitude()));
 
         return ProviderService.builder()
                 .userEmail(AuthenticationHelper.getCurrentUserEmail())
@@ -91,12 +91,12 @@ public class ProviderServiceMapper {
     }
 
     private void updatePreferenceFields(ProviderServiceRequest dto, ProviderService preference, List<BookingDayRequest> bookingDays) {
-        preference.setPaymentPreference(dto.getPaymentPreference());;
+        preference.setPaymentPreference(dto.getPaymentPreference());
         // Create GeometryFactory
         GeometryFactory geometryFactory = new GeometryFactory();
 
         // Create Point from latitude and longitude
-        Point point = geometryFactory.createPoint(new Coordinate(dto.getLatitude(), dto.getLatitude()));
+        Point point = geometryFactory.createPoint(new Coordinate(dto.getLongitude(), dto.getLatitude()));
         preference.setLocation(point);
         preference.setPlaceName(dto.getPlaceName());
         preference.setSchedulingPolicy(dto.getSchedulingPolicy());
