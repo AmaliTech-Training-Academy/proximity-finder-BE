@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
 import team.proximity.management.requests.ProviderServiceRequest;
 import team.proximity.management.model.ProviderService;
@@ -110,11 +112,11 @@ public class ProviderServiceController {
             @ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
     })
-    public ResponseEntity<ApiSuccessResponse<List<ProviderService>>> getAllProviderServices() {
+    public ResponseEntity<ApiSuccessResponse<Page<ProviderService>>> getAllProviderServices(Pageable pageable) {
         log.info("Fetching all providerServices");
-        List<ProviderService> providerServices = providerServiceService.getAllProviderServices();
+        Page<ProviderService> providerServices = providerServiceService.getAllProviderServices(pageable);
         log.debug("Fetched providerServices: {}", providerServices);
-        ApiSuccessResponse<List<ProviderService>> response = ApiSuccessResponse.<List<ProviderService>>builder()
+        ApiSuccessResponse<Page<ProviderService>> response = ApiSuccessResponse.<Page<ProviderService>>builder()
                 .status(ApiResponseStatus.SUCCESS)
                 .result(providerServices)
                 .build();
