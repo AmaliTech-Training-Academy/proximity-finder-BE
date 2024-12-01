@@ -1,5 +1,7 @@
 package team.proximity.management.controllers;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import team.proximity.management.model.ProviderService;
 import team.proximity.management.services.ProviderServiceDiscovery;
@@ -18,12 +20,13 @@ public class SearchDiscoveryControler {
     }
 
     @GetMapping("/search")
-    public List<ProviderService> searchByProximity(
+    public Page<ProviderService> searchByProximity(
             @RequestParam String serviceName,
             @RequestParam double latitude,
             @RequestParam double longitude,
-            @RequestParam double radius
+            @RequestParam double radius,
+            Pageable pageable
     ) {
-        return serviceDiscovery.searchByServiceAndProximity(serviceName, latitude, longitude, radius);
+        return serviceDiscovery.searchByServiceAndProximity(serviceName, latitude, longitude, radius, pageable);
     }
 }

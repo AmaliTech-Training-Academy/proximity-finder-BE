@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import team.proximity.management.exceptions.ResourceNotFoundException;
 import team.proximity.management.repositories.ServicesRepository;
 import team.proximity.management.requests.BookingDayRequest;
@@ -94,9 +96,9 @@ public class ProviderServiceService {
                 .orElseThrow(() -> new ProviderServiceNotFoundException(id));
     }
 
-    public List<ProviderService> getAllProviderServices() {
+    public Page<ProviderService> getAllProviderServices(Pageable pageable) {
         log.info(LOG_FETCH_ALL_PROVIDER_SERVICES);
-        return providerServiceRepository.findAll();
+        return providerServiceRepository.findAll(pageable);
     }
 
     public void deleteProviderService(UUID id) {
