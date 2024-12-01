@@ -1,5 +1,7 @@
 package team.proximity.management.repositories;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,10 +19,11 @@ public interface ProviderServiceRepository extends JpaRepository<ProviderService
         WHERE s.name = :serviceName 
         AND ST_DWithin(ps.location, ST_GeographyFromText(concat('POINT(', :longitude, ' ', :latitude, ')')), :radius)
     """, nativeQuery = true)
-   List<ProviderService> findByServiceNameAndLocationWithinRadiusNative(
+   Page<ProviderService> findByServiceNameAndLocationWithinRadiusNative(
            @Param("serviceName") String serviceName,
            @Param("latitude") double latitude,
            @Param("longitude") double longitude,
-           @Param("radius") double radius
+           @Param("radius") double radius,
+           Pageable pageable
    );
 }
