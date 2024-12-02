@@ -57,7 +57,6 @@ build/
 .vscode/
 
 ### app properties
-provider-profile-service/src/main/resources/application-dev.yml
 provider-profile-service/compose.yaml
 provider-profile-service/README.Docker.md
 provider-profile-service/.dockerignore
