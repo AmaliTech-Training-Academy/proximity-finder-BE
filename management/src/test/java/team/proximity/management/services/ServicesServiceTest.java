@@ -62,11 +62,11 @@ class ServicesServiceTest {
         when(servicesRepository.findById(serviceId)).thenReturn(Optional.of(service));
 
         // Act
-        Optional<Services> foundService = servicesService.getServiceById(serviceId);
+        Services foundService = servicesService.getServiceById(serviceId);
 
         // Assert
-        assertThat(foundService).isPresent();
-        assertThat(foundService.get().getName()).isEqualTo("Service 1");
+
+        assertThat(foundService.getName()).isEqualTo("Service 1");
         verify(servicesRepository, times(1)).findById(serviceId);
     }
 
@@ -75,7 +75,7 @@ class ServicesServiceTest {
         // Arrange
         MultipartFile imageFile = mock(MultipartFile.class);
         when(imageFile.getOriginalFilename()).thenReturn("image.jpg");
-        when(s3Service.uploadFile(imageFile, new ImageValidationStrategy())).thenReturn("s3://bucket/image.jpg");
+        when(s3Service.uploadFile(imageFile, new ImageValidationStrategy()).get("url")).thenReturn("s3://bucket/image.jpg");
 
         ServiceRequest serviceRequest = new ServiceRequest("New Service", "New Description", imageFile);
         Services service = new Services(UUID.randomUUID(), "New Service", "New Description",  "s3://bucket/image.jpg");
@@ -97,7 +97,7 @@ class ServicesServiceTest {
         UUID serviceId = UUID.randomUUID();
         MultipartFile newImage = mock(MultipartFile.class);
         when(newImage.getOriginalFilename()).thenReturn("newImage.jpg");
-        when(s3Service.uploadFile(newImage, new ImageValidationStrategy())).thenReturn("s3://bucket/newImage.jpg");
+        when(s3Service.uploadFile(newImage, new ImageValidationStrategy()).get("url")).thenReturn("s3://bucket/newImage.jpg");
 
          UpdateServiceRequest serviceRequest = new UpdateServiceRequest("Updated Service", "Updated Description",  newImage);
         Services existingService = new Services(serviceId, "Old Service", "Old Description","oldImage.jpg");

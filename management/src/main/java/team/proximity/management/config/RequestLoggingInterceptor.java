@@ -23,8 +23,8 @@ public class RequestLoggingInterceptor implements HandlerInterceptor {
         request.getHeaderNames().asIterator().forEachRemaining(headerName ->
                 logger.info("Header: {} = {}", headerName, request.getHeader(headerName))
         );
-        String requestBody = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        logger.info("Request Body: {}", requestBody);
+//        String requestBody = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+//        logger.info("Request Body: {}", requestBody);
 
         return true; // Continue request processing
     }

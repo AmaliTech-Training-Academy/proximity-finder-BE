@@ -14,6 +14,8 @@ import team.proximity.management.validators.upload.FileValidationStrategy;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Service
@@ -27,7 +29,7 @@ public class S3Service {
     @Value("${cloud.aws.region.static}")
     private String region;
 
-    public String uploadFile(MultipartFile file, FileValidationStrategy validationStrategy) throws IOException {
+    public Map<String, String> uploadFile(MultipartFile file, FileValidationStrategy validationStrategy) throws IOException {
         // Validate file
         FileValidationContext validationContext = new FileValidationContext(validationStrategy);
         validationContext.validate(file);
@@ -42,7 +44,12 @@ public class S3Service {
         // Delete temporary file
         fileObj.delete();
 
-        return String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, region, fileName);
+        String fileUrl = String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, region, fileName);
+        Map<String, String> result = new HashMap<>();
+        result.put("url", fileUrl);
+        result.put("filename", fileName);
+
+        return result;
     }
 
 
