@@ -23,12 +23,12 @@ public class GatewayConfig {
 
                 .route("provider-profile-service", r -> r.path("/api/v1/provider-service/**")
                         .filters(f -> f.filter(authFilter.apply(new AuthenticationFilter.Config())))
-                        .uri("http://localhost:8080"))
+                        .uri("lb://SERVICE-PROVIDER-PROFILE"))
 
 
                 .route("quest-and-call-service", r -> r.path("/api/v1/quote-service/**")
                         .filters(f -> f.filter(authFilter.apply(new AuthenticationFilter.Config())))
-                        .uri("http://localhost:8080"))
+                        .uri("lb://REQUEST-MANAGEMENT-SERVICE"))
 
                 .build();
     }
