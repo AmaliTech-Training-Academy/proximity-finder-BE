@@ -59,9 +59,6 @@ management:
       exposure:
         include: '*'
 
-eureka-server:
-  port: ${EUREKA_PORT:8761}
-  hostname: ${EUREKA_HOSTNAME:localhost}
 
 eureka:
   client:
