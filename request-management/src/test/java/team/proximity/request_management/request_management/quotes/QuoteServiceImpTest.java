@@ -136,7 +136,6 @@ class QuoteServiceImpTest {
 
     @Test
     void approveQuote_Success() {
-        // Arrange
         Long quoteId = 1L;
         String providerEmail = "provider@example.com";
 
@@ -151,17 +150,17 @@ class QuoteServiceImpTest {
                 null
         );
 
-        // Use MockedStatic for SecurityContextUtils
+
         try (MockedStatic<SecurityContextUtils> utilities = mockStatic(SecurityContextUtils.class)) {
             utilities.when(SecurityContextUtils::getEmail).thenReturn(providerEmail);
 
             when(quoteRepository.findByQuoteIdAndAssignedProvider(quoteId, providerEmail))
                     .thenReturn(Optional.of(quote));
 
-            // Act
+
             quoteService.approveQuote(quoteId, request);
 
-            // Assert
+
             assertEquals(QuoteStatus.APPROVED, quote.getStatus());
             verify(quoteDecisionRepository, times(1)).save(any(QuoteDecision.class));
             verify(quoteRepository, times(1)).save(quote);
@@ -170,7 +169,7 @@ class QuoteServiceImpTest {
 
     @Test
     void approveQuote_UnauthorizedAccess_ThrowsSecurityException() {
-        // Arrange
+
         Long quoteId = 1L;
         String providerEmail = "provider@example.com";
 
@@ -181,14 +180,13 @@ class QuoteServiceImpTest {
                 null
         );
 
-        // Use MockedStatic for SecurityContextUtils
         try (MockedStatic<SecurityContextUtils> utilities = mockStatic(SecurityContextUtils.class)) {
             utilities.when(SecurityContextUtils::getEmail).thenReturn(providerEmail);
 
             when(quoteRepository.findByQuoteIdAndAssignedProvider(quoteId, providerEmail))
                     .thenReturn(Optional.empty());
 
-            // Act & Assert
+
             assertThrows(SecurityException.class, () ->
                     quoteService.approveQuote(quoteId, request)
             );
@@ -201,7 +199,7 @@ class QuoteServiceImpTest {
 
     @Test
     void declineQuote_Success() {
-        // Arrange
+
         Long quoteId = 1L;
         String providerEmail = "provider@example.com";
 
@@ -222,10 +220,9 @@ class QuoteServiceImpTest {
             when(quoteRepository.findByQuoteIdAndAssignedProvider(quoteId, providerEmail))
                     .thenReturn(Optional.of(quote));
 
-            // Act
+
             quoteService.declineQuote(quoteId, request);
 
-            // Assert
             assertEquals(QuoteStatus.DECLINED, quote.getStatus());
             verify(quoteDecisionRepository, times(1)).save(any(QuoteDecision.class));
             verify(quoteRepository, times(1)).save(quote);
@@ -251,7 +248,6 @@ class QuoteServiceImpTest {
             when(quoteRepository.findByQuoteIdAndAssignedProvider(quoteId, providerEmail))
                     .thenReturn(Optional.empty());
 
-            // Act & Assert
             assertThrows(SecurityException.class, () ->
                     quoteService.declineQuote(quoteId, request)
             );
@@ -266,7 +262,6 @@ class QuoteServiceImpTest {
 
     @Test
     void getQuoteByIdForCreator_Success() {
-        // Arrange
         Long quoteId = 1L;
         String userEmail = "creator@example.com";
         Quote quote = new Quote();
@@ -279,10 +274,8 @@ class QuoteServiceImpTest {
                     .thenReturn(Optional.of(quote));
             when(quoteMapper.mapToQuoteResponse(quote)).thenReturn(expectedResponse);
 
-            // Act
             QuoteResponse result = quoteService.getQuoteByIdForCreator(quoteId);
 
-            // Assert
             assertNotNull(result);
             assertEquals(expectedResponse.quoteId(), result.quoteId());
             assertEquals(expectedResponse.title(), result.title());
@@ -294,7 +287,7 @@ class QuoteServiceImpTest {
 
     @Test
     void getQuoteByIdForCreator_NotFound_ThrowsException() {
-        // Arrange
+
         Long quoteId = 1L;
         String userEmail = "creator@example.com";
 
@@ -305,8 +298,6 @@ class QuoteServiceImpTest {
                     .thenReturn(Optional.empty());
 
 
-
-            // Act & Assert
             assertThrows(QuoteNotFoundException.class, () ->
                     quoteService.getQuoteByIdForCreator(quoteId)
             );
@@ -324,24 +315,19 @@ class QuoteServiceImpTest {
         try (MockedStatic<SecurityContextUtils> utilities = mockStatic(SecurityContextUtils.class)) {
             utilities.when(SecurityContextUtils::getEmail).thenReturn(providerEmail);
 
-
             when(quoteRepository.findByQuoteIdAndAssignedProvider(quoteId, providerEmail))
                     .thenReturn(Optional.of(quote));
             when(quoteMapper.mapToQuoteResponse(quote)).thenReturn(expectedResponse);
 
-            // Act
             QuoteResponse actualResponse = quoteService.getQuoteByIdForAssignedProvider(quoteId);
 
-            // Assert
             assertNotNull(actualResponse, "Response should not be null");
             assertEquals(expectedResponse, actualResponse, "Response should match expected response");
 
-            // Verify interactions
             verify(quoteRepository, times(1))
                     .findByQuoteIdAndAssignedProvider(quoteId, providerEmail);
             verify(quoteMapper, times(1)).mapToQuoteResponse(quote);
 
-            // Verify SecurityContextUtils was called
             utilities.verify(SecurityContextUtils::getEmail, times(1));
         }
     }
