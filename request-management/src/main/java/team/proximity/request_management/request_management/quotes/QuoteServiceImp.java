@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import team.proximity.request_management.request_management.descision.QuoteDecision;
 import team.proximity.request_management.request_management.descision.QuoteDecisionRepository;
 import team.proximity.request_management.request_management.descision.QuoteDescisionRequest;
+import team.proximity.request_management.request_management.exception.DuplicateQuoteException;
 import team.proximity.request_management.request_management.exception.QuoteNotFoundException;
 import team.proximity.request_management.request_management.fileupload.FileProcessingService;
 import team.proximity.request_management.request_management.request.Request;
@@ -36,9 +37,11 @@ public class QuoteServiceImp implements QuoteService {
 
 
     public void createQuote(QuoteRequest quoteRequest) {
+        checkForDuplicateQuote(quoteRequest);
         Quote quote = quoteMapper.mapToQuote(quoteRequest);
 
-        List<QuoteImage> uploadedImages = quoteRequest.images().stream()
+        List<QuoteImage> uploadedImages = quoteRequest.images() == null ? List.of() : quoteRequest.images()
+                .stream()
                 .map(fileProcessingService::processImage)
                 .filter(Objects::nonNull)
                 .map(imageUrl -> new QuoteImage(quote, imageUrl))
@@ -105,15 +108,15 @@ public class QuoteServiceImp implements QuoteService {
         return quoteMapper.mapToQuoteResponse(quote);
     }
 
-    public List<QuoteResponse> getQuotesCreatedBy(String createdBy) {
-        return quoteRepository.findByCreatedByWithDetails(createdBy)
+    public List<QuoteResponse> getQuotesCreatedBy() {
+        return quoteRepository.findByCreatedByWithDetails(SecurityContextUtils.getEmail())
                 .stream()
                 .map(quoteMapper::mapToQuoteResponse)
                 .toList();
     }
 
-    public List<QuoteResponse> getQuotesAssignedTo(String assignedTo) {
-        return quoteRepository.findByAssignedToWithDetails(assignedTo)
+    public List<QuoteResponse> getQuotesAssignedTo() {
+        return quoteRepository.findByAssignedToWithDetails(SecurityContextUtils.getEmail())
                 .stream()
                 .map(quoteMapper::mapToQuoteResponse)
                 .toList();
@@ -127,6 +130,19 @@ public class QuoteServiceImp implements QuoteService {
                 .requestDate(quote.getRequestDate().toString())
                 .assignedProvider(quote.getAssignedProvider())
                 .build();
+    }
+    private void checkForDuplicateQuote(QuoteRequest quoteRequest) {
+        if (quoteRepository.existsByCreatedByAndTitleAndAssignedProvider(
+                SecurityContextUtils.getEmail(),
+                quoteRequest.title(),
+                quoteRequest.assignedProvider()
+
+        )) {
+            throw new DuplicateQuoteException(
+                    String.format("A quote with title '%s' already exists for provider '%s'.",
+                            quoteRequest.title(), quoteRequest.assignedProvider())
+            );
+        }
     }
 
 }

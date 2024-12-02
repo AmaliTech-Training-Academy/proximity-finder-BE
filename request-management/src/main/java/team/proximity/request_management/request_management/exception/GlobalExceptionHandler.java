@@ -61,6 +61,18 @@ public class GlobalExceptionHandler {
                         request.getRequestURI()
                 ));
     }
+    @ExceptionHandler(DuplicateQuoteException.class)
+    public ResponseEntity<ApiErrorResponse> handleDuplicateQuoteException(DuplicateQuoteException ex, HttpServletRequest request) {
+        LOGGER.warn("Duplicate quote: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ApiErrorResponse(
+                        HttpStatus.CONFLICT.value(),
+                        HttpStatus.CONFLICT.getReasonPhrase(),
+                        ex.getMessage(),
+                        request.getRequestURI()
+                ));
+
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiErrorResponse> handleValidationException(MethodArgumentNotValidException ex, HttpServletRequest request) {

@@ -20,5 +20,6 @@ public record QuoteResponse(
         String createdBy,
         String assignedProvider,
         List<String> images,
-        DecisionResponse decision
+        DecisionResponse decision,
+        String duration
 ) {}
