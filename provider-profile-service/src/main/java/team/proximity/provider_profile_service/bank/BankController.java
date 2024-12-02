@@ -11,7 +11,7 @@ import java.util.List;
 
 @Tag(name = "Banks", description = "Operations related to banks")
 @RestController
-@RequestMapping("/api/v1/banks")
+@RequestMapping("/api/v1/provider-service/banks")
 public class BankController {
 
     private final BankServiceImpl bankService;

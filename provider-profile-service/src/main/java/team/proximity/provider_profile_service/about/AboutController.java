@@ -14,7 +14,7 @@ import team.proximity.provider_profile_service.common.ApiSuccessResponse;
 import java.io.IOException;
 @Tag(name = "About Company", description = "Operations related to about company")
 @RestController
-@RequestMapping("/api/v1/about")
+@RequestMapping("/api/v1/provider-service/about")
 public class AboutController {
 
 
