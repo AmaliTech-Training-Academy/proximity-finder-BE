@@ -40,7 +40,8 @@ public class QuoteServiceImp implements QuoteService {
         checkForDuplicateQuote(quoteRequest);
         Quote quote = quoteMapper.mapToQuote(quoteRequest);
 
-        List<QuoteImage> uploadedImages = quoteRequest.images().stream()
+        List<QuoteImage> uploadedImages = quoteRequest.images() == null ? List.of() : quoteRequest.images()
+                .stream()
                 .map(fileProcessingService::processImage)
                 .filter(Objects::nonNull)
                 .map(imageUrl -> new QuoteImage(quote, imageUrl))
@@ -55,8 +56,6 @@ public class QuoteServiceImp implements QuoteService {
         requestRepository.save(request);
 
     }
-
-
 
     public void approveQuote(Long quoteId, QuoteDescisionRequest quoteDescisionRequest) {
 
@@ -133,8 +132,12 @@ public class QuoteServiceImp implements QuoteService {
                 .build();
     }
     private void checkForDuplicateQuote(QuoteRequest quoteRequest) {
-        if (quoteRepository.existsByCreatedByAndAssignedProvider(
-                SecurityContextUtils.getEmail(), quoteRequest.assignedProvider())) {
+        if (quoteRepository.existsByCreatedByAndTitleAndAssignedProvider(
+                SecurityContextUtils.getEmail(),
+                quoteRequest.title(),
+                quoteRequest.assignedProvider()
+
+        )) {
             throw new DuplicateQuoteException(
                     String.format("A quote with title '%s' already exists for provider '%s'.",
                             quoteRequest.title(), quoteRequest.assignedProvider())
