@@ -25,7 +25,7 @@ public record QuoteRequest(
         String location,
 
         @NotBlank(message = "Start date is required")
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMMM dd, yyyy")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy")
         String startDate,
 
         @NotBlank(message = "Start time is required")
@@ -36,7 +36,7 @@ public record QuoteRequest(
         String startTime,
 
         @NotBlank(message = "End date is required")
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMMM dd, yyyy")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy")
         String endDate,
 
         @NotBlank(message = "End time is required")
@@ -49,6 +49,6 @@ public record QuoteRequest(
         @NotBlank(message = "Assigned provider is required")
         String assignedProvider,
 
-        @Size(max = 5, message = "You can upload a maximum of 5 images")
+        @Size(max = 10000, message = "You can upload a maximum of 10000 images")
         List<MultipartFile> images
 ) {}
