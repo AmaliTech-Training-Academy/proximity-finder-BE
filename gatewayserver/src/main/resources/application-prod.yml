@@ -5,7 +5,7 @@ spring:
     gateway:
       routes:
         - id: provider-profile-service
-          uri: http://localhost:8080
+          uri: lb://SERVICE-PROVIDER-PROFILE
           filters:
             - name: Retry
               args:
@@ -18,7 +18,7 @@ spring:
             - Method=GET
 
         - id: quote-and-call-service
-          uri: http://localhost:8080
+          uri: lb://REQUEST-MANAGEMENT-SERVICE
           filters:
             - name: Retry
               args:
@@ -66,15 +66,9 @@ eureka-server:
 eureka:
   client:
     service-url:
-      defaultZone: http://${eureka-server.hostname}:${eureka-server.port}/eureka/
-    register-with-eureka: false
-    fetch-registry: false
-    enabled: true
-
-    healthcheck:
-      enabled: true
-  instance:
-    prefer-ip-address: true
+      defaultZone: https://${EUREKA_HOSTNAME:localhost}:${EUREKA_PORT:8761}/eureka/
+    register-with-eureka: true
+    fetch-registry: true
 
 logging:
   level:
