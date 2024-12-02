@@ -362,7 +362,8 @@ class QuoteServiceImpTest {
                 "creator@example.com",
                 "provider@example.com",
                 List.of("image1.jpg"),
-                null
+                null,
+                "8 Weeks"
         );
     }
 }
