@@ -133,8 +133,8 @@ public class QuoteServiceImp implements QuoteService {
                 .build();
     }
     private void checkForDuplicateQuote(QuoteRequest quoteRequest) {
-        if (quoteRepository.existsByTitleAndAssignedProvider(
-                quoteRequest.title(), quoteRequest.assignedProvider())) {
+        if (quoteRepository.existsByCreatedByAndAssignedProvider(
+                SecurityContextUtils.getEmail(), quoteRequest.assignedProvider())) {
             throw new DuplicateQuoteException(
                     String.format("A quote with title '%s' already exists for provider '%s'.",
                             quoteRequest.title(), quoteRequest.assignedProvider())
