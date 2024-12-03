@@ -6,5 +6,6 @@ public interface AboutService {
 
     void createOneAbout(AboutRequest aboutRequest);
     AboutBusinessResponse getAboutForAuthenticatedUser();
+    AboutAndPaymentMethodsResponse getAboutAndPaymentMethods(String email);
 
 }

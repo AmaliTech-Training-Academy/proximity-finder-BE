@@ -34,7 +34,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
                         .requestMatchers(
                                 "/swagger-ui/**",
-                                "/v3/api-docs/**")
+                                "/v3/api-docs/**"
+                        )
                         .permitAll()
 
                         .requestMatchers("/api/v1/provider-service/about/**")
@@ -45,7 +46,8 @@ public class SecurityConfig {
                         .hasAnyAuthority("ROLE_PROVIDER", "ROLE_SEEKER")
 
                         .requestMatchers(
-                                "/api/v1/provider-service/banks/**")
+                                "/api/v1/provider-service/about/provider-profile"
+                        )
 
                         .permitAll()
                         .requestMatchers(HttpMethod.GET,
