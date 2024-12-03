@@ -1,21 +1,17 @@
 spring:
-  profiles:
-    active: dev
   application:
     name: "eureka-server"
 
+
 server:
-  port: 9091
+  port: ${EUREKA_PORT:8761}
 
 eureka:
-  instance:
-    hostname:  ${EUREKA_HOSTNAME:eurekaserver}
   client:
-
     fetch-registry: false
     register-with-eureka: false
     service-url:
-      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+      defaultZone: https://${EUREKA_HOSTNAME:localhost}:${EUREKA_PORT:8761}/eureka/
 
 management:
   endpoints:
