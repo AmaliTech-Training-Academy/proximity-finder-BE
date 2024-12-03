@@ -15,6 +15,6 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
     private String frontendUrl;
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException, IOException {
-        response.sendRedirect(frontendUrl +"/login?error=" + exception.getMessage());
+        response.sendRedirect(frontendUrl +"/?error=" + exception.getMessage());
     }
 }

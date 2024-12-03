@@ -24,21 +24,17 @@ import java.util.UUID;
 @Slf4j
 public class ReviewService {
     private final ReviewRepository reviewRepository;
-//    private final UserRepository userRepository;
     private final ProviderServiceRepository serviceProviderRepository;
-//    private final ReviewReportRepository reportRepository;
     private final SentimentAnalyzer sentimentAnalyzer;
 
     public ReviewService(ReviewRepository reviewRepository, ProviderServiceRepository serviceProviderRepository, SentimentAnalyzer sentimentAnalyzer) {
         this.reviewRepository = reviewRepository;
         this.serviceProviderRepository = serviceProviderRepository;
-//        this.reportRepository = reportRepository;
         this.sentimentAnalyzer = sentimentAnalyzer;
     }
 
     public ReviewDTO createReview(ReviewRequest request, String userEmail) {
-//        User user = userRepository.findByEmail(userEmail)
-//                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
 
         ProviderService serviceProvider = serviceProviderRepository.findById(request.getProviderServiceId())
                 .orElseThrow(() -> new ResourceNotFoundException("Service provider not found"));
