@@ -27,7 +27,7 @@ aws:
     region: us-east-2
 
 server:
-  port: ${PROD_PORT}
+  port: ${PROD_PORT:8050}
 
 management:
 
@@ -36,16 +36,10 @@ management:
       exposure:
         include: health,info,metrics
 
-eureka-server:
-  port: ${EUREKA_PORT}
-  hostname: ${EUREKA_HOSTNAME}
-
 eureka:
   client:
     service-url:
-      defaultZone: https://${eureka-server.hostname}:${eureka-server.port}/eureka/
+      defaultZone: https://${EUREKA_HOSTNAME:localhost}:${EUREKA_PORT:8761}/eureka/
     register-with-eureka: true
     fetch-registry: true
-  instance:
-    prefer-ip-address: true
 
