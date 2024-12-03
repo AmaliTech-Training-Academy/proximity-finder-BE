@@ -38,7 +38,7 @@ spring:
         corsConfigurations:
           '[/**]':
             allowedOrigins:
-              - ${FRONTEND_URL}
+              - "http://localhost:4200"
             allowedMethods:
               - GET
               - POST
@@ -59,13 +59,17 @@ management:
       exposure:
         include: '*'
 
-
 eureka:
   client:
     service-url:
-      defaultZone: https://${EUREKA_HOSTNAME:localhost}:${EUREKA_PORT:8761}/eureka/
+      defaultZone: http://${EUREKA_HOSTNAME:localhost}:${EUREKA_PORT:8761}/eureka/
     register-with-eureka: true
     fetch-registry: true
+
+    healthcheck:
+      enabled: true
+  instance:
+    prefer-ip-address: true
 
 logging:
   level:
