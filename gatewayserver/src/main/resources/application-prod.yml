@@ -38,7 +38,7 @@ spring:
         corsConfigurations:
           '[/**]':
             allowedOrigins:
-              - "http://localhost:4200"
+              - ${FRONTEND_URL}
             allowedMethods:
               - GET
               - POST
