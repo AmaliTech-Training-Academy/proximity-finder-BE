@@ -44,8 +44,6 @@ public class ServicesController {
     })
     public ResponseEntity<ApiSuccessResponse<List<Services>>> getAllServices() {
         log.info("Fetching all services");
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        log.info("User: {}", authentication.getName());
         List<Services> servicesList = servicesService.getAllServices();
         return ResponseEntity.ok(ApiSuccessResponse.<List<Services>>builder()
                 .status(ApiResponseStatus.SUCCESS)
@@ -64,8 +62,7 @@ public class ServicesController {
     })
     public ResponseEntity<ApiSuccessResponse<Services>> getServiceById(@PathVariable UUID id) {
         log.info("Fetching service with id: {}", id);
-        Services service = servicesService.getServiceById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Service not found with id " + id));
+        Services service = servicesService.getServiceById(id);
         return ResponseEntity.ok(ApiSuccessResponse.<Services>builder()
                 .status(ApiResponseStatus.SUCCESS)
                 .result(service)
@@ -124,7 +121,7 @@ public class ServicesController {
         log.info("Deleting service with id: {}", id);
         servicesService.deleteService(id);
         log.debug("Deleted service with id: {}", id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiSuccessResponse.<Void>builder()
+        return ResponseEntity.status(HttpStatus.OK).body(ApiSuccessResponse.<Void>builder()
                 .status(ApiResponseStatus.SUCCESS)
                 .build());
     }

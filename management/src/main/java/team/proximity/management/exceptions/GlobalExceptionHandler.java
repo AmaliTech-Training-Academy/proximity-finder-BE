@@ -17,7 +17,11 @@ import java.util.*;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
+    private static final String FILE_UPLOAD_ERROR = "File Upload Error";
+    private static final String INVALID_FILE_TYPE = "Invalid File Type";
+    private static final String PREFERENCE_NOT_FOUND = "Preference Not Found";
+    private static final String RESOURCE_NOT_FOUND = "Resource Not Found";
+    private static final String INTERNAL_SERVER_ERROR = "Internal Server Error";
     private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(BookingDayHoursValidationException.class)
@@ -32,7 +36,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(FileUploadException.class)
     public ResponseEntity<ApiErrorResponse> handleFileUploadException(FileUploadException ex) {
         logger.error("File upload error: {}", ex.getMessage());
-        ErrorResponse errorResponse = new ErrorResponse("File Upload Error", ex.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(FILE_UPLOAD_ERROR, ex.getMessage());
         ApiErrorResponse response = ApiErrorResponse.<ErrorResponse>builder()
                 .status(ApiResponseStatus.ERROR)
                 .errors(Collections.singletonList(errorResponse))
@@ -58,7 +62,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ProviderServiceNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handlePreferenceNotFoundException(ProviderServiceNotFoundException ex, WebRequest request) {
         logger.error("Preference not found: {}", ex.getMessage());
-        ErrorResponse errorResponse = new ErrorResponse("Preference Not Found", ex.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(PREFERENCE_NOT_FOUND, ex.getMessage());
         ApiErrorResponse response = ApiErrorResponse.<ErrorResponse>builder()
                 .status(ApiResponseStatus.ERROR)
                 .errors(Collections.singletonList(errorResponse))
@@ -69,7 +73,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidFileTypeException.class)
     public ResponseEntity<ApiErrorResponse> handleInvalidFileTypeException(InvalidFileTypeException ex, WebRequest request) {
         logger.error("Invalid file type: {}", ex.getMessage());
-        ErrorResponse errorResponse = new ErrorResponse("Invalid File Type", ex.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(INVALID_FILE_TYPE, ex.getMessage());
         ApiErrorResponse response = ApiErrorResponse.<ErrorResponse>builder()
                 .status(ApiResponseStatus.ERROR)
                 .errors(Collections.singletonList(errorResponse))
@@ -79,7 +83,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
         logger.error("Resource not found: {}", ex.getMessage());
-        ErrorResponse errorResponse = new ErrorResponse("Resource Not Found", ex.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(RESOURCE_NOT_FOUND, ex.getMessage());
         ApiErrorResponse response = ApiErrorResponse.<ErrorResponse>builder()
                 .status(ApiResponseStatus.ERROR)
                 .errors(Collections.singletonList(errorResponse))
@@ -90,7 +94,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleGlobalException(Exception ex, WebRequest request) {
         logger.error("Unexpected error: {}", ex.getMessage());
-        ErrorResponse errorResponse = new ErrorResponse("Internal Server Error", "An unexpected error occurred");
+        ErrorResponse errorResponse = new ErrorResponse(INTERNAL_SERVER_ERROR, "An unexpected error occurred");
         ApiErrorResponse response = ApiErrorResponse.<ErrorResponse>builder()
                 .status(ApiResponseStatus.ERROR)
                 .errors(Collections.singletonList(errorResponse))

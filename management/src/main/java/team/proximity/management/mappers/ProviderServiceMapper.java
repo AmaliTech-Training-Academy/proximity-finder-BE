@@ -11,10 +11,12 @@ import team.proximity.management.model.BookingDay;
 import team.proximity.management.model.Document;
 import team.proximity.management.model.ProviderService;
 import team.proximity.management.services.S3Service;
+import team.proximity.management.utils.AuthenticationHelper;
 import team.proximity.management.validators.upload.PDFValidationStrategy;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -37,9 +39,9 @@ public class ProviderServiceMapper {
         return preference;
     }
 
-    public void updateEntity(ProviderServiceRequest providerServiceRequest, ProviderService preference) {
+    public void updateEntity(ProviderServiceRequest providerServiceRequest, ProviderService preference, List<BookingDayRequest> bookingDays) {
 
-        updatePreferenceFields(providerServiceRequest, preference);
+        updatePreferenceFields(providerServiceRequest, preference, bookingDays);
 
 
         updateDocuments(preference, providerServiceRequest.getDocuments());
@@ -67,7 +69,7 @@ public class ProviderServiceMapper {
             service = Optional.of(newService);
         }
         return ProviderService.builder()
-                .userId(dto.getUserId())
+                .userEmail(AuthenticationHelper.getCurrentUserEmail())
                 .service(service.get())
                 .paymentPreference(dto.getPaymentPreference())
                 .location(dto.getLocation())
@@ -76,11 +78,11 @@ public class ProviderServiceMapper {
                 .build();
     }
 
-    private void updatePreferenceFields(ProviderServiceRequest dto, ProviderService preference) {
+    private void updatePreferenceFields(ProviderServiceRequest dto, ProviderService preference, List<BookingDayRequest> bookingDays) {
         preference.setPaymentPreference(dto.getPaymentPreference());
         preference.setLocation(dto.getLocation());
         preference.setSchedulingPolicy(dto.getSchedulingPolicy());
-//        preference.setBookingDays(mapBookingDays(dto.getBookingDays()));
+        preference.setBookingDays(mapBookingDays(bookingDays));
     }
 
     private List<BookingDay> mapBookingDays(List<BookingDayRequest> dtos) {
@@ -96,16 +98,17 @@ public class ProviderServiceMapper {
     }
 
     private Document createDocument(MultipartFile file, ProviderService preference) {
-        String documentUrl = uploadFileToS3(file);
+        Map<String, String> fileDetails = uploadFileToS3(file);
         return Document.builder()
-                .url(documentUrl)
+                .url(fileDetails.get("url"))
+                .fileName(fileDetails.get("fileName"))
                 .preference(preference)
                 .build();
     }
 
-    private String uploadFileToS3(MultipartFile file) {
+    private Map<String, String> uploadFileToS3(MultipartFile file) {
         try {
-            return s3Service.uploadFile(file, new PDFValidationStrategy());
+           return  s3Service.uploadFile(file, new PDFValidationStrategy());
         } catch (IOException e) {
             throw new FileUploadException("Failed to upload file to S3", e);
         }

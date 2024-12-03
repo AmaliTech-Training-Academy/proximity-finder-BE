@@ -15,7 +15,6 @@ import team.proximity.management.responses.ApiResponseStatus;
 import team.proximity.management.responses.ErrorResponse;
 import team.proximity.management.utils.Helpers;
 import team.proximity.management.validators.upload.ImageValidationStrategy;
-import team.proximity.management.validators.upload.PDFValidationStrategy;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -40,14 +39,15 @@ public class ServicesService {
         return servicesRepository.findAll();
     }
 
-    public Optional<Services> getServiceById(UUID id) {
+    public Services getServiceById(UUID id) {
         log.info("ServicesService: get service by id execution started");
-        return servicesRepository.findById(id);
+        return servicesRepository.findById(id).orElseThrow( () -> new ResourceNotFoundException("Service not found with id " + id));
     }
 
     @Transactional
-    public Services createService(ServiceRequest serviceRequest) {
-        String imageUrl = uploadFileToS3(serviceRequest.getImage());
+    public Services createService(ServiceRequest serviceRequest) throws IOException {
+        log.info("Creating service: {}", serviceRequest);
+        String imageUrl = s3Service.uploadFile(serviceRequest.getImage(), new ImageValidationStrategy()).get("url");
         log.info("Image uploaded to S3: {}", imageUrl);
         Services service = Services.builder()
                 .name(serviceRequest.getName())
@@ -56,13 +56,6 @@ public class ServicesService {
                 .build();
 
         return servicesRepository.save(service);
-    }
-    private String uploadFileToS3(MultipartFile file) {
-        try {
-            return s3Service.uploadFile(file, new ImageValidationStrategy());
-        } catch (IOException e) {
-            throw new FileUploadException("Failed to upload file to S3", e);
-        }
     }
 
     @Transactional
@@ -85,7 +78,7 @@ public class ServicesService {
     }
     private void updateServiceImage(Services service, MultipartFile image) {
         try {
-            String imageUrl = s3Service.uploadFile(image, new ImageValidationStrategy());
+            String imageUrl = s3Service.uploadFile(image, new ImageValidationStrategy()).get("url");
             service.setImage(imageUrl);
         } catch (IOException e) {
             throw new FileUploadException("Failed to upload service Image", e);

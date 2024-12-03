@@ -30,6 +30,14 @@ public class ProviderServiceService {
     private final ProviderServiceRepository providerServiceRepository;
     private final ProviderServiceMapper preferenceMapper;
 
+    private static final String LOG_UPDATE_PROVIDER_SERVICE = "Updating existing providerService with id: {}";
+    private static final String LOG_CREATE_PROVIDER_SERVICE = "Creating new providerService";
+    private static final String LOG_CREATE_PREFERENCE = "Creating new preference with request: {}";
+    private static final String LOG_UPDATE_PROVIDER_SERVICE_ID = "Updating providerService with id: {}";
+    private static final String LOG_FETCH_PROVIDER_SERVICE_ID = "Fetching providerService with id: {}";
+    private static final String LOG_FETCH_ALL_PROVIDER_SERVICES = "Fetching all providerServices";
+    private static final String LOG_DELETE_PROVIDER_SERVICE_ID = "Deleting providerService with id: {}";
+    private static final String LOG_FETCH_PROVIDER_SERVICES_USER_ID = "Fetching providerServices for userId: {}";
 
     public ProviderServiceService(ProviderServiceRepository providerServiceRepository,
                                   ServicesRepository servicesRepository,
@@ -37,32 +45,33 @@ public class ProviderServiceService {
                                   ObjectMapper objectMapper) {
         this.providerServiceRepository = providerServiceRepository;
         this.objectMapper = objectMapper;
+        // Initialize ProviderServiceMapper with dependencies
         this.preferenceMapper = new ProviderServiceMapper(s3Service, servicesRepository);
     }
-    public ProviderService createOrUpdateProviderService(ProviderServiceRequest providerServiceRequest) {
+    public ProviderService createOrUpdateProviderService(ProviderServiceRequest providerServiceRequest)  {
         if (providerServiceRequest.getId() != null) {
-            log.info("Updating existing providerService with id: {}", providerServiceRequest.getId());
+            log.info(LOG_UPDATE_PROVIDER_SERVICE, providerServiceRequest.getId());
             return updateProviderService(providerServiceRequest.getId(), providerServiceRequest);
         } else {
-            log.info("Creating new providerService");
+            log.info(LOG_CREATE_PROVIDER_SERVICE);
             return createProviderService(providerServiceRequest);
         }
     }
 
     public ProviderService createProviderService(ProviderServiceRequest providerServiceRequest) {
-        log.info("Creating new provider service with request: {}", providerServiceRequest);
+        log.info(LOG_CREATE_PREFERENCE, providerServiceRequest);
 
         List<BookingDayRequest> bookingDays = parseBookingDays(providerServiceRequest);
 
         bookingDays.forEach(BookingDayHoursValidator::validate);
-
+        log.info(LOG_CREATE_PREFERENCE, providerServiceRequest);
         ProviderService providerService = preferenceMapper.toEntity(providerServiceRequest, bookingDays);
+        log.info(LOG_CREATE_PREFERENCE, providerServiceRequest);
         providerService.setCreatedAt(LocalDateTime.now());
         providerService.setUpdatedAt(LocalDateTime.now());
 
         return providerServiceRepository.save(providerService);
     }
-
     private List<BookingDayRequest> parseBookingDays(ProviderServiceRequest providerServiceRequest) {
         try {
             return objectMapper.readValue(
@@ -74,28 +83,33 @@ public class ProviderServiceService {
         }
     }
 
-
-    public ProviderService updateProviderService(UUID id, ProviderServiceRequest updatedProviderServiceRequest) {
+    public ProviderService updateProviderService(UUID id, ProviderServiceRequest updatedProviderServiceRequest)  {
+        log.info(LOG_UPDATE_PROVIDER_SERVICE_ID, id);
+        List<BookingDayRequest> bookingDays = parseBookingDays(updatedProviderServiceRequest);
         ProviderService preference = providerServiceRepository.findById(id)
                 .orElseThrow(() -> new ProviderServiceNotFoundException(id));
-        preferenceMapper.updateEntity(updatedProviderServiceRequest, preference);
+        preferenceMapper.updateEntity(updatedProviderServiceRequest, preference, bookingDays);
         preference.setUpdatedAt(LocalDateTime.now());
         return providerServiceRepository.save(preference);
     }
 
     public ProviderService getProviderServiceById(UUID id) {
+        log.info(LOG_FETCH_PROVIDER_SERVICE_ID, id);
         return providerServiceRepository.findById(id)
                 .orElseThrow(() -> new ProviderServiceNotFoundException(id));
     }
 
     public List<ProviderService> getAllProviderServices() {
+        log.info(LOG_FETCH_ALL_PROVIDER_SERVICES);
         return providerServiceRepository.findAll();
     }
 
     public void deleteProviderService(UUID id) {
+        log.info(LOG_DELETE_PROVIDER_SERVICE_ID, id);
         providerServiceRepository.deleteById(id);
     }
-    public List<ProviderService> getProviderServicesByUserId(UUID userId) {
-        return providerServiceRepository.findByUserId(userId).orElseThrow(() -> new ResourceNotFoundException("Provider Service not found"));
+    public List<ProviderService> getProviderServicesByUserEmail(String email) {
+        log.info(LOG_FETCH_PROVIDER_SERVICES_USER_ID, email);
+        return providerServiceRepository.findByUserEmail(email).orElseThrow(() -> new ResourceNotFoundException("Provider Service not found"));
     }
 }
