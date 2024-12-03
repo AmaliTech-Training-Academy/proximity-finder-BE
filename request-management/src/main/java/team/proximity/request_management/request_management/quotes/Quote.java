@@ -36,7 +36,7 @@ public class Quote {
     private QuoteDecision decision;
     @OneToMany(mappedBy = "quote", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<QuoteImage> images = new ArrayList<>();
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMMM dd, yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy")
     private final LocalDate requestDate = LocalDate.now();
 
 }

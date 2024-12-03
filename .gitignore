@@ -56,7 +56,6 @@ build/
 ### VS Code ###
 .vscode/
 
-### app properties
 provider-profile-service/compose.yaml
 provider-profile-service/README.Docker.md
 provider-profile-service/.dockerignore
@@ -68,5 +67,5 @@ gatewayserver/.env
 .env
 
 ### VS Code ###
-*/.vscode/
+request-management/src/main/resources/application-dev.yml
 

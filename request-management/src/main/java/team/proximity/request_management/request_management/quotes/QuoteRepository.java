@@ -9,6 +9,10 @@ import java.util.Optional;
 
 public interface QuoteRepository extends JpaRepository<Quote, Long> {
 
+    boolean existsByTitleAndAssignedProvider(String title,String assignedProvider);
+
+    boolean existsByCreatedByAndTitleAndAssignedProvider(String createdBy, String description, String assignedProvider);
+
     Optional<Quote> findByQuoteIdAndAssignedProvider(Long id, String assignedTo);
     Optional<Quote> findByQuoteIdAndCreatedBy(Long quoteId, String createdBy);
 
