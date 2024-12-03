@@ -1,6 +1,18 @@
 spring:
   application:
     name: help-and-support
+  mail:
+    host: smtp.sendgrid.net
+    port: 587
+    username: apikey
+    password: ${SENDGRID_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+        debug: false
 
   app:
     jwtSecret: ${JWT_SECRET}
@@ -19,4 +31,7 @@ spring:
     locations: classpath:db/migration
 server:
   port: ${PORT:8040}
+
+email:
+  to-address: ${TO_ADDRESS:SWIFT CRAFT Support<samuel.amo@amalitechtraining.org>}
 
