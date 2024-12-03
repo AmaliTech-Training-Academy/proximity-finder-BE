@@ -4,10 +4,15 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import team.proximity.management.requests.ReviewRequest;
+import team.proximity.management.responses.ApiResponseStatus;
+import team.proximity.management.responses.ApiSuccessResponse;
 import team.proximity.management.responses.ReviewDTO;
 import team.proximity.management.services.ReviewService;
 import team.proximity.management.utils.AuthenticationHelper;
@@ -15,6 +20,7 @@ import team.proximity.management.utils.AuthenticationHelper;
 import java.util.Map;
 import java.util.UUID;
 
+// ReviewController.java
 @RestController
 @RequestMapping("/api/v1/reviews")
 @Slf4j
@@ -27,10 +33,14 @@ public class ReviewController {
 
     @PostMapping
 //    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<ReviewDTO> createReview(
+    public ResponseEntity<ApiSuccessResponse<ReviewDTO>> createReview(
             @RequestBody @Valid ReviewRequest request) {
         ReviewDTO review = reviewService.createReview(request, AuthenticationHelper.getCurrentUserEmail());
-        return ResponseEntity.ok(review);
+        ApiSuccessResponse<ReviewDTO> response = ApiSuccessResponse.<ReviewDTO>builder()
+                .status(ApiResponseStatus.SUCCESS)
+                .result(review)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
 //    @PostMapping("/{reviewId}/report")
@@ -42,6 +52,7 @@ public class ReviewController {
 //        ReviewReport report = reviewService.reportReview(reviewId, reason, userDetails.getUsername());
 //        return ResponseEntity.ok(report);
 //    }
+
 
     @GetMapping("/service-provider/{serviceProviderId}")
     public ResponseEntity<Page<ReviewDTO>> getServiceProviderReviews(
@@ -58,52 +69,4 @@ public class ReviewController {
         Map<String, Object> analysis = reviewService.getServiceProviderSentimentAnalysis(serviceProviderId);
         return ResponseEntity.ok(analysis);
     }
-//    @GetMapping("/{reviewId}")
-//    public ResponseEntity<ReviewDTO> getReviewById(@PathVariable UUID reviewId) {
-//        ReviewDTO review = reviewService.getReviewById(reviewId);
-//        return ResponseEntity.ok(review);
-//    }
-//
-//    @PutMapping("/{reviewId}")
-//    public ResponseEntity<ReviewDTO> updateReview(
-//            @PathVariable UUID reviewId,
-//            @RequestBody @Valid ReviewRequest request) {
-//        ReviewDTO updatedReview = reviewService.updateReview(reviewId, request);
-//        return ResponseEntity.ok(updatedReview);
-//    }
-//
-//    @DeleteMapping("/{reviewId}")
-//    public ResponseEntity<Void> deleteReview(@PathVariable UUID reviewId) {
-//        reviewService.deleteReview(reviewId);
-//        return ResponseEntity.noContent().build();
-//    }
-//
-//    @GetMapping
-//    public ResponseEntity<Page<ReviewDTO>> listAllReviews(
-//            @RequestParam(required = false) UUID serviceProviderId,
-//            @RequestParam(required = false) Integer rating,
-//            Pageable pageable) {
-//        Page<ReviewDTO> reviews = reviewService.listReviews(serviceProviderId, rating, pageable);
-//        return ResponseEntity.ok(reviews);
-//    }
-//
-//    @PostMapping("/{reviewId}/helpful")
-//    public ResponseEntity<Void> markAsHelpful(@PathVariable UUID reviewId) {
-//        reviewService.markAsHelpful(reviewId, AuthenticationHelper.getCurrentUserEmail());
-//        return ResponseEntity.ok().build();
-//    }
-//
-//
-//    @GetMapping("/my-reviews")
-//    public ResponseEntity<Page<ReviewDTO>> getMyReviews(Pageable pageable) {
-//        Page<ReviewDTO> myReviews = reviewService.getReviewsByUser(AuthenticationHelper.getCurrentUserEmail(), pageable);
-//        return ResponseEntity.ok(myReviews);
-//    }
-//
-//    @GetMapping("/statistics")
-//    public ResponseEntity<Map<String, Object>> getReviewStatistics(
-//            @RequestParam(required = false) UUID serviceProviderId) {
-//        Map<String, Object> stats = reviewService.getStatistics(serviceProviderId);
-//        return ResponseEntity.ok(stats);
-//    }
 }

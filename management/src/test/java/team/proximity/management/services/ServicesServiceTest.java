@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.hibernate.sql.Update;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -18,10 +19,7 @@ import team.proximity.management.requests.UpdateServiceRequest;
 import team.proximity.management.validators.upload.ImageValidationStrategy;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 class ServicesServiceTest {
 
@@ -74,11 +72,14 @@ class ServicesServiceTest {
     void createServiceTest() throws IOException {
         // Arrange
         MultipartFile imageFile = mock(MultipartFile.class);
+        ImageValidationStrategy imageValidationStrategy = new ImageValidationStrategy(); // Concrete instance
+
         when(imageFile.getOriginalFilename()).thenReturn("image.jpg");
-        when(s3Service.uploadFile(imageFile, new ImageValidationStrategy()).get("url")).thenReturn("s3://bucket/image.jpg");
+        when(s3Service.uploadFile(eq(imageFile), any(ImageValidationStrategy.class)))
+                .thenReturn(Map.of("url", "s3://bucket/image.jpg"));
 
         ServiceRequest serviceRequest = new ServiceRequest("New Service", "New Description", imageFile);
-        Services service = new Services(UUID.randomUUID(), "New Service", "New Description",  "s3://bucket/image.jpg");
+        Services service = new Services(UUID.randomUUID(), "New Service", "New Description", "s3://bucket/image.jpg");
         when(servicesRepository.save(any(Services.class))).thenReturn(service);
 
         // Act
@@ -87,7 +88,7 @@ class ServicesServiceTest {
         // Assert
         assertThat(createdService.getImage()).isEqualTo("s3://bucket/image.jpg");
         assertThat(createdService.getName()).isEqualTo("New Service");
-        verify(s3Service, times(1)).uploadFile(imageFile, new ImageValidationStrategy());
+        verify(s3Service, times(1)).uploadFile(eq(imageFile), any(ImageValidationStrategy.class));
         verify(servicesRepository, times(1)).save(any(Services.class));
     }
 
@@ -97,23 +98,33 @@ class ServicesServiceTest {
         UUID serviceId = UUID.randomUUID();
         MultipartFile newImage = mock(MultipartFile.class);
         when(newImage.getOriginalFilename()).thenReturn("newImage.jpg");
-        when(s3Service.uploadFile(newImage, new ImageValidationStrategy()).get("url")).thenReturn("s3://bucket/newImage.jpg");
 
-         UpdateServiceRequest serviceRequest = new UpdateServiceRequest("Updated Service", "Updated Description",  newImage);
-        Services existingService = new Services(serviceId, "Old Service", "Old Description","oldImage.jpg");
+        // Use the same instance for the ImageValidationStrategy
+        ImageValidationStrategy imageValidationStrategy = new ImageValidationStrategy();
+        when(s3Service.uploadFile(newImage, imageValidationStrategy))
+                .thenReturn(Map.of("url", "s3://bucket/newImage.jpg"));
+
+        UpdateServiceRequest serviceRequest = new UpdateServiceRequest("Updated Service", "Updated Description", newImage);
+        Services existingService = new Services(serviceId, "Old Service", "Old Description", "oldImage.jpg");
 
         when(servicesRepository.findById(serviceId)).thenReturn(Optional.of(existingService));
-        when(servicesRepository.save(any(Services.class))).thenReturn(existingService);
+        Services updatedService = new Services(serviceId, "Updated Service", "Updated Description", "s3://bucket/newImage.jpg");
+        when(servicesRepository.save(any(Services.class))).thenReturn(updatedService);
 
         // Act
-        Services updatedService = servicesService.updateService(serviceId, serviceRequest);
+        Services updatedServiceResult = servicesService.updateService(serviceId, serviceRequest);
 
         // Assert
-        assertThat(updatedService.getImage()).isEqualTo("s3://bucket/newImage.jpg");
-        assertThat(updatedService.getName()).isEqualTo("Updated Service");
-        verify(s3Service, times(1)).uploadFile(newImage , new ImageValidationStrategy());
+        assertThat(updatedServiceResult.getImage()).isEqualTo("s3://bucket/newImage.jpg");
+        assertThat(updatedServiceResult.getName()).isEqualTo("Updated Service");
+
+        // Use ArgumentMatchers.any() for both arguments
+        verify(s3Service, times(1)).uploadFile(ArgumentMatchers.any(MultipartFile.class), ArgumentMatchers.any(ImageValidationStrategy.class));
         verify(servicesRepository, times(1)).save(existingService);
     }
+
+
+
 
     @Test
     void updateServiceTest_ServiceNotFound() {
