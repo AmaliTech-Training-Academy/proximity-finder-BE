@@ -1,7 +1,7 @@
-package auth.proximity.authservice.dto;
+package auth.proximity.authservice.dto.user;
 
+import auth.proximity.authservice.dto.RequestRole;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

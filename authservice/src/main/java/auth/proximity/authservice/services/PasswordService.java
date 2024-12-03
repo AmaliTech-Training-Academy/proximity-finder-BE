@@ -1,11 +1,11 @@
-package auth.proximity.authservice.service;
+package auth.proximity.authservice.services;
 
 import auth.proximity.authservice.dto.ForgotPasswordRequest;
-import auth.proximity.authservice.dto.UserPasswordResetRequest;
+import auth.proximity.authservice.dto.user.UserPasswordResetRequest;
 import auth.proximity.authservice.entity.PasswordResetToken;
 import auth.proximity.authservice.entity.User;
 import auth.proximity.authservice.repository.UserRepository;
-import auth.proximity.authservice.security.service.TokenService;
+import auth.proximity.authservice.services.security.TokenService;
 import jakarta.mail.MessagingException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

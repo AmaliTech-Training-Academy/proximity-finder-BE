@@ -1,8 +1,8 @@
 package auth.proximity.authservice.controller;
 
 import auth.proximity.authservice.dto.ForgotPasswordRequest;
-import auth.proximity.authservice.dto.UserPasswordResetRequest;
-import auth.proximity.authservice.service.PasswordService;
+import auth.proximity.authservice.dto.user.UserPasswordResetRequest;
+import auth.proximity.authservice.services.PasswordService;
 import jakarta.mail.MessagingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +27,7 @@ public class PasswordController {
         return new ResponseEntity<>("Password reset successful", HttpStatus.OK);
     }
 
-    // Endpoint to initiate a password reset
+
     @PostMapping("/reset-request")
     public ResponseEntity<String> initiatePasswordReset(@RequestBody ForgotPasswordRequest forgotPasswordRequest) {
         try {
@@ -35,10 +35,10 @@ public class PasswordController {
             return ResponseEntity.ok("Password reset email sent successfully");
         } catch (MessagingException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to send password reset email");
+                    .body("An error occurred while sending the email");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("User with the provided email not found");
+                    .body(e.getMessage());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
