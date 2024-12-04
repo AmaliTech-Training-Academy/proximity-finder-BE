@@ -30,6 +30,10 @@ public class GatewayConfig {
                         .filters(f -> f.filter(authFilter.apply(new AuthenticationFilter.Config())))
                         .uri("lb://REQUEST-MANAGEMENT-SERVICE"))
 
+                .route("quest-and-call-service", r -> r.path("/api/v1/support/**")
+                        .filters(f -> f.filter(authFilter.apply(new AuthenticationFilter.Config())))
+                        .uri("lb://HELP-AND-SUPPORT"))
+
                 .build();
     }
 }
