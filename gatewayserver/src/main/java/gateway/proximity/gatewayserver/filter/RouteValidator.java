@@ -16,6 +16,7 @@ public class RouteValidator {
                         "/api/v1/provider-service/banks",
                         "api/v1/provider-service/payment-method/providers/mobile-money-providers",
                         "api/v1/provider-service/payment-preferences",
+                        "/api/v1/support/faq-groups/",
                         "/actuator/health",
                         "/actuator/info",
                         "/actuator/metrics",
