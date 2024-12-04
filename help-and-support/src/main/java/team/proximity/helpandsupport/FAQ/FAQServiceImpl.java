@@ -1,10 +1,13 @@
 package team.proximity.helpandsupport.FAQ;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import team.proximity.helpandsupport.FAQGROUP.FAQGroup;
 import team.proximity.helpandsupport.FAQGROUP.FAQGroupRepository;
 
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FAQServiceImpl implements FAQService {
@@ -50,6 +53,34 @@ public class FAQServiceImpl implements FAQService {
        faqRepository.save(existingFAQ);
 
     }
+
+    public List<FAQResponse> getFAQsForType(String type) {
+        List<String> groupNames = checkAndValidateInput(type);
+
+        return getFAQsForGroups(groupNames);
+    }
+
+    private static List<String> checkAndValidateInput(String type) {
+        List<String> groupNames;
+
+        if ("provider".equalsIgnoreCase(type)) {
+            groupNames = Arrays.asList("general", "provider");
+        } else if ("seeker".equalsIgnoreCase(type)) {
+            groupNames = Arrays.asList("general", "seeker");
+        } else {
+            groupNames = List.of("general");
+        }
+        return groupNames;
+    }
+
+    private List<FAQResponse> getFAQsForGroups(List<String> groupNames) {
+        Specification<FAQ> spec = FAQSpecifications.belongsToGroupNames(groupNames);
+        return faqRepository.findAll(spec)
+                .stream()
+                .map(faqMapper::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
 
     public List<FAQResponse> getAllFAQs() {
         return faqRepository.findAll().stream()
