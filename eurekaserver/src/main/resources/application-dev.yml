@@ -4,14 +4,14 @@ spring:
 
 
 server:
-  port: ${EUREKA_PORT:8761}
+  port: 8761
 
 eureka:
   client:
     fetch-registry: false
     register-with-eureka: false
     service-url:
-      defaultZone: http://${EUREKA_HOSTNAME:localhost}:${EUREKA_PORT:8761}/eureka/
+      defaultZone: http://${EUREKA_HOSTNAME:eurekaserver}:${EUREKA_PORT:8761}/eureka/
 
 management:
   endpoints:
