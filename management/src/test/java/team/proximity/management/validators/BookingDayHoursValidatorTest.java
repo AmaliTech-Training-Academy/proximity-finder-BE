@@ -27,13 +27,18 @@ class BookingDayHoursValidatorTest {
     @Test
     void testInvalidOpeningTime() {
         BookingDayRequest request = new BookingDayRequest();
-        request.setStartTime(LocalTime.of(24, 0));
-        request.setEndTime(LocalTime.of(17, 0));
+        request.setStartTime(LocalTime.of(23, 0)); // Opening time
+        request.setEndTime(LocalTime.of(17, 0));   // Closing time
 
-        BookingDayHoursValidationException exception = assertThrows(BookingDayHoursValidationException.class, () -> BookingDayHoursValidator.validate(request));
+        BookingDayHoursValidationException exception = assertThrows(BookingDayHoursValidationException.class,
+                () -> BookingDayHoursValidator.validate(request));
+
         List<ErrorResponse> errors = exception.getErrors();
-        assertEquals(1, errors.size());
-        assertEquals("Opening time must be between 00:00 and 23:59. Provided: 24:00", errors.get(0).getMessage());
+
+        // Validate both errors
+        assertEquals(2, errors.size());
+        assertEquals("Closing time must be after opening time", errors.get(0).getMessage());
+        assertEquals("Business hours must be at least 5 minutes", errors.get(1).getMessage());
     }
 
     // Add more tests for other scenarios

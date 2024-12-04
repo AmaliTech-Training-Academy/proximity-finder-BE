@@ -1,5 +1,9 @@
 package team.proximity.management.mappers;
 
+
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 import org.springframework.web.multipart.MultipartFile;
 import team.proximity.management.exceptions.FileUploadException;
 import team.proximity.management.exceptions.InvalidFileTypeException;
@@ -68,11 +72,19 @@ public class ProviderServiceMapper {
             newService = servicesRepository.save(newService);
             service = Optional.of(newService);
         }
+        // Create GeometryFactory
+        GeometryFactory geometryFactory = new GeometryFactory();
+
+        // Create Point from latitude and longitude
+        Point point = geometryFactory.createPoint(new Coordinate(dto.getLongitude(), dto.getLatitude()));
+
         return ProviderService.builder()
                 .userEmail(AuthenticationHelper.getCurrentUserEmail())
                 .service(service.get())
                 .paymentPreference(dto.getPaymentPreference())
-                .location(dto.getLocation())
+//                .location(dto.getLocation())
+                .location(point)
+                .placeName(dto.getPlaceName())
                 .schedulingPolicy(dto.getSchedulingPolicy())
                 .bookingDays(mapBookingDays(bookingDays))
                 .build();
@@ -80,7 +92,13 @@ public class ProviderServiceMapper {
 
     private void updatePreferenceFields(ProviderServiceRequest dto, ProviderService preference, List<BookingDayRequest> bookingDays) {
         preference.setPaymentPreference(dto.getPaymentPreference());
-        preference.setLocation(dto.getLocation());
+        // Create GeometryFactory
+        GeometryFactory geometryFactory = new GeometryFactory();
+
+        // Create Point from latitude and longitude
+        Point point = geometryFactory.createPoint(new Coordinate(dto.getLongitude(), dto.getLatitude()));
+        preference.setLocation(point);
+        preference.setPlaceName(dto.getPlaceName());
         preference.setSchedulingPolicy(dto.getSchedulingPolicy());
         preference.setBookingDays(mapBookingDays(bookingDays));
     }
@@ -108,7 +126,7 @@ public class ProviderServiceMapper {
 
     private Map<String, String> uploadFileToS3(MultipartFile file) {
         try {
-           return  s3Service.uploadFile(file, new PDFValidationStrategy());
+            return  s3Service.uploadFile(file, new PDFValidationStrategy());
         } catch (IOException e) {
             throw new FileUploadException("Failed to upload file to S3", e);
         }

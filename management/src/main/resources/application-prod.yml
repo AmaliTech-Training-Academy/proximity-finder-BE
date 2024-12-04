@@ -15,7 +15,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
       show-sql: true
     properties:
       hibernate:
@@ -44,10 +44,17 @@ management:
 server:
   port: ${SERVER_PORT}
 
-eureka-server:
-  port: ${EUREKA_PORT}
-  hostname: ${EUREKA_HOSTNAME}
+#eureka-server:
+#  port: ${EUREKA_PORT}
+#  hostname: ${EUREKA_HOSTNAME}
 
+#eureka:
+#  client:
+#    service-url:
+#      defaultZone: http://${eureka-server.hostname}:${eureka-server.port}/eureka/
+#    register-with-eureka: true
+#    fetch-registry: true
+#    enabled: false
 eureka:
 #  client:
 #    service-url:
@@ -61,4 +68,5 @@ eureka:
         hostname: localhost
         prefer-ip-address: true
         instance-id: ${spring.application.name}:${server.port}
+
 
