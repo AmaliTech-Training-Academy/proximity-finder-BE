@@ -40,15 +40,6 @@ management:
   httpexchanges:
     recording:
       enabled: true
-#eureka:
-#  client:
-#    service-url:
-#      defaultZone: https://${eureka-server.hostname}:${eureka-server.port}/eureka/
-#    register-with-eureka: true
-#    fetch-registry: true
-#    enabled: true
-#    healthcheck:
-#      enabled: true
 
 server:
   port: ${SERVER_PORT}
@@ -58,12 +49,16 @@ eureka-server:
   hostname: ${EUREKA_HOSTNAME}
 
 eureka:
-  client:
-    service-url:
-      defaultZone: http://${eureka-server.hostname}:${eureka-server.port}/eureka/
-    register-with-eureka: true
-    fetch-registry: true
-    enabled: true
-    healthcheck:
-      enabled: true
+#  client:
+#    service-url:
+#      defaultZone: http://${eureka-server.hostname}:${eureka-server.port}/eureka/
+#    register-with-eureka: true
+#    fetch-registry: true
+#    enabled: true
+#    healthcheck:
+#      enabled: true
+    instance:
+        hostname: localhost
+        prefer-ip-address: true
+        instance-id: ${spring.application.name}:${server.port}
 
