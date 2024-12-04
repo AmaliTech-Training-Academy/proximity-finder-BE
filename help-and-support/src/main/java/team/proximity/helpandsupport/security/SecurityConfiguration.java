@@ -37,8 +37,11 @@ public class SecurityConfiguration {
                                 "/api/v1/support/faq-groups",
                                 "/api/v1/support/faq-groups/**")
                         .permitAll()
+                        .requestMatchers(HttpMethod.POST,
+                                "/api/v1/support/contact-support").anonymous()
 
                         .requestMatchers(HttpMethod.POST,
+
                                 "/api/v1/support/faqs",
                                 "/api/v1/support/faq-groups")
                         .hasAnyAuthority("ROLE_ADMIN")

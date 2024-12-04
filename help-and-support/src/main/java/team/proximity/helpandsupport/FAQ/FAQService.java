@@ -11,5 +11,6 @@ public interface FAQService {
      List<FAQResponse> getFAQsByGroup(Long groupId);
      FAQResponse getFAQById(Long id);
      void deleteFAQ(Long id);
+     List<FAQResponse> getFAQsForType(String type);
 
 }

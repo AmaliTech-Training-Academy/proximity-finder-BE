@@ -4,6 +4,19 @@ spring:
   app:
     jwtSecret: ${JWT_SECRET}
 
+  mail:
+    host: smtp.sendgrid.net
+    port: 587
+    username: apikey
+    password: ${SENDGRID_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+        debug: false
+
   datasource:
     url: ${POSTGRES_URI:jdbc:postgresql://localhost:5432/support_db}
     username: ${POSTGRES_USER:postgres}
