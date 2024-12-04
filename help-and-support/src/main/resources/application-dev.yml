@@ -36,11 +36,11 @@ email:
   to-address: ${TO_ADDRESS:SWIFT CRAFT Support<samuel.amo@amalitechtraining.org>}
 
 eureka:
-#  client:
-#    service-url:
-#      defaultZone: http://${EUREKA_HOSTNAME:localhost}:${EUREKA_PORT:8761}/eureka/
-#    register-with-eureka: true
-#    fetch-registry: true
+  client:
+    service-url:
+      defaultZone: http://${EUREKA_HOSTNAME:localhost}:${EUREKA_PORT:8761}/eureka/
+    register-with-eureka: true
+    fetch-registry: true
   instance:
     hostname: ${EUREKA_HOSTNAME}
     prefer-ip-address: true

@@ -24,13 +24,14 @@ aws:
     region: ${AWS_REGION}
 
 eureka:
+  client:
+    service-url:
+      defaultZone: http://${EUREKA_HOSTNAME:localhost}:${EUREKA_PORT:8761}/eureka/
+    register-with-eureka: true
+    fetch-registry: true
   instance:
     hostname: ${EUREKA_HOSTNAME}
     instance-id: ${spring.application.name}:${server.port}
     prefer-ip-address: true
-#  client:
-#    service-url:
-#      defaultZone: http://${EUREKA_HOSTNAME:localhost}:${EUREKA_PORT:8761}/eureka/
-#    register-with-eureka: true
-#    fetch-registry: true
+
 
