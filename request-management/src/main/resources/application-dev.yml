@@ -25,7 +25,7 @@ aws:
 
 eureka:
   instance:
-    hostname: localhost
+    hostname: ${EUREKA_HOSTNAME}
     instance-id: ${spring.application.name}:${server.port}
     prefer-ip-address: true
 #  client:

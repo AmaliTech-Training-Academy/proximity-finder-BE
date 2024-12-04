@@ -69,7 +69,7 @@ eureka:
 #    healthcheck:
 #      enabled: true
   instance:
-    hostname: localhost
+    hostname: ${EUREKA_HOSTNAME}
     prefer-ip-address: true
     instance-id: ${spring.application.name}:${server.port}
 
