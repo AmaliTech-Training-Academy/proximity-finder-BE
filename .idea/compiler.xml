@@ -9,10 +9,11 @@
         <outputRelativeToContentRoot value="true" />
         <module name="eurekaserver" />
         <module name="gatewayserver" />
-        <module name="request-management" />
         <module name="authservice" />
         <module name="management" />
         <module name="provider-profile-service" />
+        <module name="help-and-support" />
+        <module name="request-management" />
       </profile>
     </annotationProcessing>
   </component>
@@ -21,6 +22,7 @@
       <module name="authservice" options="-parameters" />
       <module name="eurekaserver" options="-parameters" />
       <module name="gatewayserver" options="-parameters" />
+      <module name="help-and-support" options="-parameters" />
       <module name="management" options="-parameters" />
       <module name="provider-profile-service" options="-parameters" />
       <module name="request-management" options="-parameters" />

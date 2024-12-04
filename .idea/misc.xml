@@ -14,6 +14,7 @@
         <option value="$PROJECT_DIR$/provider-profile-service/pom.xml" />
         <option value="$PROJECT_DIR$/gatewayserver/pom.xml" />
         <option value="$PROJECT_DIR$/request-management/pom.xml" />
+        <option value="$PROJECT_DIR$/help-and-support/pom.xml" />
       </list>
     </option>
   </component>

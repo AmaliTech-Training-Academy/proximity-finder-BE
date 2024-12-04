@@ -36,10 +36,25 @@ management:
       exposure:
         include: health,info,metrics
 
+#eureka:
+#  client:
+#    service-url:
+#      defaultZone: https://${EUREKA_HOSTNAME:localhost}:${EUREKA_PORT:8761}/eureka/
+#    register-with-eureka: true
+#    fetch-registry: true
+
+
+eureka-server:
+  port: ${EUREKA_PORT}
+  hostname: ${EUREKA_HOSTNAME}
+
 eureka:
   client:
     service-url:
-      defaultZone: https://${EUREKA_HOSTNAME:localhost}:${EUREKA_PORT:8761}/eureka/
+      defaultZone: http://${eureka-server.hostname}:${eureka-server.port}/eureka/
     register-with-eureka: true
     fetch-registry: true
+    enabled: true
+    healthcheck:
+      enabled: true
 

@@ -61,18 +61,34 @@ email:
   subject: Reset Your Password
   reset-url: ${FRONT_END_RESET_URL}
 
+#eureka-server:
+#    hostname: ${EUREKA_SERVER_HOST}
+#    port: ${EUREKA_SERVER_PORT}
+
+#eureka:
+##  client:
+##    service-url:
+##      defaultZone: https://${eureka-server.hostname}:${eureka-server.port:8761}/eureka/
+##    register-with-eureka: true
+##    fetch-registry: true
+##    enabled: true
+##    healthcheck:
+##      enabled: true
+#  instance:
+#    prefer-ip-address: true
+#    instance-id: ${spring.application.name}:${EUREKA_SERVER_PORT}
+
 eureka-server:
-    hostname: ${EUREKA_SERVER_HOST}
-    port: ${EUREKA_SERVER_PORT}
+  port: ${EUREKA_SERVER_PORT}
+  hostname: ${EUREKA_SERVER_HOST}
 
 eureka:
   client:
     service-url:
-      defaultZone: https://${eureka-server.hostname}:${eureka-server.port}/eureka/
+      defaultZone: http://${eureka-server.hostname}:${eureka-server.port}/eureka/
     register-with-eureka: true
     fetch-registry: true
     enabled: true
     healthcheck:
       enabled: true
-  instance:
-    prefer-ip-address: true
+
