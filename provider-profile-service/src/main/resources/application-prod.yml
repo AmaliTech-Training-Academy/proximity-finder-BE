@@ -1,6 +1,4 @@
 spring:
-#  profiles:
-#    active: prod
 
   app:
     jwtSecret: ${JWT_SECRET}
@@ -13,7 +11,8 @@ spring:
     password: ${POSTGRES_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
+    show-sql: true
 
   servlet:
     multipart:
@@ -28,7 +27,7 @@ aws:
     region: us-east-2
 
 server:
-  port: ${PROD_PORT}
+  port: ${PROD_PORT:8050}
 
 management:
 
@@ -42,9 +41,16 @@ eureka-server:
   hostname: ${EUREKA_HOSTNAME}
 
 eureka:
-  client:
-    service-url:
-      defaultZone: http://${eureka-server.hostname}:${eureka-server.port}/eureka/
-    register-with-eureka: true
-    fetch-registry: true
+#  client:
+#    service-url:
+#      defaultZone: http://${eureka-server.hostname}:${eureka-server.port}/eureka/
+#    register-with-eureka: true
+#    fetch-registry: true
+#    enabled: true
+#    healthcheck:
+#      enabled: true
+    instance:
+        hostname: localhost
+        prefer-ip-address: true
+        instance-id: ${spring.application.name}:${server.port}
 
