@@ -1,5 +1,6 @@
 package team.proximity.helpandsupport.contactsupport;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +15,7 @@ public class ContactSupportController {
     }
 
     @PostMapping
-    public ResponseEntity<String> contactSupport(@RequestBody ContactSupportRequest request) {
+    public ResponseEntity<String> contactSupport(@Valid @RequestBody ContactSupportRequest request) {
         contactSupportService.contactSupport(request);
         return ResponseEntity.ok("Support request sent successfully.");
 
