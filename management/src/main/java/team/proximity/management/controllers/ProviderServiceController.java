@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
 import team.proximity.management.requests.ProviderServiceRequest;
 import team.proximity.management.model.ProviderService;
@@ -18,7 +20,6 @@ import team.proximity.management.services.ProviderServiceService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import team.proximity.management.utils.AuthenticationHelper;
 
 import java.util.Collections;
 import java.util.List;
@@ -45,7 +46,7 @@ public class ProviderServiceController {
             @ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
     })
-    public ResponseEntity<ApiSuccessResponse<ProviderService>> createOrUpdateProviderService(@Validated @ModelAttribute ProviderServiceRequest providerServiceRequest)  {
+    public ResponseEntity<ApiSuccessResponse<ProviderService>> createOrUpdateProviderService(@Validated @ModelAttribute ProviderServiceRequest providerServiceRequest) throws JsonProcessingException {
         log.info("Processing providerService request: {}", providerServiceRequest);
 
         ProviderService providerService = providerServiceService.createOrUpdateProviderService(providerServiceRequest);
@@ -80,19 +81,19 @@ public class ProviderServiceController {
         log.debug("Fetched providerService: {}", providerService);
         return ResponseEntity.ok(response);
     }
-    @GetMapping("/provider/{email}")
+    @GetMapping("/provider/{userId}")
     @Operation(summary = "Retrieve  provider services by user id", description = "Returns a provider service by user id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved provider service by user email",
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved provider service by user id",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProviderService.class))),
             @ApiResponse(responseCode = "401", description = "You are not authorized to view the resource"),
             @ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
     })
-    public ResponseEntity<ApiSuccessResponse<List<ProviderService>>> getProviderServiceByUserEmail(@PathVariable String email) {
-        log.info("Fetching providerService with userId: {}", email);
+    public ResponseEntity<ApiSuccessResponse<List<ProviderService>>> getProviderServiceByUserId(@PathVariable String userEmail) {
+        log.info("Fetching providerService with userId: {}", userEmail);
 
-        List<ProviderService> providerServices = providerServiceService.getProviderServicesByUserEmail(email);
+        List<ProviderService> providerServices = providerServiceService.getProviderServicesByUserEmail(userEmail);
         ApiSuccessResponse<List<ProviderService>> response = ApiSuccessResponse.<List<ProviderService>>builder()
                 .status(ApiResponseStatus.SUCCESS)
                 .result(providerServices)
@@ -111,11 +112,11 @@ public class ProviderServiceController {
             @ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
     })
-    public ResponseEntity<ApiSuccessResponse<List<ProviderService>>> getAllProviderServices() {
+    public ResponseEntity<ApiSuccessResponse<Page<ProviderService>>> getAllProviderServices(Pageable pageable) {
         log.info("Fetching all providerServices");
-        List<ProviderService> providerServices = providerServiceService.getAllProviderServices();
+        Page<ProviderService> providerServices = providerServiceService.getAllProviderServices(pageable);
         log.debug("Fetched providerServices: {}", providerServices);
-        ApiSuccessResponse<List<ProviderService>> response = ApiSuccessResponse.<List<ProviderService>>builder()
+        ApiSuccessResponse<Page<ProviderService>> response = ApiSuccessResponse.<Page<ProviderService>>builder()
                 .status(ApiResponseStatus.SUCCESS)
                 .result(providerServices)
                 .build();
@@ -138,7 +139,5 @@ public class ProviderServiceController {
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
-
 
 }
