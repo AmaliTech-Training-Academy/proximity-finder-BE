@@ -137,11 +137,15 @@ pipeline {
 
                     // Dynamically identify all service directories based on defined criteria
                     def serviceDirectories = []
-                    new File("${WORKSPACE}").eachDir { dir ->
-                        if (new File("${dir}/pom.xml").exists()) {
-                            serviceDirectories.add(dir.name)
+                    def files = findFiles(glob: '**/pom.xml') // Adjust to match your structure
+                    files.each { file ->
+                        def serviceDir = file.path.tokenize('/')[0] // Extract the top-level directory
+                        if (!serviceDirectories.contains(serviceDir)) {
+                            serviceDirectories.add(serviceDir)
                         }
                     }
+
+                    echo "Detected service directories: ${serviceDirectories}"
 
                     // Filter only available services
 //                     echo "Filtering to identify changed services from available ones..."
