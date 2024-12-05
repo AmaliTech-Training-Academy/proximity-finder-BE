@@ -20,9 +20,16 @@ public class FallbackController {
                 .body(new FallbackResponse("Quote Service is currently unavailable. Please try again later."));
     }
 
-    @GetMapping("/fallback/quote-service")
+    @GetMapping("/fallback/support-service")
     public ResponseEntity<FallbackResponse> supportServiceFallback() {
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
                 .body(new FallbackResponse("Support Service is currently unavailable. Please try again later."));
     }
+
+    @GetMapping("/fallback/management-service")
+    public ResponseEntity<FallbackResponse> managementServiceFallback() {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(new FallbackResponse("Management Service is currently unavailable. Please try again later."));
+    }
 }
+

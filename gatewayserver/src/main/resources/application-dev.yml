@@ -41,6 +41,18 @@ spring:
                 fallbackUri: forward:/fallback/support-service
           predicates:
             - Method=GET
+        - id: management-service
+          uri: lb://MANAGEMENT
+          filters:
+            - name: Retry
+              args:
+                instanceName: managementServiceRetry
+            - name: CircuitBreaker
+              args:
+                instanceName: managementServiceCircuitBreaker
+                fallbackUri: forward:/fallback/management-service
+          predicates:
+            - Method=GET
 
       default-filters:
         - DedupeResponseHeader=Access-Control-Allow-Origin, RETAIN_FIRST
@@ -109,6 +121,8 @@ resilience4j:
         baseConfig: default
       helpAndSupportRetry:
         baseConfig: default
+      managementServiceRetry:
+        baseConfig: default
 
   circuitbreaker:
     configs:
@@ -124,6 +138,8 @@ resilience4j:
       quoteServiceCircuitBreaker:
         baseConfig: default
       helpAndSupportCircuitBreaker:
+        baseConfig: default
+      managementServiceCircuitBreaker:
         baseConfig: default
 
 
