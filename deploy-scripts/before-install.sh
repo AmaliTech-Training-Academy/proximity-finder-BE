@@ -1,1 +1,1 @@
-sudo docker volume prune --force && docker system prune -f && docker images prune -a -f
+sudo docker volume prune --force && docker system prune -f && docker image prune -a -f
