@@ -38,7 +38,7 @@ public class SecurityConfiguration {
                                 "/api/v1/support/faq-groups/**")
                         .permitAll()
                         .requestMatchers(HttpMethod.POST,
-                                "/api/v1/support/contact-support").anonymous()
+                                "/api/v1/support/contact-support").permitAll()
 
                         .requestMatchers(HttpMethod.POST,
 
