@@ -72,16 +72,16 @@ management:
         include: '*'
 
 eureka:
-#  client:
-#    service-url:
-#      defaultZone: http://${EUREKA_HOSTNAME:localhost}:${EUREKA_PORT:8761}/eureka/
-#    register-with-eureka: true
-#    fetch-registry: true
-#
-#    healthcheck:
-#      enabled: true
+  client:
+    service-url:
+      defaultZone: http://${EUREKA_HOSTNAME:localhost}:${EUREKA_PORT:8761}/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+
+    healthcheck:
+      enabled: true
   instance:
-    hostname: localhost
+    hostname: ${EUREKA_HOSTNAME}
     prefer-ip-address: true
     instance-id: ${spring.application.name}:${server.port}
 
