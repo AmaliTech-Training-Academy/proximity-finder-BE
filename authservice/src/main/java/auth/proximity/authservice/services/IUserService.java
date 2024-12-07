@@ -5,6 +5,7 @@ import auth.proximity.authservice.dto.user.UserDto;
 import auth.proximity.authservice.dto.user.UserInfoResponse;
 import auth.proximity.authservice.dto.user.UserUpdateRequest;
 import auth.proximity.authservice.entity.User;
+import auth.proximity.authservice.enums.AccountStatus;
 
 public interface IUserService {
 
@@ -22,7 +23,7 @@ public interface IUserService {
      * @param userDto - UserDto Object
      * */
     void createUser(UserDto userDto);
-
+    void changeUserStatus(Long userId, String status);
     void updatePassword(String email, AdminUpdatePasswordRequest adminUpdatePasswordRequest);
     void updateUserInfoByEmail(String email, UserUpdateRequest userUpdateRequest);
     void deleteProfilePicture(String email);

@@ -8,15 +8,22 @@ import auth.proximity.authservice.dto.user.UserUpdateRequest;
 import auth.proximity.authservice.entity.AppRole;
 import auth.proximity.authservice.entity.Role;
 import auth.proximity.authservice.entity.User;
+import auth.proximity.authservice.enums.AccountStatus;
 import auth.proximity.authservice.exception.ResourceNotFoundException;
 import auth.proximity.authservice.exception.UserAlreadyExistsException;
 import auth.proximity.authservice.repository.RoleRepository;
 import auth.proximity.authservice.repository.UserRepository;
+import auth.proximity.authservice.security.AuthenticationHelper;
 import auth.proximity.authservice.services.IUserService;
+import auth.proximity.authservice.services.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -39,8 +46,12 @@ public class UserServiceImpl implements IUserService {
                 foundUser.getMobileNumber(),
                 foundUser.getBusinessOwnerName(),
                 foundUser.getProfileImage(),
-                foundUser.getBusinessAddress(),
-                foundUser.getRole()
+//                foundUser.getBusinessAddress(),
+                foundUser.getPlaceName(),
+                foundUser.getLongitude(),
+                foundUser.getLatitude(),
+                foundUser.getRole(),
+                foundUser.getStatus()
         );
     }
 
@@ -85,10 +96,14 @@ public class UserServiceImpl implements IUserService {
                 .mobileNumber(userDto.getMobileNumber())
                 .password(encoder.encode(userDto.getPassword()))
                 .businessOwnerName(userDto.getBusinessOwnerName())
+//                .businessAddress(userDto.getBusinessAddress())
+                .placeName(userDto.getPlaceName())
+                .latitude(userDto.getLatitude())
+                .longitude(userDto.getLongitude())
                 .accountNonExpired(true)
                 .accountNonLocked(true)
                 .credentialsNonExpired(true)
-                .enabled(true)
+                .status(AccountStatus.PENDING)
                 .role(role)
                 .build();
 
@@ -111,13 +126,6 @@ public class UserServiceImpl implements IUserService {
         user.setPassword(encoder.encode(adminUpdatePasswordRequest.newPassword()));
         userRepository.save(user);
     }
-    public void updateProfilePicture(String email, ProfilePictureUpdateRequest profilePictureUpdateRequest) {
-        User user = userRepository.findByEmail(email).orElseThrow(
-                () -> new ResourceNotFoundException("User", "email", email));
-
-        user.setProfileImage(profilePictureUpdateRequest.file().getContentType());
-        userRepository.save(user);
-    }
     public void updateUserInfoByEmail(String email, UserUpdateRequest userUpdateRequest) {
         User foundUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "email", email));
@@ -130,8 +138,14 @@ public class UserServiceImpl implements IUserService {
         if (userUpdateRequest.businessOwnerName() != null) {
             foundUser.setBusinessOwnerName(userUpdateRequest.businessOwnerName());
         }
-        if (userUpdateRequest.businessAddress() != null) {
-            foundUser.setBusinessAddress(userUpdateRequest.businessAddress());
+        if (userUpdateRequest.placeName() != null) {
+            foundUser.setPlaceName(userUpdateRequest.placeName());
+        }
+        if (userUpdateRequest.latitude() != 0.0) {
+            foundUser.setLatitude(userUpdateRequest.latitude());
+        }
+        if (userUpdateRequest.longitude() != 0.0) {
+            foundUser.setLongitude(userUpdateRequest.longitude());
         }
         userRepository.save(foundUser);
     }
@@ -139,6 +153,24 @@ public class UserServiceImpl implements IUserService {
         User user = userRepository.findByEmail(email).orElseThrow(
                 () -> new ResourceNotFoundException("User", "email", email));
         user.setProfileImage(null);
+        userRepository.save(user);
+    }
+    public PaginatedResponse<User> getUsersByRole(AppRole role, Pageable pageable) {
+        Page<User> users = userRepository.findByRoleRoleName(role, pageable);
+        PaginatedResponse.PaginationMetadata metadata = new PaginatedResponse.PaginationMetadata(
+                users.getNumber(),    // current page
+                users.getTotalPages(), // total pages
+                users.getTotalElements(), // total elements
+                users.getSize()        // page size
+        );
+        return new PaginatedResponse<>(users.getContent(), metadata);
+    }
+    @Override
+    public void changeUserStatus(Long userId, String status) {
+        AccountStatus accountStatus = AccountStatus.valueOf(status.toUpperCase());
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new ResourceNotFoundException("User", "id", userId.toString()));
+        user.setStatus(accountStatus);
         userRepository.save(user);
     }
 }

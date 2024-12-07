@@ -3,6 +3,7 @@ package auth.proximity.authservice.seeders;
 import auth.proximity.authservice.entity.AppRole;
 import auth.proximity.authservice.entity.Role;
 import auth.proximity.authservice.entity.User;
+import auth.proximity.authservice.enums.AccountStatus;
 import auth.proximity.authservice.repository.RoleRepository;
 import auth.proximity.authservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class InitialUserInfo implements CommandLineRunner {
             admin.setAccountNonLocked(true);
             admin.setAccountNonExpired(true);
             admin.setCredentialsNonExpired(true);
-            admin.setEnabled(true);
+            admin.setStatus(AccountStatus.ACTIVE);
             admin.setRole(adminRole);
             userRepository.save(admin);
         }

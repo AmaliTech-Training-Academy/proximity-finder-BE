@@ -1,4 +1,4 @@
-package auth.proximity.authservice.dto.ProviderService;
+package auth.proximity.authservice.dto.providerService;
 
 
 

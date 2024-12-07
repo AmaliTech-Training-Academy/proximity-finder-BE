@@ -57,4 +57,8 @@ public class UserDto {
     )
     private RequestRole role;
 
+    private String placeName;
+    private double longitude;
+    private double latitude;
+
 }

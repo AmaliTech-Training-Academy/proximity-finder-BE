@@ -11,6 +11,7 @@ import auth.proximity.authservice.dto.security.LoginRequest;
 import auth.proximity.authservice.dto.security.LoginResponse;
 import auth.proximity.authservice.dto.security.RefreshTokenResponse;
 import auth.proximity.authservice.dto.security.InfoResponse;
+import auth.proximity.authservice.enums.AccountStatus;
 import auth.proximity.authservice.security.jwt.JwtConstants;
 import auth.proximity.authservice.security.jwt.JwtUtils;
 import auth.proximity.authservice.services.security.UserDetailsImpl;
@@ -93,8 +94,12 @@ public class AuthController {
     @PostMapping("/public/sign-in")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         try {
+            if(userService.findByEmail(loginRequest.getEmail()).getStatus().equals(AccountStatus.DEACTIVATED)){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDto("401", "Account is inactive"));
+            }
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
@@ -219,5 +224,6 @@ public class AuthController {
         userService.deleteProfilePicture(email);
         return ResponseEntity.ok(new ResponseDto("200", "Profile picture deleted successfully"));
     }
+
 
 }
