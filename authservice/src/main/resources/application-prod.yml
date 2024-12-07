@@ -13,7 +13,7 @@ spring:
           auth: true
           starttls:
             enable: true
-        debug: true
+        debug: false
 
   app:
     jwtSecret: ${JWT_SECRET}
@@ -27,7 +27,7 @@ spring:
     password: ${POSTGRES_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: ${HIBERNATE_DDL_AUTO}
+      ddl-auto: update
     show-sql: true
   security:
     oauth2:
@@ -64,8 +64,8 @@ email:
   reset-url: ${FRONT_END_RESET_URL}
 
 eureka-server:
-  port: ${EUREKA_PORT:8761}
-  hostname: ${EUREKA_HOSTNAME:localhost}
+    hostname: ${EUREKA_SERVER_HOST}
+    port: ${EUREKA_SERVER_PORT}
 
 eureka:
   client:
@@ -73,9 +73,8 @@ eureka:
       defaultZone: https://${eureka-server.hostname}:${eureka-server.port}/eureka/
     register-with-eureka: true
     fetch-registry: true
-    enabled: false
+    enabled: true
     healthcheck:
-      enabled: false
-
-managementservice: ${MANAGEMENT_SERVICE_URL}
-providerservice: ${PROVIDER_SERVICE_URL}
+      enabled: true
+  instance:
+    prefer-ip-address: true

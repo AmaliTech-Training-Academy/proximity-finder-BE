@@ -29,6 +29,18 @@ spring:
                 fallbackUri: forward:/fallback/quote-service
           predicates:
             - Method=GET
+        - id: help-and-support
+          uri: lb://HELP-AND-SUPPORT
+          filters:
+            - name: Retry
+              args:
+                instanceName: helpAndSupportRetry
+            - name: CircuitBreaker
+              args:
+                instanceName: helpAndSupportCircuitBreaker
+                fallbackUri: forward:/fallback/support-service
+          predicates:
+            - Method=GET
 
       default-filters:
         - DedupeResponseHeader=Access-Control-Allow-Origin, RETAIN_FIRST
@@ -69,7 +81,9 @@ eureka:
     healthcheck:
       enabled: true
   instance:
+    hostname: ${EUREKA_HOSTNAME}
     prefer-ip-address: true
+    instance-id: ${spring.application.name}:${server.port}
 
 logging:
   level:
@@ -95,6 +109,8 @@ resilience4j:
         baseConfig: default
       quoteServiceRetry:
         baseConfig: default
+      helpAndSupportRetry:
+        baseConfig: default
 
   circuitbreaker:
     configs:
@@ -108,6 +124,8 @@ resilience4j:
       providerProfileCircuitBreaker:
         baseConfig: default
       quoteServiceCircuitBreaker:
+        baseConfig: default
+      helpAndSupportCircuitBreaker:
         baseConfig: default
 
 
