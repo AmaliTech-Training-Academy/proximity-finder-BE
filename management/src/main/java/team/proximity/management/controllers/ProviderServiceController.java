@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
+import team.proximity.management.dtos.ProviderServiceDTO;
 import team.proximity.management.requests.ProviderServiceRequest;
 import team.proximity.management.model.ProviderService;
 import team.proximity.management.responses.ApiSuccessResponse;
@@ -58,6 +59,23 @@ public class ProviderServiceController {
                 .build();
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+    @GetMapping("/email")
+    @Operation(summary = "Retrieve  provider services by user id", description = "Returns a provider service by user id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved provider service by user id",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProviderService.class))),
+            @ApiResponse(responseCode = "401", description = "You are not authorized to view the resource"),
+            @ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
+    })
+    public ResponseEntity<List<ProviderServiceDTO>> getProviderServiceByUserEmail(@RequestParam String userEmail) {
+        log.info("Fetching providerService with userId: {}", userEmail);
+
+        List<ProviderServiceDTO> providerServices = providerServiceService.getProviderServicesByUserEmail(userEmail);
+
+        log.debug("Fetched providerService: {}", providerServices);
+        return ResponseEntity.ok(providerServices);
+    }
 
     @GetMapping("/{id}")
     @Operation(summary = "Retrieve a provider service by id", description = "Returns a provider service by id")
@@ -79,27 +97,6 @@ public class ProviderServiceController {
                 .build();
 
         log.debug("Fetched providerService: {}", providerService);
-        return ResponseEntity.ok(response);
-    }
-    @GetMapping("/provider/{userId}")
-    @Operation(summary = "Retrieve  provider services by user id", description = "Returns a provider service by user id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved provider service by user id",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProviderService.class))),
-            @ApiResponse(responseCode = "401", description = "You are not authorized to view the resource"),
-            @ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
-            @ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
-    })
-    public ResponseEntity<ApiSuccessResponse<List<ProviderService>>> getProviderServiceByUserId(@PathVariable String userEmail) {
-        log.info("Fetching providerService with userId: {}", userEmail);
-
-        List<ProviderService> providerServices = providerServiceService.getProviderServicesByUserEmail(userEmail);
-        ApiSuccessResponse<List<ProviderService>> response = ApiSuccessResponse.<List<ProviderService>>builder()
-                .status(ApiResponseStatus.SUCCESS)
-                .result(providerServices)
-                .build();
-
-        log.debug("Fetched providerService: {}", providerServices);
         return ResponseEntity.ok(response);
     }
 
