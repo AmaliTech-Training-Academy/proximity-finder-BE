@@ -43,16 +43,6 @@ public class ReviewController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-//    @PostMapping("/{reviewId}/report")
-//    @PreAuthorize("hasRole('USER')")
-//    public ResponseEntity<ReviewReport> reportReview(
-//            @PathVariable Long reviewId,
-//            @RequestParam String reason,
-//            @AuthenticationPrincipal UserDetails userDetails) {
-//        ReviewReport report = reviewService.reportReview(reviewId, reason, userDetails.getUsername());
-//        return ResponseEntity.ok(report);
-//    }
-
 
     @GetMapping("/service-provider/{serviceProviderId}")
     public ResponseEntity<Page<ReviewDTO>> getServiceProviderReviews(
