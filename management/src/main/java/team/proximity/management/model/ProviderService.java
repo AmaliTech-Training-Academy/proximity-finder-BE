@@ -37,8 +37,8 @@ public class ProviderService {
     private Point location;
 
     private String placeName;
-
-
+    @OneToOne(mappedBy = "providerService", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    private ServiceExperience serviceExperience;
     private String schedulingPolicy;
     @OneToMany(mappedBy = "preference", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<BookingDay> bookingDays;

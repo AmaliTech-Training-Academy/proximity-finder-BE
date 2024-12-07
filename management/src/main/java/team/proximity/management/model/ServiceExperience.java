@@ -1,5 +1,6 @@
 package team.proximity.management.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,7 +28,8 @@ public class ServiceExperience {
     @Column(name = "image_urls")
     private List<String> images;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "provider_service_id", nullable = false)
+    @JsonIgnore
     private ProviderService providerService;
 }

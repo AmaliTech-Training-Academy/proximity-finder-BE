@@ -6,7 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import team.proximity.management.dtos.ProviderServiceDTO;
 import team.proximity.management.exceptions.ResourceNotFoundException;
+import team.proximity.management.mappers.ProviderServiceResponseMapper;
 import team.proximity.management.repositories.ServicesRepository;
 import team.proximity.management.requests.BookingDayRequest;
 import team.proximity.management.requests.ProviderServiceRequest;
@@ -96,6 +98,7 @@ public class ProviderServiceService {
                 .orElseThrow(() -> new ProviderServiceNotFoundException(id));
     }
 
+
     public Page<ProviderService> getAllProviderServices(Pageable pageable) {
         log.info(LOG_FETCH_ALL_PROVIDER_SERVICES);
         return providerServiceRepository.findAll(pageable);
@@ -105,8 +108,14 @@ public class ProviderServiceService {
         log.info(LOG_DELETE_PROVIDER_SERVICE_ID, id);
         providerServiceRepository.deleteById(id);
     }
-    public List<ProviderService> getProviderServicesByUserEmail(String userEmail) {
-        log.info(LOG_FETCH_PROVIDER_SERVICES_USER_ID, userEmail);
-        return providerServiceRepository.findByUserEmail(userEmail).orElseThrow(() -> new ResourceNotFoundException("Provider Service not found"));
-    }
+
+public List<ProviderServiceDTO> getProviderServicesByUserEmail(String userEmail) {
+    log.info(LOG_FETCH_PROVIDER_SERVICES_USER_ID, userEmail);
+
+    List<ProviderService> providerServices = providerServiceRepository.findByUserEmail(userEmail)
+            .orElseThrow(() -> new ResourceNotFoundException("Provider Service not found"));
+
+    // Map to DTOs
+    return ProviderServiceResponseMapper.toDtoList(providerServices);
+}
 }

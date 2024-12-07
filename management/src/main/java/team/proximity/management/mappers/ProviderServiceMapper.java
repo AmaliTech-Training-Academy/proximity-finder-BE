@@ -6,14 +6,10 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.springframework.web.multipart.MultipartFile;
 import team.proximity.management.exceptions.FileUploadException;
-import team.proximity.management.exceptions.InvalidFileTypeException;
-import team.proximity.management.model.Services;
+import team.proximity.management.model.*;
 import team.proximity.management.repositories.ServicesRepository;
 import team.proximity.management.requests.BookingDayRequest;
 import team.proximity.management.requests.ProviderServiceRequest;
-import team.proximity.management.model.BookingDay;
-import team.proximity.management.model.Document;
-import team.proximity.management.model.ProviderService;
 import team.proximity.management.services.S3Service;
 import team.proximity.management.utils.AuthenticationHelper;
 import team.proximity.management.validators.upload.PDFValidationStrategy;
@@ -82,7 +78,6 @@ public class ProviderServiceMapper {
                 .userEmail(AuthenticationHelper.getCurrentUserEmail())
                 .service(service.get())
                 .paymentPreference(dto.getPaymentPreference())
-//                .location(dto.getLocation())
                 .location(point)
                 .placeName(dto.getPlaceName())
                 .schedulingPolicy(dto.getSchedulingPolicy())
