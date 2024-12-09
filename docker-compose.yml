@@ -39,7 +39,6 @@ services:
     volumes:
       - prox-volume:/app/data
 
-
   provider-profile-service:
     image: 909544387219.dkr.ecr.eu-west-1.amazonaws.com/provider-profile-service:latest
     container_name: provider-profile-service-container
@@ -93,6 +92,18 @@ services:
       - training-shared-network
     env_file:
       - ./.request-management.env
+    volumes:
+      - prox-volume:/app/data
+
+  rabbitmq:
+    image: rabbitmq:4.0-management
+    container_name: rabbitmq-container
+    restart: on-failure:3
+    ports:
+      - "5672:5672"
+    networks:
+      - proximity-finder-network
+      - training-shared-network
     volumes:
       - prox-volume:/app/data
 
