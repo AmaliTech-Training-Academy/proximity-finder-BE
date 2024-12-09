@@ -17,6 +17,7 @@ import team.proximity.management.responses.ReviewDTO;
 import team.proximity.management.services.ReviewService;
 import team.proximity.management.utils.AuthenticationHelper;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -42,16 +43,15 @@ public class ReviewController {
                 .build();
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
-
-//    @PostMapping("/{reviewId}/report")
-//    @PreAuthorize("hasRole('USER')")
-//    public ResponseEntity<ReviewReport> reportReview(
-//            @PathVariable Long reviewId,
-//            @RequestParam String reason,
-//            @AuthenticationPrincipal UserDetails userDetails) {
-//        ReviewReport report = reviewService.reportReview(reviewId, reason, userDetails.getUsername());
-//        return ResponseEntity.ok(report);
-//    }
+    @GetMapping
+    public ResponseEntity<ApiSuccessResponse<List<ReviewDTO>>> getAllReviews() {
+        List<ReviewDTO> reviews = reviewService.getAllReviews();
+        ApiSuccessResponse<List<ReviewDTO>> response = ApiSuccessResponse.<List<ReviewDTO>>builder()
+                .status(ApiResponseStatus.SUCCESS)
+                .result(reviews)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
 
     @GetMapping("/service-provider/{serviceProviderId}")

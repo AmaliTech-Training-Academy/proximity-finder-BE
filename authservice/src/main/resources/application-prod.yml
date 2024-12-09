@@ -17,6 +17,8 @@ spring:
 
   app:
     jwtSecret: ${JWT_SECRET}
+    jwtExpiration: ${JWT_EXPIRATION}
+    jwtRefreshExpiration: ${JWT_REFRESH_EXPIRATION}
     baseurl: ${BASE_URL}
     oauth2FrontendUrl: ${OAUTH2_FRONTEND_URL}
   datasource:
@@ -62,20 +64,17 @@ email:
   reset-url: ${FRONT_END_RESET_URL}
 
 eureka-server:
-  port: ${EUREKA_SERVER_PORT}
-  hostname: ${EUREKA_SERVER_HOST}
+    hostname: ${EUREKA_SERVER_HOST}
+    port: ${EUREKA_SERVER_PORT}
 
 eureka:
   client:
     service-url:
-      defaultZone: http://${eureka-server.hostname}:${eureka-server.port}/eureka/
+      defaultZone: https://${eureka-server.hostname}:${eureka-server.port}/eureka/
     register-with-eureka: true
     fetch-registry: true
     enabled: true
     healthcheck:
       enabled: true
   instance:
-    hostname: ${EUREKA_SERVER_HOST}
-    instance-id: ${spring.application.name}:${server.port}
-
-
+    prefer-ip-address: true
