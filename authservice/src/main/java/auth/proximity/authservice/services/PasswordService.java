@@ -40,11 +40,16 @@ public class PasswordService {
 
     }
 
-    public void initiatePasswordReset(ForgotPasswordRequest forgotPasswordRequest) throws MessagingException, IOException {
-        User user = userRepository.findByEmail(forgotPasswordRequest.email())
-                .orElseThrow(() -> new IllegalArgumentException("Staff with email " + forgotPasswordRequest.email() + " not found"));
+    public void initiatePasswordReset(ForgotPasswordRequest forgotPasswordRequest) {
+        try {
+            User user = userRepository.findByEmail(forgotPasswordRequest.email())
+                    .orElseThrow(() -> new IllegalArgumentException("Staff with email " + forgotPasswordRequest.email() + " not found"));
 
-        String token = tokenService.createPasswordResetToken(user);
-        emailService.sendPasswordResetEmail(user,token);
+            String token = tokenService.createPasswordResetToken(user);
+            emailService.sendPasswordResetEmail(user, token);
+        } catch (MessagingException e) {
+            // Handle the exceptions as needed, e.g., log the error or rethrow a custom exception
+            throw new RuntimeException("Failed to initiate password reset", e);
+        }
     }
 }

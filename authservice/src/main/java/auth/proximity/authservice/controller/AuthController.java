@@ -13,6 +13,7 @@ import auth.proximity.authservice.dto.security.RefreshTokenResponse;
 import auth.proximity.authservice.dto.security.InfoResponse;
 import auth.proximity.authservice.security.jwt.JwtConstants;
 import auth.proximity.authservice.security.jwt.JwtUtils;
+import auth.proximity.authservice.services.AuthService;
 import auth.proximity.authservice.services.security.UserDetailsImpl;
 import auth.proximity.authservice.services.security.UserDetailsServiceImpl;
 import auth.proximity.authservice.services.IUserService;
@@ -49,6 +50,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AuthController {
 
+    private final AuthService authService;
     @Value("${spring.app.jwtSecret}")
     private String jwtSecret;
 
@@ -92,30 +94,7 @@ public class AuthController {
     })
     @PostMapping("/public/sign-in")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-            List<String> roles = userDetails.getAuthorities().stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .collect(Collectors.toList());
-
-            String jwtAccessToken = jwtUtils.generateAccessToken(userDetails);
-            String jwtRefreshToken = jwtUtils.generateRefreshToken(userDetails);
-
-            LoginResponse response = new LoginResponse(
-                    userDetails.getUsername(),
-                    userDetails.getEmail(),
-                    roles,
-                    jwtAccessToken,
-                    jwtRefreshToken);
-
-            return ResponseEntity.ok(response);
-        } catch (AuthenticationException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDto("401", "Invalid credentials"));
-        }
+        return authService.authenticateUser(loginRequest);
     }
 
 
@@ -140,26 +119,7 @@ public class AuthController {
     })
     @GetMapping("/public/refresh-token")
     public ResponseEntity<?> generateNewAccessToken(HttpServletRequest request) {
-        String jwtRefreshToken = jwtUtils.extractTokenFromHeaderIfExists(request.getHeader(JwtConstants.AUTH_HEADER));
-        if (jwtRefreshToken != null && jwtUtils.validateJwtToken(jwtRefreshToken)) {
-            try {
-                String email = jwtUtils.getUserNameFromJwtToken(jwtRefreshToken);
-                UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername(email);
-                String jwtAccessToken = jwtUtils.generateAccessToken(userDetails);
-                RefreshTokenResponse tokenResponse = new RefreshTokenResponse(jwtRefreshToken, jwtAccessToken);
-                return ResponseEntity.ok(tokenResponse);
-            } catch (Exception e) {
-                Map<String, Object> map = new HashMap<>();
-                map.put("message", "Error processing refresh token");
-                map.put("status", false);
-                return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        } else {
-            Map<String, Object> map = new HashMap<>();
-            map.put("message", "Invalid JWT Refresh token");
-            map.put("status", false);
-            return new ResponseEntity<Object>(map, HttpStatus.NOT_ACCEPTABLE);
-        }
+       return authService.generateNewAccessToken(request);
     }
 
 
@@ -176,7 +136,6 @@ public class AuthController {
         return ResponseEntity.ok("Token is valid");
     }
     @PutMapping("/public/update-password")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseDto> updatePassword(
             @RequestParam String email,
             @RequestBody AdminUpdatePasswordRequest adminUpdatePasswordRequest) {
@@ -186,7 +145,6 @@ public class AuthController {
     }
 
     @PutMapping("/public/update-profile-picture")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<String> uploadProfilePicture(@AuthenticationPrincipal UserDetailsImpl userDetails, @ModelAttribute ProfilePictureUpdateRequest profilePictureUpdateRequest) {
         try {
             String fileUrl = profilePictureService.updateProfilePicture(userDetails.getEmail(), profilePictureUpdateRequest);
@@ -202,7 +160,6 @@ public class AuthController {
         return ResponseEntity.ok(userInfoResponse);
     }
     @PutMapping("/update/info")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseDto> updateUserInfo(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody UserUpdateRequest userUpdateRequest) {
@@ -212,7 +169,6 @@ public class AuthController {
     }
 
     @DeleteMapping("/profile-picture")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseDto> deleteProfilePicture(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         String email = userDetails.getEmail();
