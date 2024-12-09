@@ -1,9 +1,9 @@
-package auth.proximity.authservice.service;
+package auth.proximity.authservice.services;
 
-import auth.proximity.authservice.dto.AdminUpdatePasswordRequest;
-import auth.proximity.authservice.dto.ProfilePictureUpdateRequest;
-import auth.proximity.authservice.dto.UserDto;
-import auth.proximity.authservice.dto.UserInfoResponse;
+import auth.proximity.authservice.dto.user.AdminUpdatePasswordRequest;
+import auth.proximity.authservice.dto.user.UserDto;
+import auth.proximity.authservice.dto.user.UserInfoResponse;
+import auth.proximity.authservice.dto.user.UserUpdateRequest;
 import auth.proximity.authservice.entity.User;
 
 public interface IUserService {
@@ -24,4 +24,6 @@ public interface IUserService {
     void createUser(UserDto userDto);
 
     void updatePassword(String email, AdminUpdatePasswordRequest adminUpdatePasswordRequest);
+    void updateUserInfoByEmail(String email, UserUpdateRequest userUpdateRequest);
+    void deleteProfilePicture(String email);
 }

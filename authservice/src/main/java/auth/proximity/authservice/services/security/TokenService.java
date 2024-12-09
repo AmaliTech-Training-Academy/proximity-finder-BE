@@ -1,4 +1,4 @@
-package auth.proximity.authservice.security.service;
+package auth.proximity.authservice.services.security;
 
 import auth.proximity.authservice.entity.PasswordResetToken;
 import auth.proximity.authservice.entity.User;
@@ -22,7 +22,7 @@ public class TokenService {
         PasswordResetToken passwordResetToken = PasswordResetToken.builder()
                 .user(user)
                 .token(token)
-                .expiryDate(LocalDateTime.now().plusHours(24))
+                .expiryDate(LocalDateTime.now().plusSeconds(600))
                 .build();
 
         tokenRepository.save(passwordResetToken);

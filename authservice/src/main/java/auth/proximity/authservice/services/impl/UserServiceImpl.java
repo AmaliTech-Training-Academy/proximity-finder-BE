@@ -1,6 +1,10 @@
-package auth.proximity.authservice.service.impl;
+package auth.proximity.authservice.services.impl;
 
 import auth.proximity.authservice.dto.*;
+import auth.proximity.authservice.dto.user.AdminUpdatePasswordRequest;
+import auth.proximity.authservice.dto.user.UserDto;
+import auth.proximity.authservice.dto.user.UserInfoResponse;
+import auth.proximity.authservice.dto.user.UserUpdateRequest;
 import auth.proximity.authservice.entity.AppRole;
 import auth.proximity.authservice.entity.Role;
 import auth.proximity.authservice.entity.User;
@@ -8,8 +12,7 @@ import auth.proximity.authservice.exception.ResourceNotFoundException;
 import auth.proximity.authservice.exception.UserAlreadyExistsException;
 import auth.proximity.authservice.repository.RoleRepository;
 import auth.proximity.authservice.repository.UserRepository;
-import auth.proximity.authservice.security.service.UserDetailsImpl;
-import auth.proximity.authservice.service.IUserService;
+import auth.proximity.authservice.services.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -36,7 +39,8 @@ public class UserServiceImpl implements IUserService {
                 foundUser.getMobileNumber(),
                 foundUser.getBusinessOwnerName(),
                 foundUser.getProfileImage(),
-                foundUser.getBusinessAddress()
+                foundUser.getBusinessAddress(),
+                foundUser.getRole()
         );
     }
 
@@ -61,13 +65,14 @@ public class UserServiceImpl implements IUserService {
 
         if (roleStr != null) {
             switch (roleStr.toString()) {
-                case "admin" -> roleRepository.findByRoleName(AppRole.ROLE_ADMIN)
+                case "ADMIN" -> role = roleRepository.findByRoleName(AppRole.ROLE_ADMIN)
                         .orElseThrow(() -> new ResourceNotFoundException("User", "role", roleStr.toString()));
-                case "seeker" -> roleRepository.findByRoleName(AppRole.ROLE_SEEKER)
+                case "SEEKER" -> role = roleRepository.findByRoleName(AppRole.ROLE_SEEKER)
                         .orElseThrow(() -> new ResourceNotFoundException("User", "role", roleStr.toString()));
-                case "provider" -> roleRepository.findByRoleName(AppRole.ROLE_PROVIDER)
+                case "PROVIDER" -> role = roleRepository.findByRoleName(AppRole.ROLE_PROVIDER)
                         .orElseThrow(() -> new ResourceNotFoundException("User", "role", roleStr.toString()));
                 default -> {
+                    throw new ResourceNotFoundException("Role", "role", roleStr.toString());
                 }
             }
         } else {
@@ -106,11 +111,34 @@ public class UserServiceImpl implements IUserService {
         user.setPassword(encoder.encode(adminUpdatePasswordRequest.newPassword()));
         userRepository.save(user);
     }
-    public void updateProfilePicture(String email, ProfilePictureUpdateRequest profilePictureUpdateRequest) {
+    public void updateUserInfoByEmail(String email, UserUpdateRequest userUpdateRequest) {
+        if ((userUpdateRequest.userName() == null || userUpdateRequest.userName().isEmpty()) &&
+                (userUpdateRequest.phoneNumber() == null || userUpdateRequest.phoneNumber().isEmpty()) &&
+                (userUpdateRequest.businessOwnerName() == null || userUpdateRequest.businessOwnerName().isEmpty()) &&
+                (userUpdateRequest.businessAddress() == null || userUpdateRequest.businessAddress().isEmpty())) {
+            throw new IllegalArgumentException("At least one non-empty field must be provided for update");
+        }
+
+        User foundUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "email", email));
+        if (userUpdateRequest.userName() != null) {
+            foundUser.setUserName(userUpdateRequest.userName());
+        }
+        if (userUpdateRequest.phoneNumber() != null) {
+            foundUser.setMobileNumber(userUpdateRequest.phoneNumber());
+        }
+        if (userUpdateRequest.businessOwnerName() != null) {
+            foundUser.setBusinessOwnerName(userUpdateRequest.businessOwnerName());
+        }
+        if (userUpdateRequest.businessAddress() != null) {
+            foundUser.setBusinessAddress(userUpdateRequest.businessAddress());
+        }
+        userRepository.save(foundUser);
+    }
+    public void deleteProfilePicture(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(
                 () -> new ResourceNotFoundException("User", "email", email));
-
-        user.setProfileImage(profilePictureUpdateRequest.file().getContentType());
+        user.setProfileImage(null);
         userRepository.save(user);
     }
 }

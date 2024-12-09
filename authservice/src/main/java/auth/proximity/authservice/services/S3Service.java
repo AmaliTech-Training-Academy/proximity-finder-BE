@@ -1,4 +1,4 @@
-package auth.proximity.authservice.service;
+package auth.proximity.authservice.services;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
