@@ -96,6 +96,18 @@ services:
     volumes:
       - prox-volume:/app/data
 
+  rabbitmq:
+    image: rabbitmq:4.0-management
+    container_name: rabbitmq-container
+    restart: on-failure:3
+    ports:
+      - "5672:5672"
+    networks:
+      - proximity-finder-network
+      - training-shared-network
+    volumes:
+      - prox-volume:/app/data
+
 networks:
   proximity-finder-network:
     driver: bridge
