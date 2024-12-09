@@ -13,5 +13,8 @@ public record PaymentMethodResponse(
         String bankName,
         String accountNumber,
         String serviceProvider,
-        String phoneNumber
+        String phoneNumber,
+        String firstName,
+        String lastName,
+        String email
 ) {}

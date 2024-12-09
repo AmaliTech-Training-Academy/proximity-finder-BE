@@ -26,9 +26,10 @@ public class PaymentMethodMapper {
             case PayPalPayment payPalPayment -> PaymentMethodResponse.builder()
                     .id(payPalPayment.getId())
                     .paymentPreference("PayPal")
-                    .accountName(payPalPayment.getAccountName())
-                    .accountAlias(payPalPayment.getAccountAlias())
-                    .accountNumber(payPalPayment.getAccountNumber())
+                    .firstName(payPalPayment.getFirstName())
+                    .lastName(payPalPayment.getLastName())
+                    .email(payPalPayment.getEmail())
+
                     .build();
             default -> throw new IllegalArgumentException("Unknown PaymentMethod type");
         };

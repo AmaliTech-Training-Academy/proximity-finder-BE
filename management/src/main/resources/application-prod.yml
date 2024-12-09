@@ -3,15 +3,19 @@ spring:
     name: management
   app:
     jwt-secret: ${JWT_SECRET}
+  servlet:
+    multipart:
+      max-file-size: 400MB
+      max-request-size: 400MB
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/managementservice
+    url: jdbc:postgresql://amalitech-inhouse.ck0dwzfc16xf.eu-west-1.rds.amazonaws.com:5432/proximity-finder-db
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
       show-sql: true
     properties:
       hibernate:
@@ -28,4 +32,41 @@ cloud:
 app:
   awsServices:
     bucketName: gtp-group-three-lms
+management:
+  endpoints:
+    web:
+      exposure:
+        exclude: 'health,metrics,info'
+  httpexchanges:
+    recording:
+      enabled: true
+
+server:
+  port: ${SERVER_PORT}
+
+#eureka-server:
+#  port: ${EUREKA_PORT}
+#  hostname: ${EUREKA_HOSTNAME}
+
+#eureka:
+#  client:
+#    service-url:
+#      defaultZone: http://${eureka-server.hostname}:${eureka-server.port}/eureka/
+#    register-with-eureka: true
+#    fetch-registry: true
+#    enabled: false
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${eureka-server.hostname}:${eureka-server.port}/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+    enabled: true
+    healthcheck:
+      enabled: true
+  instance:
+      hostname: ${EUREKA_HOSTNAME}
+      prefer-ip-address: true
+      instance-id: ${spring.application.name}:${server.port}
+
 

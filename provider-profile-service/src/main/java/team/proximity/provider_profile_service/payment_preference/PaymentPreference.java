@@ -17,7 +17,7 @@ public class PaymentPreference {
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private String preference; //"Bank Account", "MobileMoney", "PayPal"
+    private String preference;
 
 
     public PaymentPreference(String preference) {

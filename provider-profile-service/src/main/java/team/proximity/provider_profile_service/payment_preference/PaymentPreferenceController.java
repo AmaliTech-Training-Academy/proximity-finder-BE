@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Tag(name = "Payment Preferences", description = "Operations related to payment preferences")
 @RestController
-@RequestMapping("/api/v1/payment-preferences")
+@RequestMapping("/api/v1/provider-service/payment-preferences")
 public class PaymentPreferenceController {
     private final PaymentPreferenceService paymentPreferenceService;
 

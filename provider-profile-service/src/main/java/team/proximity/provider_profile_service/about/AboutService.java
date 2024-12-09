@@ -4,7 +4,8 @@ import java.io.IOException;
 
 public interface AboutService {
 
-    void createOneAbout(AboutRequest aboutRequest) throws IOException;
+    void createOneAbout(AboutRequest aboutRequest);
     AboutBusinessResponse getAboutForAuthenticatedUser();
+    AboutAndPaymentMethodsResponse getAboutAndPaymentMethods(String email);
 
 }

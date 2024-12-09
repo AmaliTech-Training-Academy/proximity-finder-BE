@@ -3,6 +3,7 @@ package team.proximity.management.requests;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import org.locationtech.jts.geom.Point;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -12,16 +13,14 @@ import java.util.UUID;
 @Data
 public class ProviderServiceRequest {
     private UUID id;
-    @NotNull(message = "User must be specified")
-    private UUID userId;
     @NotNull(message = "Service must be specified")
     private String serviceName;
     @NotBlank(message = "Payment preference must be specified")
     private String paymentPreference;
-    @NotBlank(message = "Location must be specified")
-    private String location;
-
-    @NotBlank(message = "Scheduling policy must be specified")
+    @NotBlank(message = "Placename must be specified")
+    private String placeName;
+    private double latitude;
+    private double longitude;
     private String schedulingPolicy;
     @NotNull(message = "Booking days must be specified")
     private String bookingDays;

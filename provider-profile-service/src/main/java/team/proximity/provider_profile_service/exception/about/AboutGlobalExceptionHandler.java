@@ -1,6 +1,7 @@
 package team.proximity.provider_profile_service.exception.about;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -96,6 +97,41 @@ public class AboutGlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiErrorResponse> handleIllegalArgumentException(IllegalArgumentException exception, HttpServletRequest request) {
         LOGGER.error("Illegal argument: {}", exception.getMessage());
+        ApiErrorResponse errorResponse = new ApiErrorResponse(
+                request.getRequestURI(),
+                exception.getMessage(),
+                HttpStatus.BAD_REQUEST.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(FileUploadException.class)
+    public ResponseEntity<ApiErrorResponse> handleFileUploadException(FileUploadException exception, HttpServletRequest request) {
+        LOGGER.error("File upload error: {}", exception.getMessage());
+        ApiErrorResponse errorResponse = new ApiErrorResponse(
+                request.getRequestURI(),
+                exception.getMessage(),
+                HttpStatus.BAD_REQUEST.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UserFileUploadException.class)
+    public ResponseEntity<ApiErrorResponse> handleUserFileUploadException(UserFileUploadException exception, HttpServletRequest request) {
+        LOGGER.error("User upload error: {}", exception.getMessage());
+        ApiErrorResponse errorResponse = new ApiErrorResponse(
+                request.getRequestURI(),
+                exception.getMessage(),
+                HttpStatus.BAD_REQUEST.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(FileValidationException.class)
+    public ResponseEntity<ApiErrorResponse> handleFileValidationException(FileValidationException exception, HttpServletRequest request) {
+        LOGGER.error("File validation error: {}", exception.getMessage());
         ApiErrorResponse errorResponse = new ApiErrorResponse(
                 request.getRequestURI(),
                 exception.getMessage(),

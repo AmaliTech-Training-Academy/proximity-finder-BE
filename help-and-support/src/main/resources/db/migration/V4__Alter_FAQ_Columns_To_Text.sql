@@ -1,0 +1,3 @@
+ALTER TABLE faq
+    ALTER COLUMN question TYPE TEXT,
+    ALTER COLUMN answer TYPE TEXT;

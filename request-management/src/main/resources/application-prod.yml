@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: request-management-service
+  app:
+    jwtSecret: ${JWT_SECRET}
+
+
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+server:
+  port: 9000
+
+aws:
+  accessKeyId: ${AWS_ACCESS_KEY}
+  secretAccessKey: ${AWS_SECRET_KEY}
+  s3:
+    bucketName: ${BUCKET_NAME}
+    region: ${AWS_REGION}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: https://${EUREKA_HOSTNAME:localhost}:${EUREKA_PORT:8761}/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+

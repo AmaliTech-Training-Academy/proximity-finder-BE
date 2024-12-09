@@ -7,4 +7,6 @@ public interface PaymentMethodService {
     void createAnotherPaymentMethod(PaymentMethodRequest request);
     void createNewPaymentMethod(PaymentMethodRequest request);
     List<PaymentMethodResponse> getPaymentMethodsForAuthenticatedUser();
+    void updatePaymentMethod(PaymentMethodRequest request, Long paymentMethodId);
+    void deletePaymentMethodById(Long paymentMethodId);
 }

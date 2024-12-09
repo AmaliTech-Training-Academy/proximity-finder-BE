@@ -15,6 +15,8 @@ import lombok.Setter;
 @DiscriminatorValue("PAYPAL")
 public class PayPalPayment extends PaymentMethod {
 
-    private String accountNumber;
+    private String firstName;
+    private String lastName;
+    private String email;
 
 }

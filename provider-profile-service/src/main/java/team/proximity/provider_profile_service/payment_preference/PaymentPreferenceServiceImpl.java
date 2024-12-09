@@ -1,5 +1,7 @@
 package team.proximity.provider_profile_service.payment_preference;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import team.proximity.provider_profile_service.exception.payment_method.PaymentPreferenceAlreadyExistException;
 
@@ -9,6 +11,7 @@ import java.util.Optional;
 
 @Service
 public class PaymentPreferenceServiceImpl implements PaymentPreferenceService {
+    private final Logger LOGGER = LoggerFactory.getLogger(PaymentPreferenceServiceImpl.class);
     private final PaymentPreferenceMapper paymentPreferenceMapper;
     private final PaymentPreferenceRepository paymentPreferenceRepository;
 
@@ -39,7 +42,7 @@ public class PaymentPreferenceServiceImpl implements PaymentPreferenceService {
         List<PaymentPreferenceResponse> paymentPreferenceResponses = paymentPreferences.stream()
                 .map(paymentPreferenceMapper::mapToPaymentPreferenceResponse)
                 .toList();
-
+        LOGGER.info("Retrieving all payment preferences");
         return Optional.of(paymentPreferenceResponses);
     }
 }
