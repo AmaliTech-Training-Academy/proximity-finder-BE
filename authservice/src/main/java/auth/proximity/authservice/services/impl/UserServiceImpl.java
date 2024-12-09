@@ -111,13 +111,6 @@ public class UserServiceImpl implements IUserService {
         user.setPassword(encoder.encode(adminUpdatePasswordRequest.newPassword()));
         userRepository.save(user);
     }
-    public void updateProfilePicture(String email, ProfilePictureUpdateRequest profilePictureUpdateRequest) {
-        User user = userRepository.findByEmail(email).orElseThrow(
-                () -> new ResourceNotFoundException("User", "email", email));
-
-        user.setProfileImage(profilePictureUpdateRequest.file().getContentType());
-        userRepository.save(user);
-    }
     public void updateUserInfoByEmail(String email, UserUpdateRequest userUpdateRequest) {
         if ((userUpdateRequest.userName() == null || userUpdateRequest.userName().isEmpty()) &&
                 (userUpdateRequest.phoneNumber() == null || userUpdateRequest.phoneNumber().isEmpty()) &&
