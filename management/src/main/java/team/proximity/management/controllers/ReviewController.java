@@ -17,6 +17,7 @@ import team.proximity.management.responses.ReviewDTO;
 import team.proximity.management.services.ReviewService;
 import team.proximity.management.utils.AuthenticationHelper;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -41,6 +42,15 @@ public class ReviewController {
                 .result(review)
                 .build();
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+    @GetMapping
+    public ResponseEntity<ApiSuccessResponse<List<ReviewDTO>>> getAllReviews() {
+        List<ReviewDTO> reviews = reviewService.getAllReviews();
+        ApiSuccessResponse<List<ReviewDTO>> response = ApiSuccessResponse.<List<ReviewDTO>>builder()
+                .status(ApiResponseStatus.SUCCESS)
+                .result(reviews)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
