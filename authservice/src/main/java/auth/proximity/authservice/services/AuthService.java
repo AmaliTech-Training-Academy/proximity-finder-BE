@@ -1,9 +1,11 @@
 package auth.proximity.authservice.services;
 
 import auth.proximity.authservice.dto.ResponseDto;
+import auth.proximity.authservice.dto.security.InfoResponse;
 import auth.proximity.authservice.dto.security.LoginRequest;
 import auth.proximity.authservice.dto.security.LoginResponse;
 import auth.proximity.authservice.dto.security.RefreshTokenResponse;
+import auth.proximity.authservice.entity.User;
 import auth.proximity.authservice.security.jwt.JwtConstants;
 import auth.proximity.authservice.security.jwt.JwtUtils;
 import auth.proximity.authservice.services.security.UserDetailsImpl;
@@ -29,11 +31,13 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
     private final UserDetailsServiceImpl userDetailsService;
+    private final IUserService userService;
 
-    public AuthService(AuthenticationManager authenticationManager, JwtUtils jwtUtils, UserDetailsServiceImpl userDetailsService) {
+    public AuthService(AuthenticationManager authenticationManager, JwtUtils jwtUtils, UserDetailsServiceImpl userDetailsService, IUserService userService) {
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
         this.userDetailsService = userDetailsService;
+        this.userService = userService;
     }
 
     public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
@@ -82,5 +86,22 @@ public class AuthService {
             map.put("status", false);
             return new ResponseEntity<Object>(map, HttpStatus.NOT_ACCEPTABLE);
         }
+    }
+    public ResponseEntity<?> getUserDetails (UserDetailsImpl userDetails) {
+        User user = userService.findByEmail(userDetails.getEmail());
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        InfoResponse response = new InfoResponse(
+                user.getUserId(),
+                user.getUserName(),
+                user.getEmail(),
+                user.getMobileNumber(),
+                user.getBusinessOwnerName(),
+                roles
+        );
+
+        return ResponseEntity.ok().body(response);
     }
 }

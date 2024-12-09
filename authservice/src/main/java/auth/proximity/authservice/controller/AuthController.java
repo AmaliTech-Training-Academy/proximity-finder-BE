@@ -68,21 +68,7 @@ public class AuthController {
     })
     @GetMapping("/user")
     public ResponseEntity<?> getUserDetails(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        User user = userService.findByEmail(userDetails.getEmail());
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
-
-        InfoResponse response = new InfoResponse(
-                user.getUserId(),
-                user.getUserName(),
-                user.getEmail(),
-                user.getMobileNumber(),
-                user.getBusinessOwnerName(),
-                roles
-        );
-
-        return ResponseEntity.ok().body(response);
+       return authService.getUserDetails(userDetails);
     }
 
 
