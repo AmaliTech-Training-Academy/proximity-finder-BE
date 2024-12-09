@@ -146,12 +146,8 @@ public class AuthController {
 
     @PutMapping("/public/update-profile-picture")
     public ResponseEntity<String> uploadProfilePicture(@AuthenticationPrincipal UserDetailsImpl userDetails, @ModelAttribute ProfilePictureUpdateRequest profilePictureUpdateRequest) {
-        try {
             String fileUrl = profilePictureService.updateProfilePicture(userDetails.getEmail(), profilePictureUpdateRequest);
             return new ResponseEntity<>(fileUrl, HttpStatus.OK);
-        } catch (IOException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload profile picture");
-        }
     }
 
     @GetMapping("/info")
