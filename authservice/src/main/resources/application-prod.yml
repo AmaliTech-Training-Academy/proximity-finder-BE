@@ -1,6 +1,10 @@
 spring:
   application:
     name: "authservice"
+  servlet:
+    multipart:
+      max-file-size: 400MB
+      max-request-size: 400MB
 
   mail:
     host: smtp.sendgrid.net
