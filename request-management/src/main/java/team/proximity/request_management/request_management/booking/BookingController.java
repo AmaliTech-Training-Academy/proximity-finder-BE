@@ -36,6 +36,7 @@ public class BookingController {
                 bookingService.getBookingsForAssignedProvider()
         );
     }
+    @PreAuthorize("hasAuthority('ROLE_PROVIDER')")
     @GetMapping("/{bookingId}/provider")
     public ResponseEntity<BookingResponse> getBookingById(@PathVariable Long bookingId) {
         return ResponseEntity.ok(
