@@ -127,6 +127,13 @@ public class UserServiceImpl implements IUserService {
         userRepository.save(user);
     }
     public void updateUserInfoByEmail(String email, UserUpdateRequest userUpdateRequest) {
+        if ((userUpdateRequest.userName() == null || userUpdateRequest.userName().isEmpty()) &&
+                (userUpdateRequest.phoneNumber() == null || userUpdateRequest.phoneNumber().isEmpty()) &&
+                (userUpdateRequest.businessOwnerName() == null || userUpdateRequest.businessOwnerName().isEmpty()) &&
+                (userUpdateRequest.businessAddress() == null || userUpdateRequest.businessAddress().isEmpty())) {
+            throw new IllegalArgumentException("At least one non-empty field must be provided for update");
+        }
+
         User foundUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "email", email));
         if (userUpdateRequest.userName() != null) {

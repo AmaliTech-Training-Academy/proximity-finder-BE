@@ -11,9 +11,9 @@ import auth.proximity.authservice.dto.security.LoginRequest;
 import auth.proximity.authservice.dto.security.LoginResponse;
 import auth.proximity.authservice.dto.security.RefreshTokenResponse;
 import auth.proximity.authservice.dto.security.InfoResponse;
-import auth.proximity.authservice.enums.AccountStatus;
 import auth.proximity.authservice.security.jwt.JwtConstants;
 import auth.proximity.authservice.security.jwt.JwtUtils;
+import auth.proximity.authservice.services.AuthService;
 import auth.proximity.authservice.services.security.UserDetailsImpl;
 import auth.proximity.authservice.services.security.UserDetailsServiceImpl;
 import auth.proximity.authservice.services.IUserService;
@@ -58,6 +58,7 @@ public class AuthController {
     private final UserDetailsServiceImpl userDetailsService;
     private final IUserService userService;
     private final ProfilePictureService profilePictureService;
+    private final AuthService authService;
 
     @Operation(summary = "Get Current User REST API", description = "REST API to retrieve current with jwtAccessToken")
     @ApiResponses({
@@ -67,21 +68,7 @@ public class AuthController {
     })
     @GetMapping("/user")
     public ResponseEntity<?> getUserDetails(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        User user = userService.findByEmail(userDetails.getEmail());
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
-
-        InfoResponse response = new InfoResponse(
-                user.getUserId(),
-                user.getUserName(),
-                user.getEmail(),
-                user.getMobileNumber(),
-                user.getBusinessOwnerName(),
-                roles
-        );
-
-        return ResponseEntity.ok().body(response);
+       return authService.getUserDetails(userDetails);
     }
 
 
@@ -93,34 +80,7 @@ public class AuthController {
     })
     @PostMapping("/public/sign-in")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        try {
-            if(userService.findByEmail(loginRequest.getEmail()).getStatus().equals(AccountStatus.DEACTIVATED)){
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDto("401", "Account is inactive"));
-            }
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-            List<String> roles = userDetails.getAuthorities().stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .collect(Collectors.toList());
-
-            String jwtAccessToken = jwtUtils.generateAccessToken(userDetails);
-            String jwtRefreshToken = jwtUtils.generateRefreshToken(userDetails);
-
-            LoginResponse response = new LoginResponse(
-                    userDetails.getUsername(),
-                    userDetails.getEmail(),
-                    roles,
-                    jwtAccessToken,
-                    jwtRefreshToken);
-
-            return ResponseEntity.ok(response);
-        } catch (AuthenticationException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDto("401", "Invalid credentials"));
-        }
+        return authService.authenticateUser(loginRequest);
     }
 
 
@@ -145,26 +105,7 @@ public class AuthController {
     })
     @GetMapping("/public/refresh-token")
     public ResponseEntity<?> generateNewAccessToken(HttpServletRequest request) {
-        String jwtRefreshToken = jwtUtils.extractTokenFromHeaderIfExists(request.getHeader(JwtConstants.AUTH_HEADER));
-        if (jwtRefreshToken != null && jwtUtils.validateJwtToken(jwtRefreshToken)) {
-            try {
-                String email = jwtUtils.getUserNameFromJwtToken(jwtRefreshToken);
-                UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername(email);
-                String jwtAccessToken = jwtUtils.generateAccessToken(userDetails);
-                RefreshTokenResponse tokenResponse = new RefreshTokenResponse(jwtRefreshToken, jwtAccessToken);
-                return ResponseEntity.ok(tokenResponse);
-            } catch (Exception e) {
-                Map<String, Object> map = new HashMap<>();
-                map.put("message", "Error processing refresh token");
-                map.put("status", false);
-                return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        } else {
-            Map<String, Object> map = new HashMap<>();
-            map.put("message", "Invalid JWT Refresh token");
-            map.put("status", false);
-            return new ResponseEntity<Object>(map, HttpStatus.NOT_ACCEPTABLE);
-        }
+       return authService.generateNewAccessToken(request);
     }
 
 
@@ -181,7 +122,6 @@ public class AuthController {
         return ResponseEntity.ok("Token is valid");
     }
     @PutMapping("/public/update-password")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseDto> updatePassword(
             @RequestParam String email,
             @RequestBody AdminUpdatePasswordRequest adminUpdatePasswordRequest) {
@@ -191,14 +131,9 @@ public class AuthController {
     }
 
     @PutMapping("/public/update-profile-picture")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<String> uploadProfilePicture(@AuthenticationPrincipal UserDetailsImpl userDetails, @ModelAttribute ProfilePictureUpdateRequest profilePictureUpdateRequest) {
-        try {
             String fileUrl = profilePictureService.updateProfilePicture(userDetails.getEmail(), profilePictureUpdateRequest);
             return new ResponseEntity<>(fileUrl, HttpStatus.OK);
-        } catch (IOException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload profile picture");
-        }
     }
 
     @GetMapping("/info")
@@ -207,7 +142,6 @@ public class AuthController {
         return ResponseEntity.ok(userInfoResponse);
     }
     @PutMapping("/update/info")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseDto> updateUserInfo(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody UserUpdateRequest userUpdateRequest) {
@@ -217,13 +151,11 @@ public class AuthController {
     }
 
     @DeleteMapping("/profile-picture")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseDto> deleteProfilePicture(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         String email = userDetails.getEmail();
         userService.deleteProfilePicture(email);
         return ResponseEntity.ok(new ResponseDto("200", "Profile picture deleted successfully"));
     }
-
 
 }
