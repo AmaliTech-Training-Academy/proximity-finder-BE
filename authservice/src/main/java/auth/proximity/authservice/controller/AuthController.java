@@ -50,7 +50,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthService authService;
     @Value("${spring.app.jwtSecret}")
     private String jwtSecret;
 
@@ -59,6 +58,7 @@ public class AuthController {
     private final UserDetailsServiceImpl userDetailsService;
     private final IUserService userService;
     private final ProfilePictureService profilePictureService;
+    private final AuthService authService;
 
     @Operation(summary = "Get Current User REST API", description = "REST API to retrieve current with jwtAccessToken")
     @ApiResponses({

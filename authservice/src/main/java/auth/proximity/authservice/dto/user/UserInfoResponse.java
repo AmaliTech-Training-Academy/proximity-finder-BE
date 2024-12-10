@@ -1,6 +1,7 @@
 package auth.proximity.authservice.dto.user;
 
 import auth.proximity.authservice.entity.Role;
+import auth.proximity.authservice.enums.AccountStatus;
 
 public record UserInfoResponse(
 
@@ -10,7 +11,11 @@ public record UserInfoResponse(
         String mobileNumber,
         String businessOwnerName,
         String profileImage,
-        String businessAddress,
-        Role role
+        String placeName,
+        double latitude,
+        double longitude,
+        Role role,
+        AccountStatus status
+
 ) {
 }

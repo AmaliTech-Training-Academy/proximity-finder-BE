@@ -4,5 +4,7 @@ public record UserUpdateRequest(
         String userName,
         String phoneNumber,
         String businessOwnerName,
-        String businessAddress
+        String placeName,
+        double latitude,
+        double longitude
 ){}
