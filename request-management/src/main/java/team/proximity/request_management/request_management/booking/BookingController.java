@@ -3,6 +3,7 @@ package team.proximity.request_management.request_management.booking;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import team.proximity.request_management.request_management.quotes.ApiSuccessResponse;
 
@@ -18,6 +19,8 @@ public class BookingController {
         this.bookingService = bookingService;
     }
 
+
+    @PreAuthorize("hasAuthority('ROLE_SEEKER')")
     @PostMapping
     public ResponseEntity<ApiSuccessResponse> createBooking(@RequestBody @Valid BookingRequest request) {
         bookingService.createBooking(request);
@@ -26,7 +29,8 @@ public class BookingController {
                 HttpStatus.CREATED
         );
     }
-    @GetMapping()
+    @PreAuthorize("hasAuthority('ROLE_PROVIDER')")
+    @GetMapping("/provider")
     public ResponseEntity<List<BookingResponse>> getBookingsForAssignedProvider() {
         return ResponseEntity.ok(
                 bookingService.getBookingsForAssignedProvider()
@@ -38,7 +42,7 @@ public class BookingController {
                 bookingService.getBookingByIdForAssignedProvider(bookingId)
         );
     }
-
+    @PreAuthorize("hasAuthority('ROLE_PROVIDER')")
     @PutMapping("/{bookingId}/accept")
     public ResponseEntity<ApiSuccessResponse> acceptBooking(@PathVariable Long bookingId) {
         bookingService.acceptBooking(bookingId);
@@ -46,7 +50,7 @@ public class BookingController {
                 new ApiSuccessResponse("Booking accepted successfully")
         );
     }
-
+    @PreAuthorize("hasAuthority('ROLE_PROVIDER')")
     @PutMapping("/{bookingId}/decline")
     public ResponseEntity<ApiSuccessResponse> declineBooking(@PathVariable Long bookingId) {
         bookingService.declineBooking(bookingId);
@@ -54,7 +58,7 @@ public class BookingController {
                 new ApiSuccessResponse("Booking declined successfully")
         );
     }
-
+    @PreAuthorize("hasAuthority('ROLE_PROVIDER')")
     @PutMapping("/{bookingId}/complete")
     public ResponseEntity<ApiSuccessResponse> completeBooking(@PathVariable Long bookingId) {
         bookingService.completeBooking(bookingId);
@@ -63,13 +67,15 @@ public class BookingController {
         );
     }
 
-    @GetMapping()
+    @PreAuthorize("hasAuthority('ROLE_SEEKER')")
+    @GetMapping("/seeker")
     public ResponseEntity<List<BookingResponse>> getBookingsCreatedBy() {
         return ResponseEntity.ok(
-                bookingService.getBookingsCreatedBy()
+                bookingService.getBookingsForSeeker()
         );
     }
 
+    @PreAuthorize("hasAuthority('ROLE_SEEKER')")
     @GetMapping("/{bookingId}/seeker")
     public ResponseEntity<BookingResponse> getBookingByIdForCreatedBy(@PathVariable Long bookingId) {
         return ResponseEntity.ok(
