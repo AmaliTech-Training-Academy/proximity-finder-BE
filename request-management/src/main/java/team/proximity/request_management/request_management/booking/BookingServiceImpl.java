@@ -93,7 +93,7 @@ public class BookingServiceImpl implements BookingService{
         );
     }
 
-    public List<BookingResponse> getBookingsCreatedBy() {
+    public List<BookingResponse> getBookingsForSeeker() {
         String seeker = SecurityContextUtils.getEmail();
         LOGGER.info("Fetching all bookings for seeker: {}", seeker);
         return bookingRepository.findByCreatedBy(seeker)
@@ -119,8 +119,6 @@ public class BookingServiceImpl implements BookingService{
                     return new SecurityException("You are not authorized to perform actions on this booking.");
                 });
     }
-
-
 
 
     private void publishBookingStatusChangedEvent(Booking booking) {

@@ -9,6 +9,6 @@ public interface BookingService {
     void createBooking(BookingRequest request);
     List<BookingResponse> getBookingsForAssignedProvider();
     BookingResponse getBookingByIdForAssignedProvider(Long bookingId);
-    List<BookingResponse> getBookingsCreatedBy();
+    List<BookingResponse> getBookingsForSeeker();
     BookingResponse getBookingByIdForCreatedBy(Long bookingId);
 }
