@@ -34,6 +34,10 @@ public class GatewayConfig {
                         .filters(f -> f.filter(authFilter.apply(new AuthenticationFilter.Config())))
                         .uri("lb://MANAGEMENT"))
 
+                .route("quote-service", r -> r.path("/api/v1/quote-service/**")
+                        .filters(f -> f.filter(authFilter.apply(new AuthenticationFilter.Config())))
+                        .uri("lb://REQUEST-MANAGEMENT-SERVICE"))
+
                 .build();
     }
 }
