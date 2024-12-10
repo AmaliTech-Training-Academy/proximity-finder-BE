@@ -1,4 +1,4 @@
-package auth.proximity.authservice.service;
+package auth.proximity.authservice.services;
 
 import auth.proximity.authservice.dto.ProfilePictureUpdateRequest;
 import auth.proximity.authservice.entity.User;
@@ -22,14 +22,18 @@ public class ProfilePictureService {
     }
 
     @Transactional
-    public String updateProfilePicture(String email, ProfilePictureUpdateRequest profilePictureUpdateRequest) throws IOException {
-        validateFileType(profilePictureUpdateRequest.file());
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + email));
-        String fileUrl = s3Service.uploadFile(profilePictureUpdateRequest.file());
-        user.setProfileImage(fileUrl);
-        userRepository.save(user);
-        return fileUrl;
+    public String updateProfilePicture(String email, ProfilePictureUpdateRequest profilePictureUpdateRequest) {
+        try {
+            validateFileType(profilePictureUpdateRequest.file());
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("User not found with ID: " + email));
+            String fileUrl = s3Service.uploadFile(profilePictureUpdateRequest.file());
+            user.setProfileImage(fileUrl);
+            userRepository.save(user);
+            return fileUrl;
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to upload profile picture", e);
+        }
     }
 
 

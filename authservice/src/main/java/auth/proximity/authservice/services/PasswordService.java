@@ -1,11 +1,11 @@
-package auth.proximity.authservice.service;
+package auth.proximity.authservice.services;
 
 import auth.proximity.authservice.dto.ForgotPasswordRequest;
-import auth.proximity.authservice.dto.UserPasswordResetRequest;
+import auth.proximity.authservice.dto.user.UserPasswordResetRequest;
 import auth.proximity.authservice.entity.PasswordResetToken;
 import auth.proximity.authservice.entity.User;
 import auth.proximity.authservice.repository.UserRepository;
-import auth.proximity.authservice.security.service.TokenService;
+import auth.proximity.authservice.services.security.TokenService;
 import jakarta.mail.MessagingException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -40,11 +40,16 @@ public class PasswordService {
 
     }
 
-    public void initiatePasswordReset(ForgotPasswordRequest forgotPasswordRequest) throws MessagingException, IOException {
-        User user = userRepository.findByEmail(forgotPasswordRequest.email())
-                .orElseThrow(() -> new IllegalArgumentException("Staff with email " + forgotPasswordRequest.email() + " not found"));
+    public void initiatePasswordReset(ForgotPasswordRequest forgotPasswordRequest) {
+        try {
+            User user = userRepository.findByEmail(forgotPasswordRequest.email())
+                    .orElseThrow(() -> new IllegalArgumentException("Staff with email " + forgotPasswordRequest.email() + " not found"));
 
-        String token = tokenService.createPasswordResetToken(user);
-        emailService.sendPasswordResetEmail(user,token);
+            String token = tokenService.createPasswordResetToken(user);
+            emailService.sendPasswordResetEmail(user, token);
+        } catch (MessagingException e) {
+            // Handle the exceptions as needed, e.g., log the error or rethrow a custom exception
+            throw new RuntimeException("Failed to initiate password reset", e);
+        }
     }
 }
