@@ -10,11 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.proximity.provider_profile_service.common.ApiSuccessResponse;
 
-import java.io.IOException;
 @Tag(name = "About Company", description = "Operations related to about company")
 @RestController
-@RequestMapping("/api/v1/about")
-@SecurityRequirement(name = "BearerAuth")
+@RequestMapping("/api/v1/provider-service/about")
 public class AboutController {
 
 
@@ -24,9 +22,10 @@ public class AboutController {
         this.aboutService = aboutService;
     }
 
-    @Operation(summary = "Create About Company for the authenticated user")
+    @SecurityRequirement(name = "BearerAuth")
+    @Operation(summary = "Create About Company")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiSuccessResponse> createOneAbout(@Valid @ModelAttribute AboutRequest aboutRequest) throws IOException {
+    public ResponseEntity<ApiSuccessResponse> createOneAbout(@Valid @ModelAttribute AboutRequest aboutRequest){
 
             aboutService.createOneAbout(aboutRequest);
             return ResponseEntity
@@ -34,9 +33,16 @@ public class AboutController {
                     .body(new ApiSuccessResponse("About Company Created Successfully", true));
     }
     @Operation(summary = "Get About Company for the authenticated user")
+    @SecurityRequirement(name = "BearerAuth")
     @GetMapping("/about-company")
     public ResponseEntity<AboutBusinessResponse> getAboutForAuthenticatedUser() {
         AboutBusinessResponse response = aboutService.getAboutForAuthenticatedUser();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/provider-profile")
+    public ResponseEntity<AboutAndPaymentMethodsResponse> getAboutAndPaymentMethods(@RequestParam String email) {
+        AboutAndPaymentMethodsResponse response = aboutService.getAboutAndPaymentMethods(email);
         return ResponseEntity.ok(response);
     }
 }

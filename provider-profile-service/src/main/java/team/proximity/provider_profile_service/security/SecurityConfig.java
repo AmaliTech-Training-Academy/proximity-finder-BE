@@ -30,10 +30,32 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers(HttpMethod.GET,"api/v1/payment-method/providers/mobile-money-providers/**").permitAll()
-                        .requestMatchers(HttpMethod.GET,"api/v1/payment-preferences/**").permitAll()
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**"
+                        )
+                        .permitAll()
+
+                        .requestMatchers("/api/v1/provider-service/about/**")
+                        .hasAuthority("ROLE_PROVIDER")
+
+                        .requestMatchers(
+                                "/api/v1/provider-service/payment-method")
+                        .hasAnyAuthority("ROLE_PROVIDER", "ROLE_SEEKER")
+
+                        .requestMatchers(
+                                "/api/v1/provider-service/about/provider-profile"
+                        )
+
+                        .permitAll()
+                        .requestMatchers(HttpMethod.GET,
+                                "api/v1/provider-service/payment-method/providers/mobile-money-providers",
+                                "api/v1/provider-service/payment-preferences"
+                        )
+                        .permitAll()
+
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception
