@@ -71,12 +71,16 @@ def prepareDeploymentFiles(imageRegistry, gitSha, imageName, changedServices) {
         sh "sed -i 's|image: ${oldImage}|image: ${newImage}|g' app/docker-compose.yml"
     }
 
+    sh "cat app/docker-compose.yml"
+
     echo "Deployment files prepared successfully in 'app/' directory."
 
 }
 
 pipeline {
-    agent any
+    agent {
+        label 'ubuntu'
+    }
     tools {
         maven 'maven'
         jdk 'jdk21'
