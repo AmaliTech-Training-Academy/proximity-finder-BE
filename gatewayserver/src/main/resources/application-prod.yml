@@ -17,7 +17,7 @@ spring:
           predicates:
             - Method=GET
 
-        - id: quote-and-call-service
+        - id: quote-service
           uri: lb://REQUEST-MANAGEMENT-SERVICE
           filters:
             - name: Retry
@@ -52,6 +52,7 @@ spring:
                 instanceName: managementServiceCircuitBreaker
                 fallbackUri: forward:/fallback/management-service
           predicates:
+            - Path=/api/v1/management/**
             - Method=GET
 
       default-filters:
