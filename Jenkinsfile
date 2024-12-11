@@ -24,6 +24,13 @@ def deployConfig = [
         codeDeployAppName: 'gtp',
         codeDeployGroup: appName
     ],
+    'fix-devops': [
+            revisionTag: appName,
+            revisionLocation: 'gtp-artifacts-2',
+            assetsPath: "app/",
+            codeDeployAppName: 'gtp',
+            codeDeployGroup: appName
+    ],
     develop: [
         revisionTag: appName,
         revisionLocation: 'gtp-artifacts-2',
