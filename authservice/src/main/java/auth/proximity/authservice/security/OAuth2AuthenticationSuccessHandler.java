@@ -1,7 +1,6 @@
 package auth.proximity.authservice.security;
 import auth.proximity.authservice.security.jwt.JwtUtils;
-import auth.proximity.authservice.security.service.UserDetailsImpl;
-import auth.proximity.authservice.service.impl.UserServiceImpl;
+import auth.proximity.authservice.services.security.UserDetailsImpl;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,11 +24,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     @Value("${spring.app.oauth2FrontendUrl}")
     private String frontendUrl;
     private final JwtUtils jwtUtils;
-    private final UserServiceImpl userServiceImpl;
 
-    public OAuth2AuthenticationSuccessHandler(JwtUtils jwtUtils, UserServiceImpl userServiceImpl) {
+    public OAuth2AuthenticationSuccessHandler(JwtUtils jwtUtils) {
         this.jwtUtils = jwtUtils;
-        this.userServiceImpl = userServiceImpl;
     }
 
     @Override

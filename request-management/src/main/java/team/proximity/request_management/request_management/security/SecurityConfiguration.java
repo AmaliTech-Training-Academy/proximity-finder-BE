@@ -25,7 +25,6 @@ public class SecurityConfiguration {
         this.authenticationFilter = authenticationFilter;
     }
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
@@ -79,5 +78,4 @@ public class SecurityConfiguration {
                 .addFilterBefore(authenticationFilter, AuthorizationFilter.class)
                 .build();
     }
-
 }

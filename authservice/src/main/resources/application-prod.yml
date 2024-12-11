@@ -1,6 +1,10 @@
 spring:
   application:
     name: "authservice"
+  servlet:
+    multipart:
+      max-file-size: 400MB
+      max-request-size: 400MB
 
   mail:
     host: smtp.sendgrid.net
@@ -17,6 +21,8 @@ spring:
 
   app:
     jwtSecret: ${JWT_SECRET}
+    jwtExpiration: 600000
+    jwtRefreshExpiration: 6000000
     baseurl: ${BASE_URL}
     oauth2FrontendUrl: ${OAUTH2_FRONTEND_URL}
   datasource:
@@ -77,5 +83,3 @@ eureka:
   instance:
     hostname: ${EUREKA_SERVER_HOST}
     instance-id: ${spring.application.name}:${server.port}
-
-
