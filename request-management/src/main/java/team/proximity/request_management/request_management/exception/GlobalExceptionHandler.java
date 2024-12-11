@@ -1,5 +1,6 @@
 package team.proximity.request_management.request_management.exception;
 
+import jakarta.persistence.EntityExistsException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -138,7 +139,17 @@ public class GlobalExceptionHandler {
                         request.getRequestURI()
                 ));
     }
-
+@ExceptionHandler(EntityExistsException.class)
+public ResponseEntity<ApiErrorResponse> handleEntityExistsException(EntityExistsException ex, HttpServletRequest request) {
+    LOGGER.warn("Entity already exists: {}", ex.getMessage());
+    return ResponseEntity.status(HttpStatus.CONFLICT)
+            .body(new ApiErrorResponse(
+                    HttpStatus.CONFLICT.value(),
+                    HttpStatus.CONFLICT.getReasonPhrase(),
+                    ex.getMessage(),
+                    request.getRequestURI()
+            ));
+}
 
 
 
