@@ -103,85 +103,85 @@ pipeline {
     }
 
     stages {
-        stage('Identify Changed Services') {
-            steps {
-                script {
-                    // Get the last merge commit SHA
-                    echo "Identifying the last merge commit..."
-                    def lastMergeCommit = sh(
-                        script: """#!/bin/bash
-                            git log --merges --pretty=format:'%H' -n 2 origin/${currentBranch} | sed -n '2p'
-                        """,
-                        returnStdout: true
-                    ).trim()
-
-                    if (!lastMergeCommit) {
-                        error "Failed to identify the last merge commit. Ensure the branch '${currentBranch}' has merge commits."
-                    }
-
-                    echo "last merge commit sha: ${lastMergeCommit}"
-
-                    // Detect changes between the last merge commit and HEAD
-                    echo "Detecting changed files since last merge commit..."
-                    detectedChanges = sh(script: """#!/bin/bash
-                        git diff --name-only ${lastMergeCommit}...HEAD | sort -u
-                    """, returnStdout: true).trim().split("\n")
-
-                    if (!detectedChanges) {
-                        echo "No changes detected in the repository."
-                        changedServices = []
-                        return
-                    }
-
-                     // Split changes into a list
-                    echo "Detected changes:\n${detectedChanges.join('\n')}"
-
-                    // Extract services from the changed file paths
-                    echo "Identifying services from changed files..."
-                    def servicesInChanges = detectedChanges.collect { change ->
-                        echo "change ${change}"
-                        def parts = change.split('/')
-                        parts.size() > 1 ? parts[0] : null
-                    }.findAll { it }
-
-                    echo "Workspace path is: ${WORKSPACE}"
-
-                    // Dynamically identify all service directories based on defined criteria
-                    def serviceDirectories = []
-                    def files = findFiles(glob: '**/pom.xml') // Adjust to match your structure
-                    files.each { file ->
-                        def serviceDir = file.path.tokenize('/')[0] // Extract the top-level directory
-                        if (!serviceDirectories.contains(serviceDir)) {
-                            serviceDirectories.add(serviceDir)
-                        }
-                    }
-
-                    echo "Detected service directories: ${serviceDirectories}"
-
-                    // Filter only available services
-//                     echo "Filtering to identify changed services from available ones..."
-//                     changedServices = servicesInChanges.unique().findAll { service ->
-//                         availableServices.contains(service)
+//         stage('Identify Changed Services') {
+//             steps {
+//                 script {
+//                     // Get the last merge commit SHA
+//                     echo "Identifying the last merge commit..."
+//                     def lastMergeCommit = sh(
+//                         script: """#!/bin/bash
+//                             git log --merges --pretty=format:'%H' -n 2 origin/${currentBranch} | sed -n '2p'
+//                         """,
+//                         returnStdout: true
+//                     ).trim()
+//
+//                     if (!lastMergeCommit) {
+//                         error "Failed to identify the last merge commit. Ensure the branch '${currentBranch}' has merge commits."
 //                     }
-
-                    // Filter only available services
-                    // Find intersection between detected changes and identified service directories
-                    echo "Filtering to identify changed services..."
-                    changedServices = servicesInChanges.unique().findAll { service ->
-                        serviceDirectories.contains(service)
-                    }
-
-                    // Log the final list of changed services
-                    if (changedServices) {
-                        echo "Changes detected in services: ${changedServices}"
-                    } else {
-                        echo "No changes detected in available services."
-                    }
-
-                    echo "Changed services to build: ${changedServices}"
-                }
-            }
-        }
+//
+//                     echo "last merge commit sha: ${lastMergeCommit}"
+//
+//                     // Detect changes between the last merge commit and HEAD
+//                     echo "Detecting changed files since last merge commit..."
+//                     detectedChanges = sh(script: """#!/bin/bash
+//                         git diff --name-only ${lastMergeCommit}...HEAD | sort -u
+//                     """, returnStdout: true).trim().split("\n")
+//
+//                     if (!detectedChanges) {
+//                         echo "No changes detected in the repository."
+//                         changedServices = []
+//                         return
+//                     }
+//
+//                      // Split changes into a list
+//                     echo "Detected changes:\n${detectedChanges.join('\n')}"
+//
+//                     // Extract services from the changed file paths
+//                     echo "Identifying services from changed files..."
+//                     def servicesInChanges = detectedChanges.collect { change ->
+//                         echo "change ${change}"
+//                         def parts = change.split('/')
+//                         parts.size() > 1 ? parts[0] : null
+//                     }.findAll { it }
+//
+//                     echo "Workspace path is: ${WORKSPACE}"
+//
+//                     // Dynamically identify all service directories based on defined criteria
+//                     def serviceDirectories = []
+//                     def files = findFiles(glob: '**/pom.xml') // Adjust to match your structure
+//                     files.each { file ->
+//                         def serviceDir = file.path.tokenize('/')[0] // Extract the top-level directory
+//                         if (!serviceDirectories.contains(serviceDir)) {
+//                             serviceDirectories.add(serviceDir)
+//                         }
+//                     }
+//
+//                     echo "Detected service directories: ${serviceDirectories}"
+//
+//                     // Filter only available services
+// //                     echo "Filtering to identify changed services from available ones..."
+// //                     changedServices = servicesInChanges.unique().findAll { service ->
+// //                         availableServices.contains(service)
+// //                     }
+//
+//                     // Filter only available services
+//                     // Find intersection between detected changes and identified service directories
+//                     echo "Filtering to identify changed services..."
+//                     changedServices = servicesInChanges.unique().findAll { service ->
+//                         serviceDirectories.contains(service)
+//                     }
+//
+//                     // Log the final list of changed services
+//                     if (changedServices) {
+//                         echo "Changes detected in services: ${changedServices}"
+//                     } else {
+//                         echo "No changes detected in available services."
+//                     }
+//
+//                     echo "Changed services to build: ${changedServices}"
+//                 }
+//             }
+//         }
 
         stage('mvn Clean') {
              steps{
