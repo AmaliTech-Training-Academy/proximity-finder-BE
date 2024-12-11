@@ -94,6 +94,21 @@ services:
       - ./.request-management.env
     volumes:
       - prox-volume:/app/data
+      -
+
+  notification-service:
+    image: 909544387219.dkr.ecr.eu-west-1.amazonaws.com/notification-service:latest
+    container_name: notification-service-container
+    restart: on-failure:3
+    ports:
+      - "9097:9097"
+    networks:
+      - proximity-finder-network
+      - training-shared-network
+    env_file:
+      - ./.notification-service.env
+    volumes:
+      - prox-volume:/app/data
 
   rabbitmq:
     image: rabbitmq:4.0-management
