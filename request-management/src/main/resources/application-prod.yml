@@ -4,6 +4,19 @@ spring:
   app:
     jwtSecret: ${JWT_SECRET}
 
+  rabbitmq:
+    host: ${HOST_NAME:localhost}
+    username: ${RABBITMQ_USERNAME:guess}
+    password: ${RABBITMQ_PASSWORD:guess}
+    port: ${RABBITMQ_PORT:5672}
+    exchange:
+      name: booking-exchange
+    queue:
+      name: bookings-queue
+    routing:
+      key: booking.status.changed
+
+
 
   datasource:
     url: ${POSTGRES_URL}
