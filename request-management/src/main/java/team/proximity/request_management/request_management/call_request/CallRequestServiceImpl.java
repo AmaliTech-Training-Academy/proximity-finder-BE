@@ -1,12 +1,10 @@
 package team.proximity.request_management.request_management.call_request;
 
+import jakarta.persistence.EntityExistsException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import team.proximity.request_management.request_management.security.SecurityContextUtils;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CallRequestServiceImpl implements CallRequestService {
@@ -56,7 +54,7 @@ public class CallRequestServiceImpl implements CallRequestService {
                 .isPresent();
 
         if (exists) {
-            throw new IllegalArgumentException("A call request for this phone number and provider already exists.");
+            throw new EntityExistsException("A call request for this phone number and provider already exists.");
         }
     }
 }

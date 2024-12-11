@@ -32,39 +32,14 @@ public class SecurityConfiguration {
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
 
-                        .requestMatchers(
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/v3/api-docs/**"
-                        ).permitAll()
-
                         .requestMatchers(HttpMethod.POST,
                                 "/api/v1/quote-service/quotes")
                         .hasAuthority("ROLE_SEEKER")
 
-                        .requestMatchers(HttpMethod.GET,
-                                "/api/v1/quote-service/quotes/creator",
-                                "/api/v1/quote-service/quotes/{quoteId}/creator/details")
-                        .hasAuthority("ROLE_SEEKER")
-
-
-                        .requestMatchers(HttpMethod.PUT,
-                                "/api/v1/quote-service/call-request/{requestId}/complete",
-                                "/api/v1/quote-service/quotes/{quoteId}/status/approve",
-                                "/api/v1/quote-service/quotes/{quoteId}/status/decline")
-                        .hasAuthority("ROLE_PROVIDER")
-
-                        .requestMatchers(HttpMethod.GET,
-                                "/api/v1/quote-service/call-request",
-                                "/api/v1/quote-service/call-request/{requestId}",
-                                "/api/v1/quote-service/quotes/provider",
-                                "/api/v1/quote-service/requests/assigned",
-                                "/api/v1/quote-service/quotes/{quoteId}/provider/details")
-                        .hasAuthority("ROLE_PROVIDER")
 
                         .requestMatchers(HttpMethod.POST,
                                 "/api/v1/quote-service/call-request")
-                        .hasAuthority("ROLE_PROVIDER")
+                        .hasAuthority("ROLE_SEEKER")
 
                         .anyRequest().authenticated()
                 )
