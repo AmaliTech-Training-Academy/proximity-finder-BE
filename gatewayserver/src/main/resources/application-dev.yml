@@ -15,9 +15,10 @@ spring:
                 instanceName: providerProfileCircuitBreaker
                 fallbackUri: forward:/fallback/provider-profile-service
           predicates:
+            - Path=/api/v1/provider-service/**
             - Method=GET
 
-        - id: quote-and-call-service
+        - id: quote-service
           uri: lb://REQUEST-MANAGEMENT-SERVICE
           filters:
             - name: Retry
@@ -28,6 +29,7 @@ spring:
                 instanceName: quoteServiceCircuitBreaker
                 fallbackUri: forward:/fallback/quote-service
           predicates:
+            - Path=/api/v1/quote-service/**
             - Method=GET
         - id: help-and-support
           uri: lb://HELP-AND-SUPPORT
@@ -40,6 +42,7 @@ spring:
                 instanceName: helpAndSupportCircuitBreaker
                 fallbackUri: forward:/fallback/support-service
           predicates:
+            - Path=/api/v1/support/**
             - Method=GET
         - id: management-service
           uri: lb://MANAGEMENT
@@ -52,6 +55,7 @@ spring:
                 instanceName: managementServiceCircuitBreaker
                 fallbackUri: forward:/fallback/management-service
           predicates:
+            - Path=/api/v1/management/**
             - Method=GET
 
       default-filters:
@@ -94,7 +98,7 @@ eureka:
     healthcheck:
       enabled: true
   instance:
-    hostname: ${EUREKA_HOSTNAME}
+    hostname: ${EUREKA_HOSTNAME:localhost}
     prefer-ip-address: true
     instance-id: ${spring.application.name}:${server.port}
 
