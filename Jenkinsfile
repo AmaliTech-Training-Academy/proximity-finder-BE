@@ -33,7 +33,7 @@ def deployConfig = [
     ]
 ]
 
-def sharedBranches = ['main', 'develop', 'devops']
+def sharedBranches = ['main', 'develop', 'devops', 'fix-devops']
 
 def runMavenCommand(command) {
     def mvn = tool 'maven'
