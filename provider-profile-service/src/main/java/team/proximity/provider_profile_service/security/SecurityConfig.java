@@ -38,18 +38,19 @@ public class SecurityConfig {
                         )
                         .permitAll()
 
-                        .requestMatchers("/api/v1/provider-service/about/**")
-                        .hasAuthority("ROLE_PROVIDER")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/provider-service/about/provider-profile")
+                        .hasAnyAuthority("ROLE_PROVIDER", "ROLE_SEEKER", "ROLE_ADMIN")
+
 
                         .requestMatchers(
                                 "/api/v1/provider-service/payment-method")
                         .hasAnyAuthority("ROLE_PROVIDER", "ROLE_SEEKER")
 
-                        .requestMatchers(
-                                "/api/v1/provider-service/about/provider-profile"
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/v1/provider-service/about/provider-profile/**"
                         )
+                        .hasAnyAuthority("ROLE_PROVIDER","ROLE_SEEKER", "ROLE_ADMIN")
 
-                        .permitAll()
                         .requestMatchers(HttpMethod.GET,
                                 "api/v1/provider-service/payment-method/providers/mobile-money-providers",
                                 "api/v1/provider-service/payment-preferences"
