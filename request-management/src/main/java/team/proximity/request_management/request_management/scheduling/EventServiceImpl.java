@@ -71,4 +71,12 @@ public class EventServiceImpl implements EventService {
         eventRepository.delete(event);
     }
 
+
+    public boolean isProviderAvailable(AvailabilityCheckRequest request) {
+
+        List<Event> events = eventRepository.findEventsOnDate(request.schedulingDate(), request.createdBy());
+
+        return events.isEmpty();
+    }
+
 }

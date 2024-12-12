@@ -54,4 +54,10 @@ public class EventController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .body(new ApiSuccessResponse("Event deleted successfully"));
     }
+
+    @PostMapping("/availability")
+    public ResponseEntity<Boolean> checkAvailability(@RequestBody AvailabilityCheckRequest request) {
+        boolean isAvailable = eventService.isProviderAvailable(request);
+        return ResponseEntity.ok(isAvailable);
+    }
 }
