@@ -2,6 +2,7 @@ package team.proximity.request_management.request_management.scheduling;
 
 import org.springframework.stereotype.Service;
 import jakarta.persistence.EntityNotFoundException;
+import team.proximity.request_management.request_management.exception.EventNotFoundException;
 import team.proximity.request_management.request_management.security.SecurityContextUtils;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class EventServiceImpl implements EventService {
 
     public EventResponse getEvent(Long eventId) {
         Event event = eventRepository.findByEventIdAndCreatedBy(eventId, SecurityContextUtils.getEmail())
-                .orElseThrow(() -> new EntityNotFoundException("Event not found with id: " + eventId));
+                .orElseThrow(() -> new EventNotFoundException("Event not found with id: " + eventId));
         return eventMapper.toEventResponse(event);
     }
 
