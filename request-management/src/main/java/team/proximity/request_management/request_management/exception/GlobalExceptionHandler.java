@@ -139,13 +139,13 @@ public class GlobalExceptionHandler {
                         request.getRequestURI()
                 ));
     }
-@ExceptionHandler(EntityExistsException.class)
-public ResponseEntity<ApiErrorResponse> handleEntityExistsException(EntityExistsException ex, HttpServletRequest request) {
-    LOGGER.warn("Entity already exists: {}", ex.getMessage());
-    return ResponseEntity.status(HttpStatus.CONFLICT)
+@ExceptionHandler(EventNotFoundException.class)
+public ResponseEntity<ApiErrorResponse> handleEntityExistsException(EventNotFoundException ex, HttpServletRequest request) {
+    LOGGER.warn("Not Found: {}", ex.getMessage());
+    return ResponseEntity.status(HttpStatus.NOT_FOUND)
             .body(new ApiErrorResponse(
-                    HttpStatus.CONFLICT.value(),
-                    HttpStatus.CONFLICT.getReasonPhrase(),
+                    HttpStatus.NOT_FOUND.value(),
+                    HttpStatus.NOT_FOUND.getReasonPhrase(),
                     ex.getMessage(),
                     request.getRequestURI()
             ));
