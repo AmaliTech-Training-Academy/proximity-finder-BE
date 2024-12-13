@@ -54,12 +54,26 @@ public class ReviewController {
     }
 
 
-    @GetMapping("/service-provider/{serviceProviderId}")
-    public ResponseEntity<Page<ReviewDTO>> getServiceProviderReviews(
-            @PathVariable UUID serviceProviderId,
+    @GetMapping("/provider-service/{providerServiceId}")
+    public ResponseEntity<ApiSuccessResponse<List<ReviewDTO>>> getProviderServiceReviews(
+            @PathVariable UUID providerServiceId,
             Pageable pageable) {
-        Page<ReviewDTO> reviews = reviewService.getServiceProviderReviews(serviceProviderId, pageable);
-        return ResponseEntity.ok(reviews);
+        List<ReviewDTO> reviews = reviewService.getProviderServiceReviews(providerServiceId);
+        ApiSuccessResponse<List<ReviewDTO>> response = ApiSuccessResponse.<List<ReviewDTO>>builder()
+                .status(ApiResponseStatus.SUCCESS)
+                .result(reviews)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+    @GetMapping("/service-provider")
+    public ResponseEntity<ApiSuccessResponse<List<ReviewDTO>>> getServiceProviderReviews(
+            @RequestParam String providerEmail) {
+        List<ReviewDTO> reviews = reviewService.getServiceProviderReviews(providerEmail);
+        ApiSuccessResponse<List<ReviewDTO>> response = ApiSuccessResponse.<List<ReviewDTO>>builder()
+                .status(ApiResponseStatus.SUCCESS)
+                .result(reviews)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/service-provider/{serviceProviderId}/sentiment-analysis")
