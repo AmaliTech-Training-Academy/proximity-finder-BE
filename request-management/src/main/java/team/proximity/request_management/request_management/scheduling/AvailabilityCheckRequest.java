@@ -12,8 +12,8 @@ public record AvailabilityCheckRequest(
         String schedulingDate,
 
         @NotNull(message = "Estimated hours cannot be null")
-        @NotEmpty(message = "Estimated hours cannot be empty")
-        String estimatedHours,
+
+        Double estimatedHours,
 
         @NotNull(message = "Provider email cannot be null")
         @NotEmpty(message = "Provider email cannot be empty")
