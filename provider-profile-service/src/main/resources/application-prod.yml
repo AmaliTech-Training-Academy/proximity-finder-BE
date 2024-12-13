@@ -27,7 +27,7 @@ aws:
     region: us-east-2
 
 server:
-  port: ${PROD_PORT}
+  port: ${PROD_PORT:8050}
 
 management:
 
@@ -43,7 +43,14 @@ eureka-server:
 eureka:
   client:
     service-url:
-      defaultZone: https://${eureka-server.hostname}:${eureka-server.port}/eureka/
+      defaultZone: http://${eureka-server.hostname}:${eureka-server.port}/eureka/
     register-with-eureka: true
     fetch-registry: true
+    enabled: true
+    healthcheck:
+      enabled: true
+  instance:
+      hostname: ${EUREKA_HOSTNAME}
+      prefer-ip-address: true
+      instance-id: ${spring.application.name}:${server.port}
 

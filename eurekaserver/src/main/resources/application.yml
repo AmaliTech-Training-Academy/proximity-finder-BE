@@ -1,9 +1,11 @@
 spring:
+  profiles:
+    active: dev
   application:
     name: "eureka-server"
 
 server:
-  port: 9091
+  port: 8761
 
 eureka:
   instance:

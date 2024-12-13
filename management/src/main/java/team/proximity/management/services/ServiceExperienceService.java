@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 import team.proximity.management.exceptions.FileUploadException;
 import team.proximity.management.exceptions.ResourceNotFoundException;
-import team.proximity.management.model.ProviderService;
+
 import team.proximity.management.model.ServiceExperience;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +13,11 @@ import org.springframework.stereotype.Service;
 import team.proximity.management.repositories.ProviderServiceRepository;
 import team.proximity.management.repositories.ServiceExperienceRepository;
 import team.proximity.management.requests.ServiceExperienceRequest;
+import team.proximity.management.validators.upload.ImageValidationStrategy;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -45,8 +47,9 @@ public class ServiceExperienceService {
     // Helper method to handle S3 file upload
     private String uploadFileToS3(MultipartFile file) {
         try {
-            return s3Service.uploadFile(file);
-        } catch (IOException e) {
+            return s3Service.uploadFile(file, new ImageValidationStrategy()).get("url");
+        }
+        catch (IOException e) {
             throw new FileUploadException("Failed to upload file to S3", e);
         }
     }
@@ -59,7 +62,7 @@ public class ServiceExperienceService {
 
     public ServiceExperience createServiceExperience( ServiceExperienceRequest request) {
         log.info("Creating service experience: {}", request);
-        Optional<ProviderService> providerServiceOpt = providerServiceRepository.findById(request.getProviderServiceId());
+        Optional<team.proximity.management.model.ProviderService> providerServiceOpt = providerServiceRepository.findById(request.getProviderServiceId());
         if (providerServiceOpt.isEmpty()) {
             throw new ResourceNotFoundException("ProviderService not found");
         }

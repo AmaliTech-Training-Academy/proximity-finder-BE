@@ -9,10 +9,15 @@ import team.proximity.provider_profile_service.common.AuthHelper;
 import team.proximity.provider_profile_service.exception.about.AboutNotFoundException;
 import team.proximity.provider_profile_service.exception.about.FileValidationException;
 import team.proximity.provider_profile_service.exception.about.UnauthorizedAccessException;
+import team.proximity.provider_profile_service.payment_method.PaymentMethod;
+import team.proximity.provider_profile_service.payment_method.PaymentMethodMapper;
+import team.proximity.provider_profile_service.payment_method.PaymentMethodRepository;
+import team.proximity.provider_profile_service.payment_method.PaymentMethodResponse;
 import team.proximity.provider_profile_service.upload.FileUploadService;
 import team.proximity.provider_profile_service.validations.AboutValidator;
 import team.proximity.provider_profile_service.validations.FileValidator;
 
+import java.util.List;
 
 
 @Service
@@ -25,13 +30,17 @@ public class AboutServiceImpl implements AboutService {
     private final AboutRepository aboutRepository;
     private final FileValidator fileValidator;
     private final AboutValidator aboutValidator;
+    private final PaymentMethodRepository paymentMethodRepository;
+    private final PaymentMethodMapper paymentMethodMapper;
 
-    public AboutServiceImpl(AboutBusinessMapper aboutBusinessMapper, FileUploadService fileUploadService, AboutRepository aboutRepository, FileValidator fileValidator, AboutValidator aboutValidator) {
+    public AboutServiceImpl(AboutBusinessMapper aboutBusinessMapper, FileUploadService fileUploadService, AboutRepository aboutRepository, FileValidator fileValidator, AboutValidator aboutValidator, PaymentMethodRepository paymentMethodRepository, PaymentMethodMapper paymentMethodMapper) {
         this.aboutBusinessMapper = aboutBusinessMapper;
         this.fileUploadService = fileUploadService;
         this.aboutRepository = aboutRepository;
         this.fileValidator = fileValidator;
         this.aboutValidator = aboutValidator;
+        this.paymentMethodRepository = paymentMethodRepository;
+        this.paymentMethodMapper = paymentMethodMapper;
     }
 
     public AboutBusinessResponse getAboutForAuthenticatedUser() {
@@ -84,6 +93,23 @@ public class AboutServiceImpl implements AboutService {
                 .businessSummary(aboutRequest.businessSummary())
                 .createdBy(AuthHelper.getAuthenticatedUsername())
                 .build();
+    }
+
+    public AboutAndPaymentMethodsResponse getAboutAndPaymentMethods(String email) {
+        About about = aboutRepository.findByCreatedBy(email).orElseThrow();
+
+        AboutBusinessResponse aboutBusinessResponse = aboutBusinessMapper.mapToResponse(about);
+
+
+        List<PaymentMethod> paymentMethods = paymentMethodRepository.findByCreatedBy(email);
+
+        List<PaymentMethodResponse> paymentMethodResponses = paymentMethods
+                .stream()
+                .map(paymentMethodMapper::mapToResponse)
+                .toList();
+
+        return new AboutAndPaymentMethodsResponse(aboutBusinessResponse, paymentMethodResponses);
+
     }
 }
 

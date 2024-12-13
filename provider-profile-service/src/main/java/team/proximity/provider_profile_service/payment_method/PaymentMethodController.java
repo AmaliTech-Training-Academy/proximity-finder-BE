@@ -17,7 +17,7 @@ import java.util.List;
 
 @Tag(name = "Payment Methods", description = "Operations related to payment methods")
 @RestController
-@RequestMapping("/api/v1/payment-method")
+@RequestMapping("/api/v1/provider-service/payment-method")
 public class PaymentMethodController {
 
     private final PaymentMethodService paymentMethodService;

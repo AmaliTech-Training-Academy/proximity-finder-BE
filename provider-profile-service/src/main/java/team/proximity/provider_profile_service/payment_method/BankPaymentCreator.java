@@ -1,7 +1,9 @@
 package team.proximity.provider_profile_service.payment_method;
 
 import org.springframework.stereotype.Component;
+
 import org.springframework.util.StringUtils;
+
 import team.proximity.provider_profile_service.bank.Bank;
 import team.proximity.provider_profile_service.bank.BankRepository;
 import team.proximity.provider_profile_service.exception.payment_method.PaymentMethodCreationException;

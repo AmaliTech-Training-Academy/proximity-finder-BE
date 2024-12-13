@@ -18,7 +18,7 @@ services:
     container_name: eureka-server-container
     restart: on-failure:3
     ports:
-      - "9091:9091"
+      - "8761:8761"
     networks:
       - proximity-finder-network
       - training-shared-network
@@ -38,7 +38,6 @@ services:
       - ./.management.env
     volumes:
       - prox-volume:/app/data
-
 
   provider-profile-service:
     image: 909544387219.dkr.ecr.eu-west-1.amazonaws.com/provider-profile-service:latest
@@ -65,6 +64,61 @@ services:
       - training-shared-network
     env_file:
       - ./.gatewayserver.env
+    volumes:
+      - prox-volume:/app/data
+
+  help-and-support:
+    image: 909544387219.dkr.ecr.eu-west-1.amazonaws.com/help-and-support:latest
+    container_name: help-and-support-container
+    restart: on-failure:3
+    ports:
+      - "9095:9095"
+    networks:
+      - proximity-finder-network
+      - training-shared-network
+    env_file:
+      - ./.help-and-support.env
+    volumes:
+      - prox-volume:/app/data
+
+  request-management:
+    image: 909544387219.dkr.ecr.eu-west-1.amazonaws.com/request-management:latest
+    container_name: request-management-container
+    restart: on-failure:3
+    ports:
+      - "9096:9096"
+    networks:
+      - proximity-finder-network
+      - training-shared-network
+    env_file:
+      - ./.request-management.env
+    volumes:
+      - prox-volume:/app/data
+
+  notification-service:
+    image: 909544387219.dkr.ecr.eu-west-1.amazonaws.com/notification-service:latest
+    container_name: notification-service-container
+    restart: on-failure:3
+    ports:
+      - "9097:9097"
+    networks:
+      - proximity-finder-network
+      - training-shared-network
+    env_file:
+      - ./.notification-service.env
+    volumes:
+      - prox-volume:/app/data
+
+  rabbitmq:
+    image: rabbitmq:4.0-management
+    container_name: rabbitmq-container
+    restart: on-failure:3
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - proximity-finder-network
+      - training-shared-network
     volumes:
       - prox-volume:/app/data
 

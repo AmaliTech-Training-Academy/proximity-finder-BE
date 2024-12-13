@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import team.proximity.management.exceptions.ResourceNotFoundException;
 import team.proximity.management.model.Services;
 import team.proximity.management.requests.ServiceRequest;
-import team.proximity.management.responses.ApiResponse;
+import team.proximity.management.requests.UpdateServiceRequest;
+import team.proximity.management.responses.ApiSuccessResponse;
 import team.proximity.management.responses.ApiResponseStatus;
 import team.proximity.management.services.ServicesService;
 
@@ -41,12 +42,10 @@ public class ServicesController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
     })
-    public ResponseEntity<ApiResponse<List<Services>>> getAllServices() {
+    public ResponseEntity<ApiSuccessResponse<List<Services>>> getAllServices() {
         log.info("Fetching all services");
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        log.info("User: {}", authentication.getName());
         List<Services> servicesList = servicesService.getAllServices();
-        return ResponseEntity.ok(ApiResponse.<List<Services>>builder()
+        return ResponseEntity.ok(ApiSuccessResponse.<List<Services>>builder()
                 .status(ApiResponseStatus.SUCCESS)
                 .result(servicesList)
                 .build());
@@ -61,11 +60,10 @@ public class ServicesController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
     })
-    public ResponseEntity<ApiResponse<Services>> getServiceById(@PathVariable UUID id) {
+    public ResponseEntity<ApiSuccessResponse<Services>> getServiceById(@PathVariable UUID id) {
         log.info("Fetching service with id: {}", id);
-        Services service = servicesService.getServiceById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Service not found with id " + id));
-        return ResponseEntity.ok(ApiResponse.<Services>builder()
+        Services service = servicesService.getServiceById(id);
+        return ResponseEntity.ok(ApiSuccessResponse.<Services>builder()
                 .status(ApiResponseStatus.SUCCESS)
                 .result(service)
                 .build());
@@ -81,11 +79,11 @@ public class ServicesController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "You are not authorized to view the resource"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden")
     })
-    public ResponseEntity<ApiResponse<Services>> createService(@Validated @ModelAttribute ServiceRequest serviceRequest) throws IOException {
+    public ResponseEntity<ApiSuccessResponse<Services>> createService(@Validated @ModelAttribute ServiceRequest serviceRequest) throws IOException {
         log.info("Creating new service with request: {}", serviceRequest);
         Services createdService = servicesService.createService(serviceRequest);
         log.debug("Created service: {}", createdService);
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.<Services>builder()
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiSuccessResponse.<Services>builder()
                 .status(ApiResponseStatus.SUCCESS)
                 .result(createdService)
                 .build());
@@ -101,10 +99,10 @@ public class ServicesController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
     })
-    public ResponseEntity<ApiResponse<Services>> updateService(@PathVariable UUID id, @RequestBody ServiceRequest serviceDetails) {
+    public ResponseEntity<ApiSuccessResponse<Services>> updateService(@PathVariable UUID id, @ModelAttribute UpdateServiceRequest serviceDetails) {
         log.info("Updating service with id: {} and request: {}", id, serviceDetails);
         Services updatedService = servicesService.updateService(id, serviceDetails);
-        return ResponseEntity.ok(ApiResponse.<Services>builder()
+        return ResponseEntity.ok(ApiSuccessResponse.<Services>builder()
                 .status(ApiResponseStatus.SUCCESS)
                 .result(updatedService)
                 .build());
@@ -119,11 +117,11 @@ public class ServicesController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
     })
-    public ResponseEntity<ApiResponse<Void>> deleteService(@PathVariable UUID id) {
+    public ResponseEntity<ApiSuccessResponse<Void>> deleteService(@PathVariable UUID id) {
         log.info("Deleting service with id: {}", id);
         servicesService.deleteService(id);
         log.debug("Deleted service with id: {}", id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiResponse.<Void>builder()
+        return ResponseEntity.status(HttpStatus.OK).body(ApiSuccessResponse.<Void>builder()
                 .status(ApiResponseStatus.SUCCESS)
                 .build());
     }

@@ -8,10 +8,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import team.proximity.management.exceptions.InvalidFileTypeException;
+import team.proximity.management.validators.upload.FileValidationContext;
+import team.proximity.management.validators.upload.FileValidationStrategy;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Service
@@ -25,11 +29,10 @@ public class S3Service {
     @Value("${cloud.aws.region.static}")
     private String region;
 
-    public String uploadFile(MultipartFile file) throws IOException {
-        // Check if the file is an image
-//        if (!isValidImage(file)) {
-//            throw new InvalidFileTypeException("Invalid file type. Only image files are allowed.");
-//        }
+    public Map<String, String> uploadFile(MultipartFile file, FileValidationStrategy validationStrategy) throws IOException {
+        // Validate file
+        FileValidationContext validationContext = new FileValidationContext(validationStrategy);
+        validationContext.validate(file);
 
         // Convert MultipartFile to File
         File fileObj = convertMultiPartFileToFile(file);
@@ -41,19 +44,14 @@ public class S3Service {
         // Delete temporary file
         fileObj.delete();
 
-        return String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, region, fileName);
+        String fileUrl = String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, region, fileName);
+        Map<String, String> result = new HashMap<>();
+        result.put("url", fileUrl);
+        result.put("filename", fileName);
+
+        return result;
     }
 
-    private boolean isValidImage(MultipartFile file) throws IOException {
-        // Get MIME type
-        String contentType = file.getContentType();
-
-        // Allow only common image MIME types
-        return contentType.equals("image/jpeg") ||
-                contentType.equals("image/png") ||
-                contentType.equals("image/jpg") ||
-                contentType.equals("image/gif");
-    }
 
     private File convertMultiPartFileToFile(MultipartFile file) throws IOException {
         File convertedFile = new File(file.getOriginalFilename());

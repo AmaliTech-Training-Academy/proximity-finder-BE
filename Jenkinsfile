@@ -1,7 +1,7 @@
 @Library('shared-libraries') _
 
 def appName = 'proximity-finder'
-def availableServices = ["authservice", "eurekaserver", "management", "provider-profile-service", "gatewayserver"]
+def availableServices = ["authservice", "eurekaserver", "management", "provider-profile-service", "gatewayserver", "request-management", "help-and-support"]
 def changedServices = []
 
 def awsCreds = [
@@ -71,15 +71,19 @@ def prepareDeploymentFiles(imageRegistry, gitSha, imageName, changedServices) {
         sh "sed -i 's|image: ${oldImage}|image: ${newImage}|g' app/docker-compose.yml"
     }
 
+    sh "cat app/docker-compose.yml"
+
     echo "Deployment files prepared successfully in 'app/' directory."
 
 }
 
 pipeline {
-    agent any
+    agent {
+        label 'ubuntu'
+    }
     tools {
         maven 'maven'
-        jdk 'jdk21'
+        jdk 'jdk_21'
     }
 
     environment {
@@ -133,12 +137,32 @@ pipeline {
                         parts.size() > 1 ? parts[0] : null
                     }.findAll { it }
 
-                    // Filter only available services
-                    echo "Filtering to identify changed services from available ones..."
-                    changedServices = servicesInChanges.unique().findAll { service ->
-                        availableServices.contains(service)
+                    echo "Workspace path is: ${WORKSPACE}"
+
+                    // Dynamically identify all service directories based on defined criteria
+                    def serviceDirectories = []
+                    def files = findFiles(glob: '**/pom.xml') // Adjust to match your structure
+                    files.each { file ->
+                        def serviceDir = file.path.tokenize('/')[0] // Extract the top-level directory
+                        if (!serviceDirectories.contains(serviceDir)) {
+                            serviceDirectories.add(serviceDir)
+                        }
                     }
 
+                    echo "Detected service directories: ${serviceDirectories}"
+
+                    // Filter only available services
+//                     echo "Filtering to identify changed services from available ones..."
+//                     changedServices = servicesInChanges.unique().findAll { service ->
+//                         availableServices.contains(service)
+//                     }
+
+                    // Filter only available services
+                    // Find intersection between detected changes and identified service directories
+                    echo "Filtering to identify changed services..."
+                    changedServices = servicesInChanges.unique().findAll { service ->
+                        serviceDirectories.contains(service)
+                    }
 
                     // Log the final list of changed services
                     if (changedServices) {
