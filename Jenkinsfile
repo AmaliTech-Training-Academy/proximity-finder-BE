@@ -78,9 +78,7 @@ def prepareDeploymentFiles(imageRegistry, gitSha, imageName, changedServices) {
 }
 
 pipeline {
-    agent {
-        label 'ubuntu'
-    }
+    agent any
     tools {
         maven 'maven'
         jdk 'jdk_21'
