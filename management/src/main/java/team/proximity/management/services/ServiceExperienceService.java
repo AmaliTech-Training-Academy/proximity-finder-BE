@@ -50,6 +50,7 @@ public class ServiceExperienceService {
             return s3Service.uploadFile(file, new ImageValidationStrategy()).get("url");
         }
         catch (IOException e) {
+            log.error("Failed to upload file to S3", e);
             throw new FileUploadException("Failed to upload file to S3", e);
         }
     }

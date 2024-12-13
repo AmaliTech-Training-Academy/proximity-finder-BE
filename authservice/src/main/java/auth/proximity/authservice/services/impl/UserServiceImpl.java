@@ -14,8 +14,10 @@ import auth.proximity.authservice.exception.UserAlreadyExistsException;
 import auth.proximity.authservice.repository.RoleRepository;
 import auth.proximity.authservice.repository.UserRepository;
 import auth.proximity.authservice.security.AuthenticationHelper;
+import auth.proximity.authservice.services.EmailService;
 import auth.proximity.authservice.services.IUserService;
 import auth.proximity.authservice.services.security.UserDetailsImpl;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,6 +37,7 @@ public class UserServiceImpl implements IUserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
+    private final EmailService emailService;
 
     public UserInfoResponse getUserInfo(String email) {
         User foundUser = userRepository.findByEmail(email).orElseThrow(()->
@@ -128,9 +131,9 @@ public class UserServiceImpl implements IUserService {
     }
     public void updateUserInfoByEmail(String email, UserUpdateRequest userUpdateRequest) {
         if ((userUpdateRequest.userName() == null || userUpdateRequest.userName().isEmpty()) &&
-                (userUpdateRequest.phoneNumber() == null || userUpdateRequest.phoneNumber().isEmpty()) &&
+                (userUpdateRequest.mobileNumber() == null || userUpdateRequest.mobileNumber().isEmpty()) &&
                 (userUpdateRequest.businessOwnerName() == null || userUpdateRequest.businessOwnerName().isEmpty()) &&
-                (userUpdateRequest.businessAddress() == null || userUpdateRequest.businessAddress().isEmpty())) {
+                (userUpdateRequest.placeName() == null || userUpdateRequest.placeName().isEmpty())) {
             throw new IllegalArgumentException("At least one non-empty field must be provided for update");
         }
 
@@ -139,8 +142,8 @@ public class UserServiceImpl implements IUserService {
         if (userUpdateRequest.userName() != null) {
             foundUser.setUserName(userUpdateRequest.userName());
         }
-        if (userUpdateRequest.phoneNumber() != null) {
-            foundUser.setMobileNumber(userUpdateRequest.phoneNumber());
+        if (userUpdateRequest.mobileNumber() != null) {
+            foundUser.setMobileNumber(userUpdateRequest.mobileNumber());
         }
         if (userUpdateRequest.businessOwnerName() != null) {
             foundUser.setBusinessOwnerName(userUpdateRequest.businessOwnerName());
@@ -179,6 +182,17 @@ public class UserServiceImpl implements IUserService {
                 () -> new ResourceNotFoundException("User", "id", userId.toString()));
         user.setStatus(accountStatus);
         userRepository.save(user);
+    }
+    @Override
+    public void sendRejectionEmail(RejectionEmailRequest rejectionEmailRequest) {
+        try {
+            User user = userRepository.findByEmail(rejectionEmailRequest.email()).orElseThrow(
+                    () -> new ResourceNotFoundException("User", "id", rejectionEmailRequest.email()));
+            emailService.sendRejectionEmail(user, rejectionEmailRequest.reason());
+        } catch (MessagingException e) {
+            // Handle the exception, e.g., log the error or rethrow a custom exception
+            throw new RuntimeException("Failed to send rejection email", e);
+        }
     }
 }
 

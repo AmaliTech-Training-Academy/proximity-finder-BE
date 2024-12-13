@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
                 .status(ApiResponseStatus.ERROR)
                 .errors(Collections.singletonList(errorResponse))
                 .build();
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
