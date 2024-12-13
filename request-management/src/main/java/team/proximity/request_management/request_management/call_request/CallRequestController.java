@@ -6,11 +6,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import team.proximity.request_management.request_management.quotes.ApiSuccessResponse;
-import team.proximity.request_management.request_management.request.RequestResponse;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/quote-service/call-request")
@@ -28,7 +26,7 @@ public class CallRequestController {
         return ResponseEntity.ok(new ApiSuccessResponse("Call request created successfully."));
     }
 
-
+    @PreAuthorize("hasAuthority('ROLE_PROVIDER')")
     @GetMapping
     public ResponseEntity<Page<ProviderCallRequestResponse>> getAllCallRequests(
             @RequestParam(defaultValue = "0") int page,
@@ -44,13 +42,14 @@ public class CallRequestController {
 
     }
 
+    @PreAuthorize("hasAuthority('ROLE_PROVIDER')")
     @GetMapping("/{requestId}")
     public ResponseEntity<ProviderCallRequestResponse> getCallRequestById(@PathVariable Long requestId) {
         ProviderCallRequestResponse callRequest = callRequestService.getCallRequestById(requestId);
         return ResponseEntity.ok(callRequest);
     }
 
-
+    @PreAuthorize("hasAuthority('ROLE_PROVIDER')")
     @PatchMapping("/{requestId}/complete")
     public ResponseEntity<ApiSuccessResponse> completeCallRequest(@PathVariable Long requestId) {
         callRequestService.completeCallRequest(requestId);
