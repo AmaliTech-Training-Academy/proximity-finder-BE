@@ -1,10 +1,14 @@
 package team.proximity.request_management.request_management.exception;
 
+import jakarta.persistence.EntityExistsException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -45,6 +49,17 @@ public class GlobalExceptionHandler {
                         HttpStatus.CONFLICT.value(),
                         HttpStatus.CONFLICT.getReasonPhrase(),
                         ex.getMessage(),
+                        request.getRequestURI()
+                ));
+    }
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ApiErrorResponse> handleAuthorizationDeniedException(AuthorizationDeniedException ex, HttpServletRequest request) {
+        LOGGER.error("Access Denied: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(new ApiErrorResponse(
+                        HttpStatus.FORBIDDEN.value(),
+                        HttpStatus.FORBIDDEN.getReasonPhrase(),
+                        "You do not have permission to perform this action.",
                         request.getRequestURI()
                 ));
     }
@@ -101,6 +116,41 @@ public class GlobalExceptionHandler {
                         request.getRequestURI()
                 ));
     }
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ApiErrorResponse> handleMethodNotSupportedException(HttpRequestMethodNotSupportedException ex, HttpServletRequest request) {
+        LOGGER.warn("Method not supported: {}", ex.getMethod());
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
+                .body(new ApiErrorResponse(
+                        HttpStatus.METHOD_NOT_ALLOWED.value(),
+                        HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase(),
+                        "HTTP method " + ex.getMethod() + " is not supported for this endpoint.",
+                        request.getRequestURI()
+                ));
+    }
+
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<ApiErrorResponse> handleMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException ex, HttpServletRequest request) {
+        LOGGER.warn("Media type not supported: {}", ex.getContentType());
+        return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                .body(new ApiErrorResponse(
+                        HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(),
+                        HttpStatus.UNSUPPORTED_MEDIA_TYPE.getReasonPhrase(),
+                        "Media type " + ex.getContentType() + " is not supported.",
+                        request.getRequestURI()
+                ));
+    }
+@ExceptionHandler(EventNotFoundException.class)
+public ResponseEntity<ApiErrorResponse> handleEntityExistsException(EventNotFoundException ex, HttpServletRequest request) {
+    LOGGER.warn("Not Found: {}", ex.getMessage());
+    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(new ApiErrorResponse(
+                    HttpStatus.NOT_FOUND.value(),
+                    HttpStatus.NOT_FOUND.getReasonPhrase(),
+                    ex.getMessage(),
+                    request.getRequestURI()
+            ));
+}
+
 
 
 }

@@ -1,5 +1,6 @@
 package auth.proximity.authservice.entity;
 
+import auth.proximity.authservice.enums.AccountStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -44,7 +45,7 @@ public class User {
 
     private boolean credentialsNonExpired = true;
 
-    private boolean enabled = true;
+    private AccountStatus status ;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
     @JoinColumn(name = "role_id", referencedColumnName = "role_id")
@@ -54,7 +55,9 @@ public class User {
 
     private String profileImage;
 
-    private String businessAddress;
+    private String placeName;
+    private double latitude;
+    private double longitude;
 
 
     public User(String userName, String email, String password, String mobileNumber) {

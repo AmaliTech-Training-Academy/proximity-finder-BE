@@ -10,13 +10,14 @@ done
 if docker ps --filter "name=rabbitmq-container" --format '{{.Names}}' | grep -q "rabbitmq-container"; then
     echo "Rabbitmq container is already up and running"
 else
-    echo "Rabbitmq container is not up and running"
-    if docker compose -f docker-compose.yml up rabbitmq --remove-orphans -d; then
-            echo "RabbitMQ container started successfully"
-    else
-            echo "Failed to start RabbitMQ container"
-            exit 1
-    fi
+    cd /home/projects/proximity-finder/ &&
+        echo "Rabbitmq container is not up and running"
+        if docker compose -f docker-compose.yml up rabbitmq --remove-orphans -d; then
+                echo "RabbitMQ container started successfully"
+        else
+                echo "Failed to start RabbitMQ container"
+                exit 1
+        fi
 fi
 
 echo "Deployment complete"

@@ -26,13 +26,17 @@ public class GatewayConfig {
                         .uri("lb://SERVICE-PROVIDER-PROFILE"))
 
 
-                .route("quote-and-call-service", r -> r.path("/api/v1/support/**")
+                .route("help-and-support", r -> r.path("/api/v1/support/**")
                         .filters(f -> f.filter(authFilter.apply(new AuthenticationFilter.Config())))
                         .uri("lb://HELP-AND-SUPPORT"))
 
-                .route("management-service", r -> r.path("/api/v1/**")
+                .route("management-service", r -> r.path("/api/v1/management/**")
                         .filters(f -> f.filter(authFilter.apply(new AuthenticationFilter.Config())))
                         .uri("lb://MANAGEMENT"))
+
+                .route("quote-service", r -> r.path("/api/v1/quote-service/**")
+                        .filters(f -> f.filter(authFilter.apply(new AuthenticationFilter.Config())))
+                        .uri("lb://REQUEST-MANAGEMENT-SERVICE"))
 
                 .build();
     }

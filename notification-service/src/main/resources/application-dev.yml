@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: notification-service
+  rabbitmq:
+    host: ${HOST_NAME:localhost}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+    port: ${RABBITMQ_PORT:5672}
+    queue:
+      name: bookings-queue
+
+  email:
+    from: ${EMAIL_FROM:samuel.amo@amalitechtraining.org}
+
+  mail:
+    host: smtp.sendgrid.net
+    port: 587
+    username: apikey
+    password: ${SENDGRID_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+        debug: false
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${EUREKA_HOSTNAME:localhost}:${EUREKA_PORT:8761}/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    hostname: ${EUREKA_HOSTNAME}
+    instance-id: ${spring.application.name}:${server.port}
+    prefer-ip-address: true

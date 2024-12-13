@@ -25,13 +25,13 @@ import java.util.UUID;
 public class ReviewService {
     private final ReviewRepository reviewRepository;
 //    private final UserRepository userRepository;
-    private final ProviderServiceRepository serviceProviderRepository;
+    private final ProviderServiceRepository providerServiceRepository;
 //    private final ReviewReportRepository reportRepository;
     private final SentimentAnalyzer sentimentAnalyzer;
 
-    public ReviewService(ReviewRepository reviewRepository, ProviderServiceRepository serviceProviderRepository, SentimentAnalyzer sentimentAnalyzer) {
+    public ReviewService(ReviewRepository reviewRepository, ProviderServiceRepository providerServiceRepository, SentimentAnalyzer sentimentAnalyzer) {
         this.reviewRepository = reviewRepository;
-        this.serviceProviderRepository = serviceProviderRepository;
+        this.providerServiceRepository = providerServiceRepository;
 //        this.reportRepository = reportRepository;
         this.sentimentAnalyzer = sentimentAnalyzer;
     }
@@ -40,7 +40,7 @@ public class ReviewService {
 //        User user = userRepository.findByEmail(userEmail)
 //                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        ProviderService serviceProvider = serviceProviderRepository.findById(request.getProviderServiceId())
+        ProviderService serviceProvider = providerServiceRepository.findById(request.getProviderServiceId())
                 .orElseThrow(() -> new ResourceNotFoundException("Service provider not found"));
 
         Review review = new Review();
@@ -58,29 +58,24 @@ public class ReviewService {
         Review savedReview = reviewRepository.save(review);
         return convertToDTO(savedReview);
     }
-
-//    public ReviewReport reportReview(Long reviewId, String reason, String userEmail) {
-//        Review review = reviewRepository.findById(reviewId)
-//                .orElseThrow(() -> new ReviewNotFoundException("Review not found"));
-//
-//        User reporter = userRepository.findByEmail(userEmail)
-//                .orElseThrow(() -> new UserNotFoundException("User not found"));
-//
-//        ReviewReport report = new ReviewReport();
-//        report.setReview(review);
-//        report.setReportedBy(reporter);
-//        report.setReason(reason);
-//
-//        return reportRepository.save(report);
-//    }
+    public List<ReviewDTO> getAllReviews() {
+        List<Review> reviews = reviewRepository.findAll();
+        return reviews.stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
 
     public Page<ReviewDTO> getServiceProviderReviews(UUID serviceProviderId, Pageable pageable) {
-        Page<Review> reviews = reviewRepository.findByProviderService(serviceProviderId, pageable);
+        ProviderService providerService = providerServiceRepository.findById(serviceProviderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Service provider not found"));
+        Page<Review> reviews = reviewRepository.findByProviderService(providerService, pageable);
         return reviews.map(this::convertToDTO);
     }
 
     public Map<String, Object> getServiceProviderSentimentAnalysis(UUID serviceProviderId) {
-        List<Review> reviews = reviewRepository.findByProviderService(serviceProviderId, Pageable.unpaged()).getContent();
+        ProviderService providerService = providerServiceRepository.findById(serviceProviderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Service provider not found"));
+        List<Review> reviews = reviewRepository.findByProviderService(providerService, Pageable.unpaged()).getContent();
 
         long positiveCount = reviews.stream()
                 .filter(r -> "POSITIVE".equals(r.getSentiment()))
