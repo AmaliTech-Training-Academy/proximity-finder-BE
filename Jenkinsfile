@@ -2,7 +2,7 @@
 
 def appName = 'proximity-finder'
 def availableServices = ["authservice", "eurekaserver", "management", "provider-profile-service", "gatewayserver", "request-management", "help-and-support"]
-def changedServices = ["help-and-support", "notification-service", "request-management"]
+def changedServices = ["request-management"]
 
 def awsCreds = [
     region: 'eu-west-1',
