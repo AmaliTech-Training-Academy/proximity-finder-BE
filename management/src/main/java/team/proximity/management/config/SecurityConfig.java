@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
 //                        .requestMatchers(HttpMethod.GET,"/api/services").hasAnyAuthority("SEEKER", "PROVIDER")
 //                        .requestMatchers( "/api/services").hasAuthority("ROLE_ADMIN")
-                                .requestMatchers("/api/v1/reviews").hasAnyRole("SEEKER", "PROVIDER","ADMIN")
+//                                .requestMatchers("/api/v1/reviews").hasAnyAuthority("ROLE_SEEKER", "ROLE_PROVIDER")
                                 .anyRequest().permitAll()
                 )
                 .sessionManagement(session -> session

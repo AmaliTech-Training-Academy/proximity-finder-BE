@@ -1,5 +1,6 @@
 package auth.proximity.authservice.services;
 
+import auth.proximity.authservice.dto.RejectionEmailRequest;
 import auth.proximity.authservice.dto.user.AdminUpdatePasswordRequest;
 import auth.proximity.authservice.dto.user.UserDto;
 import auth.proximity.authservice.dto.user.UserInfoResponse;
@@ -27,4 +28,5 @@ public interface IUserService {
     void updatePassword(String email, AdminUpdatePasswordRequest adminUpdatePasswordRequest);
     void updateUserInfoByEmail(String email, UserUpdateRequest userUpdateRequest);
     void deleteProfilePicture(String email);
+    void sendRejectionEmail(RejectionEmailRequest rejectionEmailRequest);
 }
