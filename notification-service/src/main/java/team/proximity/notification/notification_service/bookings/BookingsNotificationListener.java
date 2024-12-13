@@ -20,7 +20,7 @@ public class BookingsNotificationListener {
         this.emailService = emailService;
     }
 
-    @RabbitListener(queues = "{bookings-queue}")
+    @RabbitListener(queues = "${spring.rabbitmq.queue.name}")
     public void handleBookingStatusChangedEvent(BookingStatusChangedEvent event) {
         log.info("Received booking status change event for bookingId: {}", event.bookingId());
 
