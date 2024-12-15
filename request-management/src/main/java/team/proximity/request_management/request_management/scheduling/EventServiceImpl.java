@@ -3,6 +3,7 @@ package team.proximity.request_management.request_management.scheduling;
 import org.springframework.stereotype.Service;
 import jakarta.persistence.EntityNotFoundException;
 import team.proximity.request_management.request_management.exception.EventNotFoundException;
+import team.proximity.request_management.request_management.exception.EventOverlapException;
 import team.proximity.request_management.request_management.security.SecurityContextUtils;
 
 import java.util.List;
@@ -22,6 +23,15 @@ public class EventServiceImpl implements EventService {
 
     public void createEvent(EventRequest request) {
         Event event = eventMapper.mapToEvent(request);
+        boolean existsOverlappingEvent = eventRepository.existsByStartDateAndTimeRange(
+                event.getStartDate(),
+                event.getStartTime(),
+                event.getEndTime()
+        );
+
+        if (existsOverlappingEvent) {
+            throw new EventOverlapException("An event already exists in the specified time range.");
+        }
         eventRepository.save(event);
     }
 
