@@ -16,4 +16,13 @@ public interface EventRepository extends JpaRepository<Event, Long>{
             @Param("schedulingDate") String schedulingDate,
             @Param("createdBy") String createdBy
     );
+    @Query("""
+    SELECT COUNT(e) > 0 
+    FROM Event e 
+    WHERE e.startDate = :startDate 
+      AND e.startTime < :endTime 
+      AND e.endTime > :startTime
+    """)
+    boolean existsByStartDateAndTimeRange(String startDate, String startTime, String endTime);
+
 }
