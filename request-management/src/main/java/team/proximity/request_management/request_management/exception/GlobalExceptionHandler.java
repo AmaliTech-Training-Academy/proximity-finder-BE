@@ -40,6 +40,17 @@ public class GlobalExceptionHandler {
                         request.getRequestURI()
                 ));
     }
+    @ExceptionHandler(EventOverlapException.class)
+    public ResponseEntity<ApiErrorResponse> handleEventOverlapException(EventOverlapException ex, HttpServletRequest request) {
+        LOGGER.warn("Event overlap: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ApiErrorResponse(
+                        HttpStatus.CONFLICT.value(),
+                        HttpStatus.CONFLICT.getReasonPhrase(),
+                        ex.getMessage(),
+                        request.getRequestURI()
+                ));
+    }
 
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<ApiErrorResponse> handleIllegalStateException(IllegalStateException ex, HttpServletRequest request) {
