@@ -2,6 +2,7 @@ package team.proximity.request_management.request_management.request;
 
 import jakarta.persistence.*;
 import lombok.*;
+import team.proximity.request_management.request_management.quotes.Quote;
 
 @Entity
 @Getter
@@ -19,4 +20,6 @@ public class Request {
     private String clientEmail;
     private String requestDate;
     private String assignedProvider;
+    @OneToOne(mappedBy = "request", cascade = CascadeType.ALL)
+    private Quote quote;
 }
