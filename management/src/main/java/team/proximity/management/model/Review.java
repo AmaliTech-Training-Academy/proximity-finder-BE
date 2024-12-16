@@ -26,7 +26,7 @@ public class Review {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private ProviderService providerService;
 
     private boolean isAnonymous = false;

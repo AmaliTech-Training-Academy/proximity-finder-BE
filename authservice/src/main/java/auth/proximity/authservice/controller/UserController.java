@@ -1,6 +1,7 @@
 package auth.proximity.authservice.controller;
 
 import auth.proximity.authservice.dto.PaginatedResponse;
+import auth.proximity.authservice.dto.RejectionEmailRequest;
 import auth.proximity.authservice.dto.ResponseDto;
 import auth.proximity.authservice.entity.AppRole;
 import auth.proximity.authservice.entity.Role;
@@ -34,5 +35,12 @@ public class UserController {
 
         userService.changeUserStatus(userId,status);
         return ResponseEntity.ok(new ResponseDto("200", "Successfully changed user status to" + status));
+    }
+    @PostMapping("/send-rejection-email")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<ResponseDto> sendRejectionEmail(@RequestBody RejectionEmailRequest rejectionEmailRequest ) {
+
+        userService.sendRejectionEmail(rejectionEmailRequest);
+        return ResponseEntity.ok(new ResponseDto("200", "Successfully sent rejection email"));
     }
 }

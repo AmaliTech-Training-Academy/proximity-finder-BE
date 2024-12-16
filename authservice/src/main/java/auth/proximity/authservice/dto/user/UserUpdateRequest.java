@@ -2,7 +2,7 @@
 package auth.proximity.authservice.dto.user;
 public record UserUpdateRequest(
         String userName,
-        String phoneNumber,
+        String mobileNumber,
         String businessOwnerName,
         String placeName,
         double latitude,

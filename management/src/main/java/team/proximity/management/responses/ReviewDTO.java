@@ -12,7 +12,7 @@ public class ReviewDTO {
     private int rating;
     private String content;
     private boolean isAnonymous;
-    private UUID serviceProviderId;
+    private UUID providerServiceId;
     private String userEmail; // Only included if not anonymous
     private LocalDateTime createdAt;
     private String sentiment;

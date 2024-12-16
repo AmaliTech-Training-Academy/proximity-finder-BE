@@ -65,17 +65,19 @@ public class ReviewService {
                 .toList();
     }
 
-    public Page<ReviewDTO> getServiceProviderReviews(UUID serviceProviderId, Pageable pageable) {
+    public List<ReviewDTO> getProviderServiceReviews(UUID serviceProviderId) {
         ProviderService providerService = providerServiceRepository.findById(serviceProviderId)
-                .orElseThrow(() -> new ResourceNotFoundException("Service provider not found"));
-        Page<Review> reviews = reviewRepository.findByProviderService(providerService, pageable);
-        return reviews.map(this::convertToDTO);
+                .orElseThrow(() -> new ResourceNotFoundException("Provider service not found"));
+        List<Review> reviews = reviewRepository.findByProviderService(providerService);
+        return reviews.stream()
+                .map(this::convertToDTO)
+                .toList();
     }
 
     public Map<String, Object> getServiceProviderSentimentAnalysis(UUID serviceProviderId) {
         ProviderService providerService = providerServiceRepository.findById(serviceProviderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Service provider not found"));
-        List<Review> reviews = reviewRepository.findByProviderService(providerService, Pageable.unpaged()).getContent();
+        List<Review> reviews = reviewRepository.findByProviderService(providerService);
 
         long positiveCount = reviews.stream()
                 .filter(r -> "POSITIVE".equals(r.getSentiment()))
@@ -103,6 +105,13 @@ public class ReviewService {
 
         return analysis;
     }
+    public  List<ReviewDTO> getServiceProviderReviews(String userEmail) {
+        List<Review> reviews = reviewRepository.findByProviderService_UserEmail(userEmail);
+        return reviews.stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+
 
     private ReviewDTO convertToDTO(Review review) {
         ReviewDTO dto = new ReviewDTO();
@@ -110,7 +119,7 @@ public class ReviewService {
         dto.setRating(review.getRating());
         dto.setContent(review.getContent());
         dto.setAnonymous(review.isAnonymous());
-        dto.setServiceProviderId(review.getProviderService().getId());
+        dto.setProviderServiceId(review.getProviderService().getId());
         dto.setCreatedAt(review.getCreatedAt());
         dto.setSentiment(review.getSentiment());
 
