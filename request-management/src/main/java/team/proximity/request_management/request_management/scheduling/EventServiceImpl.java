@@ -6,6 +6,9 @@ import team.proximity.request_management.request_management.exception.EventNotFo
 import team.proximity.request_management.request_management.exception.EventOverlapException;
 import team.proximity.request_management.request_management.security.SecurityContextUtils;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,10 +78,21 @@ public class EventServiceImpl implements EventService {
 
 
     public boolean isProviderAvailable(AvailabilityCheckRequest request) {
-
-        List<Event> events = eventRepository.findEventsOnDate(request.schedulingDate(), request.createdBy());
+        String schedulingDate = request.schedulingDate();
+        validateDateFormat(schedulingDate);
+        List<Event> events = eventRepository.findEventsOnDate(schedulingDate, request.createdBy());
 
         return events.isEmpty();
     }
+
+    private void validateDateFormat(String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        try {
+            LocalDate.parse(date, formatter);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Invalid date format. Expected format: dd/MM/yyyy");
+        }
+    }
+
 
 }

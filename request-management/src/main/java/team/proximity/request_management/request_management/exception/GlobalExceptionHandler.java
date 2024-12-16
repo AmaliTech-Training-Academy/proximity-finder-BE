@@ -1,6 +1,5 @@
 package team.proximity.request_management.request_management.exception;
 
-import jakarta.persistence.EntityExistsException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

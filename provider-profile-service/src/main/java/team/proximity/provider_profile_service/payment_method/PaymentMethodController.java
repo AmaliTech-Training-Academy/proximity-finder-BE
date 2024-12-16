@@ -1,6 +1,5 @@
 package team.proximity.provider_profile_service.payment_method;
 
-
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -10,19 +10,16 @@ import org.springframework.web.bind.annotation.*;
 import team.proximity.request_management.request_management.quotes.QuoteResponse;
 import team.proximity.request_management.request_management.quotes.QuoteService;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/v1/quote-service/requests")
 public class RequestController {
 
     private final RequestService requestService;
-    private final QuoteService quoteService;
 
-    public RequestController(RequestService requestService, QuoteService quoteService) {
+    public RequestController(RequestService requestService) {
         this.requestService = requestService;
-        this.quoteService = quoteService;
     }
+
 
     @PreAuthorize("hasAuthority('ROLE_PROVIDER')")
     @GetMapping("/assigned")
