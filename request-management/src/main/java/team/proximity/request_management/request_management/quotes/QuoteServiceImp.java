@@ -37,7 +37,6 @@ public class QuoteServiceImp implements QuoteService {
 
 
     public void createQuote(QuoteRequest quoteRequest) {
-        checkForDuplicateQuote(quoteRequest);
         Quote quote = quoteMapper.mapToQuote(quoteRequest);
 
         List<QuoteImage> uploadedImages = quoteRequest.images() == null ? List.of() : quoteRequest.images()
@@ -52,6 +51,8 @@ public class QuoteServiceImp implements QuoteService {
         quoteRepository.save(quote);
 
         Request request = createRequestFromQuote(quote);
+        request.setQuote(quote);
+        quote.setRequest(request);
 
         requestRepository.save(request);
 

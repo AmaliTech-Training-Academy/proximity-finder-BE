@@ -3,6 +3,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 import team.proximity.request_management.request_management.descision.QuoteDecision;
+import team.proximity.request_management.request_management.request.Request;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -36,6 +37,10 @@ public class Quote {
     private QuoteDecision decision;
     @OneToMany(mappedBy = "quote", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<QuoteImage> images = new ArrayList<>();
+
+    @OneToOne
+    @JoinColumn(name = "request_id", referencedColumnName = "requestId")
+    private Request request;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy")
     private final LocalDate requestDate = LocalDate.now();
 

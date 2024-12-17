@@ -6,12 +6,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
+import team.proximity.request_management.request_management.quotes.QuoteResponse;
+import team.proximity.request_management.request_management.quotes.QuoteService;
 
 @RestController
 @RequestMapping("/api/v1/quote-service/requests")
@@ -22,6 +19,7 @@ public class RequestController {
     public RequestController(RequestService requestService) {
         this.requestService = requestService;
     }
+
 
     @PreAuthorize("hasAuthority('ROLE_PROVIDER')")
     @GetMapping("/assigned")
@@ -36,5 +34,10 @@ public class RequestController {
         Page<RequestResponse> assignedRequests = requestService.findAssignedRequests(pageable);
 
         return new ResponseEntity<>(assignedRequests, HttpStatus.OK);
+    }
+    @GetMapping("/quote/{requestId}")
+    public ResponseEntity<QuoteResponse> getQuoteByRequestId(@PathVariable Long requestId) {
+        QuoteResponse quoteResponse = requestService.getQuoteResponseByRequestId(requestId);
+        return ResponseEntity.ok(quoteResponse);
     }
 }

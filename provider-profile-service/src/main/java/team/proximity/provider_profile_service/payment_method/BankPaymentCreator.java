@@ -42,7 +42,7 @@ public class BankPaymentCreator implements PaymentMethodCreator {
     }
 
     private BankPayment getBankPayment(PaymentMethodRequest request, BankPayment bankPayment) {
-        if (StringUtils.hasText(request.bankName())) { // Checks for not null, not empty, and not only whitespace
+        if (StringUtils.hasText(request.bankName())) {
             Bank bank = bankRepository.findByBankName(request.bankName())
                     .orElseThrow(() -> new PaymentMethodCreationException("Bank does not exist."));
             bankPayment.setBankName(bank.getBankName());

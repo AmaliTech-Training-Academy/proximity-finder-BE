@@ -1,6 +1,5 @@
 package team.proximity.request_management.request_management.exception;
 
-import jakarta.persistence.EntityExistsException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +35,17 @@ public class GlobalExceptionHandler {
                 .body(new ApiErrorResponse(
                         HttpStatus.NOT_FOUND.value(),
                         HttpStatus.NOT_FOUND.getReasonPhrase(),
+                        ex.getMessage(),
+                        request.getRequestURI()
+                ));
+    }
+    @ExceptionHandler(EventOverlapException.class)
+    public ResponseEntity<ApiErrorResponse> handleEventOverlapException(EventOverlapException ex, HttpServletRequest request) {
+        LOGGER.warn("Event overlap: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ApiErrorResponse(
+                        HttpStatus.CONFLICT.value(),
+                        HttpStatus.CONFLICT.getReasonPhrase(),
                         ex.getMessage(),
                         request.getRequestURI()
                 ));
