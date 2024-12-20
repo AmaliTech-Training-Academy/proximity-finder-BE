@@ -23,7 +23,7 @@ import java.util.UUID;
 
 // ReviewController.java
 @RestController
-@RequestMapping("/api/v1/reviews")
+@RequestMapping("/api/v1/management/reviews")
 @Slf4j
 public class ReviewController {
     private final ReviewService reviewService;
@@ -78,9 +78,30 @@ public class ReviewController {
 
     @GetMapping("/service-provider/{serviceProviderId}/sentiment-analysis")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Map<String, Object>> getServiceProviderSentimentAnalysis(
+    public ResponseEntity<Map<String,Object>> getServiceProviderSentimentAnalysis(
             @PathVariable UUID serviceProviderId) {
         Map<String, Object> analysis = reviewService.getServiceProviderSentimentAnalysis(serviceProviderId);
         return ResponseEntity.ok(analysis);
+    }
+    @GetMapping("/provider-service/{serviceProviderId}/analytics")
+    public ResponseEntity<ApiSuccessResponse<Map<String, Object>>> getServiceProviderRatingAnalytics(
+            @PathVariable UUID serviceProviderId) {
+        Map<String, Object> analytics = reviewService.getServiceProviderRatingAnalytics(serviceProviderId);
+        ApiSuccessResponse<Map<String, Object>> response = ApiSuccessResponse.<Map<String, Object>>builder()
+                .status(ApiResponseStatus.SUCCESS)
+                .result(analytics)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/service-provider/analytics")
+    public ResponseEntity<ApiSuccessResponse<Map<String, Object>>> getProviderRatingAnalytics(
+            @RequestParam String providerEmail) {
+        Map<String, Object> analytics = reviewService.getProviderRatingAnalytics(providerEmail);
+        ApiSuccessResponse<Map<String, Object>> response = ApiSuccessResponse.<Map<String, Object>>builder()
+                .status(ApiResponseStatus.SUCCESS)
+                .result(analytics)
+                .build();
+        return ResponseEntity.ok(response);
     }
 }
