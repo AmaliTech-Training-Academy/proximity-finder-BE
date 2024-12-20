@@ -5,17 +5,10 @@ import auth.proximity.authservice.dto.user.AdminUpdatePasswordRequest;
 import auth.proximity.authservice.dto.user.UserDto;
 import auth.proximity.authservice.dto.user.UserInfoResponse;
 import auth.proximity.authservice.dto.user.UserUpdateRequest;
-import auth.proximity.authservice.entity.User;
-
 import auth.proximity.authservice.dto.security.LoginRequest;
-import auth.proximity.authservice.dto.security.LoginResponse;
-import auth.proximity.authservice.dto.security.RefreshTokenResponse;
-import auth.proximity.authservice.dto.security.InfoResponse;
-import auth.proximity.authservice.security.jwt.JwtConstants;
 import auth.proximity.authservice.security.jwt.JwtUtils;
 import auth.proximity.authservice.services.AuthService;
 import auth.proximity.authservice.services.security.UserDetailsImpl;
-import auth.proximity.authservice.services.security.UserDetailsServiceImpl;
 import auth.proximity.authservice.services.IUserService;
 import auth.proximity.authservice.services.ProfilePictureService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,21 +22,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -54,8 +34,6 @@ public class AuthController {
     private String jwtSecret;
 
     private final JwtUtils jwtUtils;
-    private final AuthenticationManager authenticationManager;
-    private final UserDetailsServiceImpl userDetailsService;
     private final IUserService userService;
     private final ProfilePictureService profilePictureService;
     private final AuthService authService;

@@ -18,7 +18,5 @@ public class ReviewRequest {
     private boolean isAnonymous;
     private boolean isPublic;
     private UUID providerServiceId;
-//    @Email(message = "Author email should be valid")
-//    private String authorEmail;
 
 }

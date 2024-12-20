@@ -20,9 +20,7 @@ import team.proximity.management.repositories.ProviderServiceRepository;
 import team.proximity.management.validators.BookingDayHoursValidator;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -97,11 +95,31 @@ public class ProviderServiceService {
         return providerServiceRepository.findById(id)
                 .orElseThrow(() -> new ProviderServiceNotFoundException(id));
     }
+    public Map<String, Double> getServiceDistributionPercentage() {
+        List<Object[]> distribution = providerServiceRepository.getServiceDistribution();
+
+        // Step 1: Calculate total count
+        long totalProviders = distribution.stream()
+                .mapToLong(result -> (Long) result[1])
+                .sum();
+
+        // Step 2: Build a map of service names and their percentages
+        Map<String, Double> percentageMap = new HashMap<>();
+        for (Object[] result : distribution) {
+            String serviceName = (String) result[0];
+            Long count = (Long) result[1];
+
+            double percentage = (count * 100.0) / totalProviders;
+            percentageMap.put(serviceName, percentage);
+        }
+
+        return percentageMap;
+    }
 
 
-    public Page<ProviderService> getAllProviderServices(Pageable pageable) {
+    public List<ProviderService> getAllProviderServices() {
         log.info(LOG_FETCH_ALL_PROVIDER_SERVICES);
-        return providerServiceRepository.findAll(pageable);
+        return providerServiceRepository.findAllWithBookingDays();
     }
 
     public void deleteProviderService(UUID id) {

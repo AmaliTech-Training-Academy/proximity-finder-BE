@@ -9,7 +9,7 @@ import team.proximity.management.services.ProviderServiceDiscovery;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/service-discovery")
+@RequestMapping("/api/v1/management/service-discovery")
 public class SearchDiscoveryControler {
 
     private final ProviderServiceDiscovery serviceDiscovery;

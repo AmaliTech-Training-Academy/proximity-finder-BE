@@ -15,7 +15,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: ${HIBERNATE_DDL_AUTO}
       show-sql: true
     properties:
       hibernate:
@@ -32,6 +32,8 @@ cloud:
 app:
   awsServices:
     bucketName: gtp-group-three-lms
+  seed-db: ${SEED_DB}
+
 management:
   endpoints:
     web:
@@ -58,7 +60,7 @@ eureka-server:
 eureka:
   client:
     service-url:
-      defaultZone: http://${eureka-server.hostname}:${eureka-server.port}/eureka/
+      defaultZone: http://${EUREKA_HOSTNAME}:${EUREKA_PORT}/eureka/
     register-with-eureka: true
     fetch-registry: true
     enabled: true
@@ -67,6 +69,6 @@ eureka:
   instance:
       hostname: ${EUREKA_HOSTNAME}
       prefer-ip-address: true
-      instance-id: ${spring.application.name}:${server.port}
+      instance-id: ${spring.application.name}:${SERVER_PORT}
 
 

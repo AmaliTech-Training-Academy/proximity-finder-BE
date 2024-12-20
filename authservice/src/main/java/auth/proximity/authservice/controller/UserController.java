@@ -9,8 +9,11 @@ import auth.proximity.authservice.entity.User;
 import auth.proximity.authservice.services.impl.UserServiceImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,12 +33,16 @@ public class UserController {
         return userService.getUsersByRole(role, pageable);
     }
     @PutMapping("/{userId}/change-status")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ResponseDto> changeStatus(@PathVariable Long userId, @RequestParam String status) {
+        if (!"submitted".equalsIgnoreCase(status) && !SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ResponseDto("403", "Access Denied"));
+            }
 
         userService.changeUserStatus(userId,status);
         return ResponseEntity.ok(new ResponseDto("200", "Successfully changed user status to" + status));
     }
+
     @PostMapping("/send-rejection-email")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ResponseDto> sendRejectionEmail(@RequestBody RejectionEmailRequest rejectionEmailRequest ) {

@@ -12,9 +12,9 @@ import java.time.LocalTime;
 import java.util.UUID;
 @Data
 @Entity
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class BookingDay {
 
     @Id
@@ -22,7 +22,7 @@ public class BookingDay {
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "preference_id")
+    @JoinColumn(name = "preference_id", nullable = false)
     @JsonIgnore
     private ProviderService preference;
 
