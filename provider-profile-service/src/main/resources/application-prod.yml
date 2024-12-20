@@ -11,8 +11,12 @@ spring:
     password: ${POSTGRES_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
     show-sql: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
 
   servlet:
     multipart:
@@ -40,17 +44,17 @@ eureka-server:
   port: ${EUREKA_PORT}
   hostname: ${EUREKA_HOSTNAME}
 
-eureka:
-  client:
-    service-url:
-      defaultZone: http://${eureka-server.hostname}:${eureka-server.port}/eureka/
-    register-with-eureka: true
-    fetch-registry: true
-    enabled: true
-    healthcheck:
-      enabled: true
-  instance:
-      hostname: ${EUREKA_HOSTNAME}
-      prefer-ip-address: true
-      instance-id: ${spring.application.name}:${server.port}
+#eureka:
+#  client:
+#    service-url:
+#      defaultZone: http://${eureka-server.hostname}:${eureka-server.port}/eureka/
+#    register-with-eureka: true
+#    fetch-registry: true
+#    enabled: true
+#    healthcheck:
+#      enabled: true
+#  instance:
+#      hostname: ${EUREKA_HOSTNAME}
+#      prefer-ip-address: true
+#      instance-id: ${spring.application.name}:${server.port}
 
