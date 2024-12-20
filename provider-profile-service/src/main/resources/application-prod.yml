@@ -44,17 +44,17 @@ eureka-server:
   port: ${EUREKA_PORT}
   hostname: ${EUREKA_HOSTNAME}
 
-#eureka:
-#  client:
-#    service-url:
-#      defaultZone: http://${eureka-server.hostname}:${eureka-server.port}/eureka/
-#    register-with-eureka: true
-#    fetch-registry: true
-#    enabled: true
-#    healthcheck:
-#      enabled: true
-#  instance:
-#      hostname: ${EUREKA_HOSTNAME}
-#      prefer-ip-address: true
-#      instance-id: ${spring.application.name}:${server.port}
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${eureka-server.hostname}:${eureka-server.port}/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+    enabled: true
+    healthcheck:
+      enabled: true
+  instance:
+      hostname: ${EUREKA_HOSTNAME}
+      prefer-ip-address: true
+      instance-id: ${spring.application.name}:${server.port}
 
