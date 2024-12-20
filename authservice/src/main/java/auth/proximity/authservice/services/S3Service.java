@@ -40,6 +40,6 @@ public class S3Service {
     }
 
     private String generateFileName(MultipartFile file) {
-        return UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        return UUID.randomUUID() + "_" + file.getOriginalFilename();
     }
 }

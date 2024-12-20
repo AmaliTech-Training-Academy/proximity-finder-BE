@@ -4,7 +4,6 @@ package team.proximity.provider_profile_service.about;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -17,13 +16,15 @@ import java.util.Set;
 @Builder
 public class About {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long businessId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate inceptionDate;
-    @ElementCollection
-    private Set<String> socialMediaLinks;
     private Integer numberOfEmployees;
+    @ElementCollection
+    @CollectionTable(name = "social_media_links", joinColumns = @JoinColumn(name = "business_id"))
+    @Column(name = "link")
+    private Set<String> socialMediaLinks;
     private String businessIdentityCard;
     private String businessCertificate;
     private String businessSummary;

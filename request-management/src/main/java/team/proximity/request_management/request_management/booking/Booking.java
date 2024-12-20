@@ -11,7 +11,7 @@ import lombok.*;
 @Builder
 public class Booking {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookingId;
     private String startDate;
     private String startTime;

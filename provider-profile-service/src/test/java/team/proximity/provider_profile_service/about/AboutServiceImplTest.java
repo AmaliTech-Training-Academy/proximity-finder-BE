@@ -54,7 +54,7 @@ class AboutServiceImplTest {
         when(fileUploadService.uploadFile(any())).thenReturn("path/to/file");
 
 
-        aboutService.createOneAbout(aboutRequest);
+        aboutService.createAbout(aboutRequest);
 
 
         verify(fileUploadService, times(2)).uploadFile(any());
@@ -99,7 +99,7 @@ class AboutServiceImplTest {
         when(fileUploadService.uploadFile(any())).thenReturn("path/to/file");
 
 
-        aboutService.createOneAbout(aboutRequest);
+        aboutService.createAbout(aboutRequest);
 
 
         verify(aboutRepository).delete(existingAbout);
@@ -135,7 +135,7 @@ class AboutServiceImplTest {
         when(fileUploadService.uploadFile(any())).thenThrow(new IOException("Upload failed"));
 
 
-        assertThrows(IOException.class, () -> aboutService.createOneAbout(aboutRequest));
+        assertThrows(IOException.class, () -> aboutService.createAbout(aboutRequest));
         verify(aboutRepository, never()).save(any());
 
         authHelper.close();

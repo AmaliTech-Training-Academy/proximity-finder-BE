@@ -30,93 +30,103 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
     private final PaymentPreferenceRepository paymentPreferenceRepository;
     private final PaymentMethodValidatorFactory validatorFactory;
 
-
     public List<PaymentMethodResponse> getPaymentMethodsForAuthenticatedUser() {
-        String username = AuthHelper.getAuthenticatedUsername();
-        if (username == null) {
-            throw new UnauthorizedAccessException("User is not authenticated");
-        }
+        String username = getAuthenticatedUserOrThrow();
+        LOGGER.debug("Fetching payment methods for user: {}", username);
+
         List<PaymentMethod> paymentMethods = paymentMethodRepository.findByCreatedBy(username);
+        LOGGER.debug("Found {} payment methods for user: {}", paymentMethods.size(), username);
 
         return paymentMethods.stream()
                 .map(paymentMethodMapper::mapToResponse)
                 .collect(Collectors.toList());
     }
 
-
     public void createAnotherPaymentMethod(PaymentMethodRequest request) {
-        LOGGER.info("Creating another payment method for user: {}", AuthHelper.getAuthenticatedUsername());
+        String username = getAuthenticatedUserOrThrow();
+        LOGGER.info("Creating additional payment method for user: {}", username);
 
-        PaymentPreference paymentPreference = paymentPreferenceRepository.findByPreference(request.paymentPreference())
-                .orElseThrow(() -> {
-                    LOGGER.error("Payment Preference not found: {}", request.paymentPreference());
-                    return new PaymentPreferenceDoesNotExist("Payment Preference not found with name: " + request.paymentPreference());
-                });
+        PaymentPreference preference = getPaymentPreference(request.paymentPreference());
+        validatePaymentMethod(request);
 
-        PaymentMethodValidator validator = validatorFactory.getValidator(request.paymentPreference());
-        validator.validate(request);
-
-        PaymentMethod paymentMethod = paymentMethodFactory.createPaymentMethod(request);
-        paymentMethod.setPaymentPreference(paymentPreference);
-        paymentMethod.setCreatedBy(AuthHelper.getAuthenticatedUsername());
-
-        paymentMethodRepository.save(paymentMethod);
-        LOGGER.info("Payment method created successfully for user: {}", AuthHelper.getAuthenticatedUsername());
+        PaymentMethod paymentMethod = createAndSavePaymentMethod(request, preference, username);
+        LOGGER.info("Successfully created additional payment method [id={}] for user: {}", paymentMethod.getId(), username);
     }
 
     public void createNewPaymentMethod(PaymentMethodRequest request) {
-        LOGGER.info("Creating new payment method for user: {}", AuthHelper.getAuthenticatedUsername());
+        String username = getAuthenticatedUserOrThrow();
+        LOGGER.info("Creating new payment method for user: {}", username);
 
-        PaymentPreference paymentPreference = paymentPreferenceRepository.findByPreference(request.paymentPreference())
-                .orElseThrow(() -> {
-                    LOGGER.error("Payment Preference not found: {}", request.paymentPreference());
-                    return new PaymentPreferenceDoesNotExist("Payment Preference not found with name: " + request.paymentPreference());
-                });
+        PaymentPreference preference = getPaymentPreference(request.paymentPreference());
+        deleteExistingPaymentMethod(username, preference);
 
-        paymentMethodRepository.findByCreatedByAndPaymentPreference(AuthHelper.getAuthenticatedUsername(), paymentPreference)
-                .ifPresent(paymentMethod -> {
-                    LOGGER.info("Deleting existing payment method for user: {}", AuthHelper.getAuthenticatedUsername());
-                    paymentMethodRepository.delete(paymentMethod);
-                });
-
-        PaymentMethod paymentMethod = paymentMethodFactory.createPaymentMethod(request);
-        paymentMethod.setPaymentPreference(paymentPreference);
-        paymentMethod.setCreatedBy(AuthHelper.getAuthenticatedUsername());
-
-        paymentMethodRepository.save(paymentMethod);
-        LOGGER.info("New payment method created successfully for user: {}", AuthHelper.getAuthenticatedUsername());
+        PaymentMethod paymentMethod = createAndSavePaymentMethod(request, preference, username);
+        LOGGER.info("Successfully created new payment method [id={}] for user: {}", paymentMethod.getId(), username);
     }
 
 
-    @Override
     public void updatePaymentMethod(PaymentMethodRequest request, Long paymentMethodId) {
-        String username = AuthHelper.getAuthenticatedUsername();
+        String username = getAuthenticatedUserOrThrow();
+        LOGGER.info("Updating payment method [id={}] for user: {}", paymentMethodId, username);
 
         PaymentMethod existingPaymentMethod = paymentMethodRepository.findByIdAndCreatedBy(paymentMethodId, username)
                 .orElseThrow(() -> new PaymentMethodCreationException("Payment method not found for update."));
 
-        PaymentPreference paymentPreference = paymentPreferenceRepository.findByPreference(request.paymentPreference())
-                .orElseThrow(() -> new PaymentPreferenceDoesNotExist("Payment Preference not found: " + request.paymentPreference()));
+        PaymentPreference preference = getPaymentPreference(request.paymentPreference());
 
         PaymentMethod updatedPaymentMethod = paymentMethodFactory.updatePaymentMethod(existingPaymentMethod, request);
-        updatedPaymentMethod.setPaymentPreference(paymentPreference);
+        updatedPaymentMethod.setPaymentPreference(preference);
 
         paymentMethodRepository.save(updatedPaymentMethod);
+        LOGGER.info("Successfully updated payment method [id={}] for user: {}", paymentMethodId, username);
     }
 
     public void deletePaymentMethodById(Long paymentMethodId) {
-        String username = AuthHelper.getAuthenticatedUsername();
-        if (username == null) {
-            throw new UnauthorizedAccessException("User is not authenticated");
-        }
+        String username = getAuthenticatedUserOrThrow();
+        LOGGER.info("Deleting payment method [id={}] for user: {}", paymentMethodId, username);
 
         PaymentMethod paymentMethod = paymentMethodRepository.findByIdAndCreatedBy(paymentMethodId, username)
                 .orElseThrow(() -> new IllegalArgumentException("No payment method found with the given id for the authenticated user."));
 
         paymentMethodRepository.delete(paymentMethod);
-        LOGGER.info("Payment method with id {} deleted successfully for user: {}", paymentMethodId, username);
+        LOGGER.info("Successfully deleted payment method [id={}] for user: {}", paymentMethodId, username);
     }
 
 
+    private String getAuthenticatedUserOrThrow() {
+        String username = AuthHelper.getAuthenticatedUsername();
+        if (username == null) {
+            LOGGER.error("Attempted unauthorized access");
+            throw new UnauthorizedAccessException("User is not authenticated");
+        }
+        return username;
+    }
 
+    private PaymentPreference getPaymentPreference(String preferenceName) {
+        return paymentPreferenceRepository.findByPreference(preferenceName)
+                .orElseThrow(() -> {
+                    LOGGER.error("Payment Preference not found: {}", preferenceName);
+                    return new PaymentPreferenceDoesNotExist("Payment Preference not found with name: " + preferenceName);
+                });
+    }
+
+    private void validatePaymentMethod(PaymentMethodRequest request) {
+        PaymentMethodValidator validator = validatorFactory.getValidator(request.paymentPreference());
+        validator.validate(request);
+    }
+
+    private PaymentMethod createAndSavePaymentMethod(PaymentMethodRequest request, PaymentPreference preference, String username) {
+        PaymentMethod paymentMethod = paymentMethodFactory.createPaymentMethod(request);
+        paymentMethod.setPaymentPreference(preference);
+        paymentMethod.setCreatedBy(username);
+        return paymentMethodRepository.save(paymentMethod);
+    }
+
+    private void deleteExistingPaymentMethod(String username, PaymentPreference preference) {
+        paymentMethodRepository.findByCreatedByAndPaymentPreference(username, preference)
+                .ifPresent(existingMethod -> {
+                    LOGGER.debug("Deleting existing payment method [id={}] for user: {}", existingMethod.getId(), username);
+                    paymentMethodRepository.delete(existingMethod);
+                });
+    }
 }

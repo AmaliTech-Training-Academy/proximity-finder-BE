@@ -12,7 +12,7 @@ import lombok.*;
 @Builder
 public class Event {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long eventId;
     private String title;
     private String startDate;

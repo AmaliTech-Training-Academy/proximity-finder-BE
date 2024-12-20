@@ -26,91 +26,80 @@ public class AboutServiceImpl implements AboutService {
     private final Logger LOGGER = LoggerFactory.getLogger(AboutServiceImpl.class);
 
     private final AboutBusinessMapper aboutBusinessMapper;
-    private final FileUploadService fileUploadService;
     private final AboutRepository aboutRepository;
-    private final FileValidator fileValidator;
     private final AboutValidator aboutValidator;
     private final PaymentMethodRepository paymentMethodRepository;
     private final PaymentMethodMapper paymentMethodMapper;
 
-    public AboutServiceImpl(AboutBusinessMapper aboutBusinessMapper, FileUploadService fileUploadService, AboutRepository aboutRepository, FileValidator fileValidator, AboutValidator aboutValidator, PaymentMethodRepository paymentMethodRepository, PaymentMethodMapper paymentMethodMapper) {
+    public AboutServiceImpl(AboutBusinessMapper aboutBusinessMapper, AboutRepository aboutRepository, AboutValidator aboutValidator, PaymentMethodRepository paymentMethodRepository, PaymentMethodMapper paymentMethodMapper) {
         this.aboutBusinessMapper = aboutBusinessMapper;
-        this.fileUploadService = fileUploadService;
         this.aboutRepository = aboutRepository;
-        this.fileValidator = fileValidator;
         this.aboutValidator = aboutValidator;
         this.paymentMethodRepository = paymentMethodRepository;
         this.paymentMethodMapper = paymentMethodMapper;
     }
 
+
     public AboutBusinessResponse getAboutForAuthenticatedUser() {
+        LOGGER.debug("Attempting to retrieve about info for authenticated user");
         String authenticatedUsername = AuthHelper.getAuthenticatedUsername();
 
         if (authenticatedUsername == null) {
+            LOGGER.error("Authentication failed - no username found in context");
             throw new UnauthorizedAccessException("User is not authenticated.");
         }
+        LOGGER.debug("Looking up business info for user: {}", authenticatedUsername);
         About about = aboutRepository.findByCreatedBy(authenticatedUsername)
-                .orElseThrow(() -> new AboutNotFoundException("No business found for the authenticated user."));
-        return aboutBusinessMapper.mapToResponse(about);
+                .orElseThrow(() -> {
+                    LOGGER.error("No business found for user: {}", authenticatedUsername);
+                    return new AboutNotFoundException("No business found for the authenticated user.");
+                });
+        LOGGER.info("Successfully retrieved business info for user: {}", authenticatedUsername);
+        return aboutBusinessMapper.mapToABoutResponse(about);
     }
 
 
     @Transactional
-    public void createOneAbout(AboutRequest aboutRequest) {
-        validateRequestFiles(aboutRequest);
-        LOGGER.info("Processing About record for user: {}", AuthHelper.getAuthenticatedUsername());
+    public void createAbout(AboutRequest aboutRequest) {
+        LOGGER.debug("Starting creation of new about info");
+        aboutValidator.validateRequestFiles(aboutRequest);
+        LOGGER.debug("File validation passed successfully");
 
-        aboutRepository.findByCreatedBy(AuthHelper.getAuthenticatedUsername())
-                .ifPresent(about -> {
-                    LOGGER.info("Deleting existing About record for user: {}", AuthHelper.getAuthenticatedUsername());
-                    aboutRepository.delete(about);
+        String username = AuthHelper.getAuthenticatedUsername();
+        LOGGER.debug("Checking for existing about info for user: {}", username);
+        aboutRepository.findByCreatedBy(username)
+                .ifPresent(existing -> {
+                    LOGGER.info("Deleting existing about info for user: {}", username);
+                    aboutRepository.delete(existing);
                 });
-        String businessIdentityCardPath = fileUploadService.uploadFile(aboutRequest.businessIdentityCard());
-        String businessCertificatePath = fileUploadService.uploadFile(aboutRequest.businessCertificate());
 
-        About about = createAboutFromRequest(aboutRequest, businessIdentityCardPath, businessCertificatePath);
+        About about = aboutBusinessMapper.mapToAbout(aboutRequest);
         aboutRepository.save(about);
-        LOGGER.info("Successfully created About record for user: {}", AuthHelper.getAuthenticatedUsername());
+        LOGGER.info("Successfully created new about info for user: {}", username);
     }
 
-    private void validateRequestFiles(AboutRequest aboutRequest) {
-        try {
-            fileValidator.validate(aboutRequest.businessIdentityCard());
-            fileValidator.validate(aboutRequest.businessCertificate());
-        } catch (ValidationException ex) {
-            LOGGER.error("Validation failed: {}", ex.getMessage());
-            throw new FileValidationException("validation failed: " + ex.getMessage());
-        }
-    }
-
-    private static About createAboutFromRequest(AboutRequest aboutRequest, String businessIdentityCardPath, String businessCertificatePath) {
-        return About.builder()
-                .inceptionDate(aboutRequest.inceptionDate())
-                .socialMediaLinks(aboutRequest.socialMediaLinks())
-                .numberOfEmployees(aboutRequest.numberOfEmployees())
-                .businessIdentityCard(businessIdentityCardPath)
-                .businessCertificate(businessCertificatePath)
-                .businessSummary(aboutRequest.businessSummary())
-                .createdBy(AuthHelper.getAuthenticatedUsername())
-                .build();
-    }
 
     public AboutAndPaymentMethodsResponse getAboutAndPaymentMethods(String email) {
-        About about = aboutRepository.findByCreatedBy(email).orElseThrow();
+        LOGGER.debug("Retrieving about and payment methods for email: {}", email);
 
-        AboutBusinessResponse aboutBusinessResponse = aboutBusinessMapper.mapToResponse(about);
+        About about = aboutRepository.findByCreatedBy(email)
+                .orElseThrow(() -> {
+                    LOGGER.error("No about info found for email: {}", email);
+                    return new AboutNotFoundException("No business found for email: " + email);
+                });
 
+        AboutBusinessResponse aboutBusinessResponse = aboutBusinessMapper.mapToABoutResponse(about);
+        LOGGER.debug("Successfully retrieved about info for email: {}", email);
 
         List<PaymentMethod> paymentMethods = paymentMethodRepository.findByCreatedBy(email);
+        LOGGER.debug("Found {} payment methods for email: {}", paymentMethods.size(), email);
 
         List<PaymentMethodResponse> paymentMethodResponses = paymentMethods
                 .stream()
                 .map(paymentMethodMapper::mapToResponse)
                 .toList();
 
+        LOGGER.info("Successfully retrieved about and payment methods for email: {}", email);
         return new AboutAndPaymentMethodsResponse(aboutBusinessResponse, paymentMethodResponses);
-
     }
 }
-
-

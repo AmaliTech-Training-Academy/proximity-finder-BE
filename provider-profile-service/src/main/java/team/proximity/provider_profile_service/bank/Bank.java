@@ -17,7 +17,7 @@ import lombok.Setter;
 public class Bank {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bankId;
     private String bankName;
 }

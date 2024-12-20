@@ -15,7 +15,7 @@ import java.time.LocalDate;
 public class CallRequest {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long requestId;
     private String clientName;
     private String phoneNumber;
