@@ -19,7 +19,7 @@ import java.util.List;
 public class Quote {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long quoteId;
     private String title;
     private String description;

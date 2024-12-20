@@ -13,7 +13,7 @@ import team.proximity.request_management.request_management.quotes.Quote;
 @Table(name = "quote_request")
 public class Request {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long requestId;
     private String clientName;
     private String description;
