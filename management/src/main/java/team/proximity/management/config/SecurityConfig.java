@@ -29,9 +29,8 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
-//                        .requestMatchers(HttpMethod.GET,"/api/services").hasAnyAuthority("SEEKER", "PROVIDER")
-//                        .requestMatchers( "/api/services").hasAuthority("ROLE_ADMIN")
-//                                .requestMatchers("/api/v1/reviews").hasAnyAuthority("ROLE_SEEKER", "ROLE_PROVIDER")
+                                .requestMatchers(HttpMethod.GET,"/api/v1/management/services/**").permitAll()
+                                .requestMatchers("/api/v1/management/service-discovery/**").permitAll()
                                 .anyRequest().permitAll()
                 )
                 .sessionManagement(session -> session
