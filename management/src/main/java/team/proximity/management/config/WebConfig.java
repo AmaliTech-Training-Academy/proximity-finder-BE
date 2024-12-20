@@ -21,8 +21,9 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("*")
-//                .allowedHeaders("authorization", "content-type")
+                .allowedOrigins("http://localhost:4200", "https://dev.dxjzzi2vfb5sv.amplifyapp.com")
+                .allowedHeaders( "Content-Type", "Authorization", "X-Requested-With", "accept", "Origin", "Access-Control-Request-Method",
+                        "Access-Control-Request-Headers")
                 .allowedMethods("*");
     }
     @Override
