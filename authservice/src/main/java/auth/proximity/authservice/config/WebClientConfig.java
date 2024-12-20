@@ -2,6 +2,7 @@ package auth.proximity.authservice.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.request.RequestAttributes;
@@ -22,11 +23,13 @@ public class WebClientConfig {
     private String providerServiceUrl;
 
     @Bean
+    @LoadBalanced
     public WebClient managementClient(WebClient.Builder builder) {
         return builder.baseUrl(managementServiceUrl).build();
     }
 
     @Bean
+    @LoadBalanced
     public WebClient profileServiceClient(WebClient.Builder builder) {
         return builder
                 .baseUrl(providerServiceUrl)
