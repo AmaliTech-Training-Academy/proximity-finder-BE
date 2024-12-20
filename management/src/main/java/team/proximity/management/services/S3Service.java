@@ -47,7 +47,7 @@ public class S3Service {
         String fileUrl = String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, region, fileName);
         Map<String, String> result = new HashMap<>();
         result.put("url", fileUrl);
-        result.put("filename", fileName);
+        result.put("fileName", fileName);
 
         return result;
     }
