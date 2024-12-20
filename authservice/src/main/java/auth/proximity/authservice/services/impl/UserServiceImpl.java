@@ -13,15 +13,12 @@ import auth.proximity.authservice.exception.ResourceNotFoundException;
 import auth.proximity.authservice.exception.UserAlreadyExistsException;
 import auth.proximity.authservice.repository.RoleRepository;
 import auth.proximity.authservice.repository.UserRepository;
-import auth.proximity.authservice.security.AuthenticationHelper;
 import auth.proximity.authservice.services.EmailService;
 import auth.proximity.authservice.services.IUserService;
-import auth.proximity.authservice.services.security.UserDetailsImpl;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -166,14 +163,23 @@ public class UserServiceImpl implements IUserService {
         userRepository.save(user);
     }
     public PaginatedResponse<User> getUsersByRole(AppRole role, Pageable pageable) {
-        Page<User> users = userRepository.findByRoleRoleName(role, pageable);
+        AccountStatus excludeStatus = (role == AppRole.ROLE_PROVIDER)
+                ? AccountStatus.PENDING
+                : null;
+
+        Page<User> users = excludeStatus != null
+                ? userRepository.findByRole_RoleNameAndStatusNot(role, excludeStatus, pageable)
+                : userRepository.findByRole_RoleNameAndStatusNot(role, AccountStatus.DEACTIVATED, pageable);
+
         PaginatedResponse.PaginationMetadata metadata = new PaginatedResponse.PaginationMetadata(
-                users.getNumber(),    // current page
-                users.getTotalPages(), // total pages
-                users.getTotalElements(), // total elements
-                users.getSize()        // page size
+                users.getNumber(),
+                users.getTotalPages(),
+                users.getTotalElements(),
+                users.getSize()
         );
+
         return new PaginatedResponse<>(users.getContent(), metadata);
+
     }
     @Override
     public void changeUserStatus(Long userId, String status) {
