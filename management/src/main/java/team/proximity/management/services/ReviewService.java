@@ -32,13 +32,10 @@ public class ReviewService {
     public ReviewService(ReviewRepository reviewRepository, ProviderServiceRepository providerServiceRepository, SentimentAnalyzer sentimentAnalyzer) {
         this.reviewRepository = reviewRepository;
         this.providerServiceRepository = providerServiceRepository;
-//        this.reportRepository = reportRepository;
         this.sentimentAnalyzer = sentimentAnalyzer;
     }
 
     public ReviewDTO createReview(ReviewRequest request, String userEmail) {
-//        User user = userRepository.findByEmail(userEmail)
-//                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         ProviderService serviceProvider = providerServiceRepository.findById(request.getProviderServiceId())
                 .orElseThrow(() -> new ResourceNotFoundException("Service provider not found"));
@@ -49,9 +46,6 @@ public class ReviewService {
         review.setAnonymous(request.isAnonymous());
         review.setProviderService(serviceProvider);
         review.setAuthorEmail(request.isAnonymous() ? null : userEmail);
-//        review.setPublic(request.isPublic());
-
-        // Analyze sentiment
         String sentiment = sentimentAnalyzer.analyzeSentiment(request.getContent());
         review.setSentiment(sentiment);
 
@@ -111,7 +105,15 @@ public class ReviewService {
                 .map(this::convertToDTO)
                 .toList();
     }
+    public Map<String, Object> getServiceProviderRatingAnalytics(UUID serviceProviderId) {
+        ProviderService providerService = providerServiceRepository.findById(serviceProviderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Provider Service not found"));
+        return reviewRepository.getRatingAnalyticsByServiceProvider(providerService.getId());
+    }
 
+    public Map<String, Object> getProviderRatingAnalytics(String providerEmail) {
+        return reviewRepository.getRatingAnalyticsByProviderEmail(providerEmail);
+    }
 
     private ReviewDTO convertToDTO(Review review) {
         ReviewDTO dto = new ReviewDTO();
