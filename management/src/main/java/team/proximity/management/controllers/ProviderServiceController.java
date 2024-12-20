@@ -8,28 +8,23 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+
 import org.springframework.validation.annotation.Validated;
 import team.proximity.management.dtos.ProviderServiceDTO;
 import team.proximity.management.requests.ProviderServiceRequest;
 import team.proximity.management.model.ProviderService;
 import team.proximity.management.responses.ApiSuccessResponse;
 import team.proximity.management.responses.ApiResponseStatus;
-import team.proximity.management.responses.ErrorResponse;
 import team.proximity.management.services.ProviderServiceService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/provider-services")
+@RequestMapping("/api/v1/management/provider-services")
 public class ProviderServiceController {
     private final ProviderServiceService providerServiceService;
 
@@ -109,11 +104,11 @@ public class ProviderServiceController {
             @ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
     })
-    public ResponseEntity<ApiSuccessResponse<Page<ProviderService>>> getAllProviderServices(Pageable pageable) {
+    public ResponseEntity<ApiSuccessResponse<List<ProviderService>>> getAllProviderServices() {
         log.info("Fetching all providerServices");
-        Page<ProviderService> providerServices = providerServiceService.getAllProviderServices(pageable);
+        List<ProviderService> providerServices = providerServiceService.getAllProviderServices();
         log.debug("Fetched providerServices: {}", providerServices);
-        ApiSuccessResponse<Page<ProviderService>> response = ApiSuccessResponse.<Page<ProviderService>>builder()
+        ApiSuccessResponse<List<ProviderService>> response = ApiSuccessResponse.<List<ProviderService>>builder()
                 .status(ApiResponseStatus.SUCCESS)
                 .result(providerServices)
                 .build();
@@ -135,6 +130,10 @@ public class ProviderServiceController {
                 .status(ApiResponseStatus.SUCCESS)
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+    @GetMapping("/service-distribution")
+    public Map<String, Double> getServiceDistribution() {
+        return providerServiceService.getServiceDistributionPercentage();
     }
 
 }
