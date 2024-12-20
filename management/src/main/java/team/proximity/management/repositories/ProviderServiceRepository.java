@@ -2,6 +2,7 @@ package team.proximity.management.repositories;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -26,4 +27,10 @@ public interface ProviderServiceRepository extends JpaRepository<ProviderService
            @Param("radius") double radius,
            Pageable pageable
    );
+   @Query("SELECT ps FROM ProviderService ps LEFT JOIN FETCH ps.bookingDays")
+   List<ProviderService> findAllWithBookingDays();
+   @Query("SELECT p.service.name AS serviceName, COUNT(p) AS serviceCount " +
+           "FROM ProviderService p " +
+           "GROUP BY p.service.name")
+   List<Object[]> getServiceDistribution();
 }
