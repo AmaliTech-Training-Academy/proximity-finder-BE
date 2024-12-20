@@ -39,12 +39,18 @@ public class ProviderServiceMapper {
         return preference;
     }
 
-    public void updateEntity(ProviderServiceRequest providerServiceRequest, ProviderService preference, List<BookingDayRequest> bookingDays) {
 
-        updatePreferenceFields(providerServiceRequest, preference, bookingDays);
+    private void updatePreferenceFields(ProviderServiceRequest dto, ProviderService preference) {
+        preference.setPaymentPreference(dto.getPaymentPreference());
 
+        // Create GeometryFactory
+        GeometryFactory geometryFactory = new GeometryFactory();
 
-        updateDocuments(preference, providerServiceRequest.getDocuments());
+        // Create Point from latitude and longitude
+        Point point = geometryFactory.createPoint(new Coordinate(dto.getLongitude(), dto.getLatitude()));
+        preference.setLocation(point);
+        preference.setPlaceName(dto.getPlaceName());
+        preference.setSchedulingPolicy(dto.getSchedulingPolicy());
     }
     private void updateDocuments(ProviderService preference, List<MultipartFile> newDocuments) {
         List<Document> currentDocuments = preference.getDocuments();
@@ -74,34 +80,63 @@ public class ProviderServiceMapper {
         // Create Point from latitude and longitude
         Point point = geometryFactory.createPoint(new Coordinate(dto.getLongitude(), dto.getLatitude()));
 
-        return ProviderService.builder()
+        ProviderService providerService = ProviderService.builder()
                 .userEmail(AuthenticationHelper.getCurrentUserEmail())
                 .service(service.get())
                 .paymentPreference(dto.getPaymentPreference())
                 .location(point)
                 .placeName(dto.getPlaceName())
                 .schedulingPolicy(dto.getSchedulingPolicy())
-                .bookingDays(mapBookingDays(bookingDays))
                 .build();
-    }
 
-    private void updatePreferenceFields(ProviderServiceRequest dto, ProviderService preference, List<BookingDayRequest> bookingDays) {
-        preference.setPaymentPreference(dto.getPaymentPreference());
-        // Create GeometryFactory
-        GeometryFactory geometryFactory = new GeometryFactory();
-
-        // Create Point from latitude and longitude
-        Point point = geometryFactory.createPoint(new Coordinate(dto.getLongitude(), dto.getLatitude()));
-        preference.setLocation(point);
-        preference.setPlaceName(dto.getPlaceName());
-        preference.setSchedulingPolicy(dto.getSchedulingPolicy());
-        preference.setBookingDays(mapBookingDays(bookingDays));
-    }
-
-    private List<BookingDay> mapBookingDays(List<BookingDayRequest> dtos) {
-        return dtos.stream()
-                .map(this::mapToBookingDay)
+        // Create booking days and set the preference
+        List<BookingDay> providerBookingDays = bookingDays.stream()
+                .map(request -> BookingDay.builder()
+                        .dayOfWeek(request.getDayOfWeek())
+                        .fromTime(request.getStartTime())
+                        .toTime(request.getEndTime())
+                        .preference(providerService)
+                        .build())
                 .collect(Collectors.toList());
+
+        providerService.setBookingDays(providerBookingDays);
+
+        return providerService;
+    }
+    private void updateBookingDays(ProviderService providerService, List<BookingDayRequest> newBookingDays) {
+        List<BookingDay> currentBookingDays = providerService.getBookingDays();
+
+        // Remove booking days that are not in the new list
+        currentBookingDays.removeIf(bookingDay ->
+                newBookingDays.stream().noneMatch(request ->
+                        request.getDayOfWeek() == bookingDay.getDayOfWeek() &&
+                                request.getStartTime().equals(bookingDay.getFromTime()) &&
+                                request.getEndTime().equals(bookingDay.getToTime())
+                )
+        );
+
+        // Add new booking days
+        newBookingDays.forEach(request -> {
+            if (currentBookingDays.stream().noneMatch(bookingDay ->
+                    bookingDay.getDayOfWeek() == request.getDayOfWeek() &&
+                            bookingDay.getFromTime().equals(request.getStartTime()) &&
+                            bookingDay.getToTime().equals(request.getEndTime())
+            )) {
+                BookingDay newBookingDay = BookingDay.builder()
+                        .dayOfWeek(request.getDayOfWeek())
+                        .fromTime(request.getStartTime())
+                        .toTime(request.getEndTime())
+                        .preference(providerService)
+                        .build();
+                currentBookingDays.add(newBookingDay);
+            }
+        });
+    }
+
+    public void updateEntity(ProviderServiceRequest providerServiceRequest, ProviderService preference, List<BookingDayRequest> bookingDays) {
+        updatePreferenceFields(providerServiceRequest, preference);
+        updateDocuments(preference, providerServiceRequest.getDocuments());
+        updateBookingDays(preference, bookingDays);
     }
 
     private List<Document> createDocuments(ProviderServiceRequest dto, ProviderService preference) {
@@ -127,11 +162,4 @@ public class ProviderServiceMapper {
         }
     }
 
-    private BookingDay mapToBookingDay(BookingDayRequest dto) {
-        return BookingDay.builder()
-                .dayOfWeek(dto.getDayOfWeek())
-                .fromTime(dto.getStartTime())
-                .toTime(dto.getEndTime())
-                .build();
-    }
 }

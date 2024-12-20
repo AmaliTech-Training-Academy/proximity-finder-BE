@@ -1,6 +1,6 @@
 package auth.proximity.authservice.controller;
-import auth.proximity.authservice.config.PreviewService;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import auth.proximity.authservice.services.PreviewService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
