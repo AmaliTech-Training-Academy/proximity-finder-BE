@@ -1,15 +1,12 @@
 package team.proximity.provider_profile_service.about;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.Set;
 
-@Schema(description = "Request to create an About entity")
+
 public record AboutRequest(
 
         @NotNull(message = "Inception date is required")

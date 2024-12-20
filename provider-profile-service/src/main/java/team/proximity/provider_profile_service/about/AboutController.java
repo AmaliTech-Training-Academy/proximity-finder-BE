@@ -20,7 +20,7 @@ public class AboutController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiSuccessResponse> createOneAbout(@Valid @ModelAttribute AboutRequest aboutRequest){
 
-            aboutService.createOneAbout(aboutRequest);
+            aboutService.createAbout(aboutRequest);
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(new ApiSuccessResponse("About Company Created Successfully", true));
