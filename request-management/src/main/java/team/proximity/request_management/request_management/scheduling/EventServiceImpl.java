@@ -21,16 +21,7 @@ public class EventServiceImpl implements EventService {
 
 
     public void createEvent(EventRequest request) {
-        Event event = Event.builder()
-                .title(request.title())
-                .startDate(request.startDate())
-                .startTime(request.startTime())
-                .endDate(request.endDate())
-                .endTime(request.endTime())
-                .description(request.description())
-                .createdBy(SecurityContextUtils.getEmail())
-                .build();
-
+        Event event = eventMapper.mapToEvent(request);
         eventRepository.save(event);
     }
 

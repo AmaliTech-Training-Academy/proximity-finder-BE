@@ -6,6 +6,7 @@ import team.proximity.request_management.request_management.descision.QuoteDecis
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -64,7 +65,11 @@ public class QuoteMapper {
     }
 
     private String calculateDuration(String startDate, String endDate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyy");
+        DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+                .appendPattern("[d/M/yyyy]")
+                .appendPattern("[dd/MM/yyyy]")
+                .toFormatter();
+
         LocalDate start = LocalDate.parse(startDate, formatter);
         LocalDate end = LocalDate.parse(endDate, formatter);
 
