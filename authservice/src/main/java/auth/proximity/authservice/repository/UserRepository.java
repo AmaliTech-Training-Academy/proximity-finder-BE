@@ -3,6 +3,7 @@ package auth.proximity.authservice.repository;
 import auth.proximity.authservice.entity.AppRole;
 import auth.proximity.authservice.entity.Role;
 import auth.proximity.authservice.entity.User;
+import auth.proximity.authservice.enums.AccountStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,6 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
     Boolean existsByUserName(String username);
-    Page<User> findByRoleRoleName(AppRole roleName, Pageable pageable);
+    Page<User> findByRole_RoleNameAndStatusNot(AppRole roleName, AccountStatus status, Pageable pageable);
 
 }
